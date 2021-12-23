@@ -1,0 +1,88 @@
+<ng-container *ngIf="deviceList.length">
+    <div class="formgroup-inline">
+        <!-- <div class="field-radiobutton">
+        <label for="cabinHeater" class="font-bold">Cabin heater</label>
+        <p-selectButton id="cabinHeater" [options]="powerStateOptions" [(ngModel)]="cabinHeaterPowerState"
+            optionLabel="label" optionValue="value" (onChange)="cabinHeaterPowerStateToggle('cabin-heater')">
+        </p-selectButton>
+    </div>
+    <div class="field-radiobutton">
+        <label for="tanisHeater" class="font-bold">Tanis heater</label>
+        <p-selectButton id="tanisHeater" [options]="powerStateOptions" [(ngModel)]="tanisHeaterPowerState"
+            optionLabel="label" optionValue="value">
+        </p-selectButton>
+    </div> -->
+
+        <div class="field-radiobutton" *ngFor="let device of deviceList">
+            <ng-container *ngIf="deviceNamePowerStateMap[device.name]">
+                <label for="tanisHeater" class="font-bold">{{device.description}}</label>
+                <p-selectButton id="tanisHeater" [options]="powerStateOptions"
+                    [(ngModel)]="deviceNamePowerStateMap[device.name].POWER" optionLabel="label" optionValue="value"
+                    (onChange)="cabinHeaterPowerStateToggle(device.name)">
+                </p-selectButton>
+            </ng-container>
+        </div>
+    </div>
+
+
+    <div class="formgroup-inline">
+        <div class="field-radiobutton">
+            <label for="deviceNameForSensorData" class="font-bold" style="width:8.5rem;">Sensor data</label>
+            <p-dropdown id="deviceNameForSensorData" [options]="deviceNameList" [(ngModel)]="deviceNameForSensorData"
+                placeholder="Select device" (onChange)="onSensorDataForDeviceName($event)" [showClear]="true">
+            </p-dropdown>
+        </div>
+    </div>
+
+    <div class="form-grid" style="margin-left: 0.5rem;" *ngIf=" deviceNameSensorDataMap[deviceNameForSensorData]">
+
+        <!-- <div class="grid">
+        <div class="col-fixed font-bold" style="width:9rem;">Up since</div>
+        <div class="col">
+            {{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.TotalStartTime | date:'medium'}}
+        </div>
+    </div> -->
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Time</div>
+            <div class="col">
+                {{deviceNameSensorDataMap[deviceNameForSensorData].Time | date:'medium'}}
+            </div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Voltage</div>
+            <div class="col">
+                {{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.Voltage}} V
+            </div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Current</div>
+            <div class="col">{{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.Current}} A</div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Power</div>
+            <div class="col">{{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.Power}} W</div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Energy yesterday</div>
+            <div class="col">{{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.Yesterday}} kWh</div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Energy today</div>
+            <div class="col">{{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.Today}} kWh</div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold" style="width:9rem;">Energy total</div>
+            <div class="col">{{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.Total}} kWh (since
+                {{deviceNameSensorDataMap[deviceNameForSensorData].ENERGY.TotalStartTime | date:'medium'}})</div>
+        </div>
+    </div>
+
+    <div style="margin-left: 0.5rem;">
+        <button pButton type="button" label="Refresh" (click)="onRefresh($event)"></button>
+    </div>
+</ng-container>
+
+<!-- <div>cabinHeaterMessage: {{cabinHeaterMessage}}</div>
+<div>tanisHeaterMessage: {{tanisHeaterMessage}}</div> -->
+
+<a [routerLink]="['/home']" style="text-decoration: none; color: #007ad9;">Home</a>
