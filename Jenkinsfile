@@ -43,7 +43,7 @@ pipeline {
                 # Install ng cli locally
                 # npm install @angular/cli
 
-                npm install && ~/node_modules/.bin/ng build
+                npm install && node_modules/.bin/ng build
                 #jar -cvf FlightLogClient.jar dist
                 '''
             }
