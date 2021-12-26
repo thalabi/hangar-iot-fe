@@ -40,13 +40,9 @@ pipeline {
                 pwd
                 cd ../..
                 pwd
+
                 export PATH=/usr/local/node-v16.13.1-linux-x64/bin/:$PATH
-
-                # Install ng cli locally
-                # npm install @angular/cli
-
                 npm install && node_modules/.bin/ng build
-                #jar -cvf FlightLogClient.jar dist
                 '''
             }
 		}
