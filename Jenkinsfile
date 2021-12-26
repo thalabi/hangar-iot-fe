@@ -1,7 +1,6 @@
 pipeline {
     agent any
      tools { 
-    //     maven 'Maven 3.5.2' 
          jdk 'jdk-17' 
     }
     stages {
@@ -13,10 +12,6 @@ pipeline {
                 echo "BRANCH_NAME = ${BRANCH_NAME}"
                 java -version
                 '''
-                // withNPM(npmrcConfig:'my-custom-npmrc') {
-                //     echo "Performing npm build..."
-                //     sh 'npm install'
-                // }
             }
         }
 
