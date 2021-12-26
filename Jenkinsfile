@@ -1,7 +1,8 @@
 pipeline {
     agent any
      tools { 
-         jdk 'jdk-17' 
+        maven 'Maven-3.8.4' 
+        jdk 'jdk-17' 
     }
     //environment {
         // Add path nodejs and npm
