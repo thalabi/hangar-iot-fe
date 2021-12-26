@@ -32,6 +32,7 @@ pipeline {
                 cat environment.prod.ts
                 sed -i -e "s/@buildVersion@/${BRANCH_NAME}/" \
                     -e "s/@buildTimestamp@/${NOW}/" \
+                    -e "s/localhost/kerneldc.com/" \
                     environment.prod.ts
                 cat environment.prod.ts
                 ls -l
