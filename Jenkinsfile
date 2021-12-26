@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         // Add path nodejs and npm
-        PATH = '/usr/local/node-v16.13.1-linux-x64/bin:${env.PATH}'
+        //PATH = '/usr/local/node-v16.13.1-linux-x64/bin:${env.PATH}'
     }
     stages {
 
