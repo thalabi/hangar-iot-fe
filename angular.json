@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "hanagr-iot-fe": {
+        "hangar-iot-fe": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:application": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/hanagr-iot-fe",
+                        "outputPath": "dist/hangar-iot-fe",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
@@ -72,10 +72,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "hanagr-iot-fe:build:production"
+                            "browserTarget": "hangar-iot-fe:build:production"
                         },
                         "development": {
-                            "browserTarget": "hanagr-iot-fe:build:development"
+                            "browserTarget": "hangar-iot-fe:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "hanagr-iot-fe:build"
+                        "browserTarget": "hangar-iot-fe:build"
                     }
                 },
                 "test": {
@@ -106,5 +106,5 @@
             }
         }
     },
-    "defaultProject": "hanagr-iot-fe"
+    "defaultProject": "hangar-iot-fe"
 }
