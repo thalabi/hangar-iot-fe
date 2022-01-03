@@ -1,0 +1,32 @@
+<div class="form-grid">
+    <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+
+        <div class="grid">
+            <label for="username" class="col-fixed" style="width:100px">Username</label>
+            <div class="col">
+                <input id="username" type="text" pInputText name="username" [(ngModel)]="form.username" required
+                    #username="ngModel" size="17">
+                <div class="alert alert-danger" role="alert" *ngIf="username.errors && f.submitted">
+                    Username is required!
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <label for="password" class="col-fixed" style="width:100px">Password</label>
+            <div class="col">
+                <input id="password" type="password" pPassword name="password" [(ngModel)]="form.password" required
+                    #password="ngModel" [feedback]="false"
+                    style="padding: 1px 2px; border-radius: 0; font-size: 13.3333px;" size="20">
+                <div class="alert alert-danger" role="alert" *ngIf="password.errors && f.submitted">
+                    <div *ngIf="password.errors['required']">Password is required</div>
+                </div>
+            </div>
+        </div>
+
+        <button pButton label="Login" [disabled]="f.invalid"></button>
+        <div style="margin-top: 0.5rem;" *ngIf="f.submitted && isLoginFailed">
+            {{ errorMessage }}
+        </div>
+    </form>
+</div>

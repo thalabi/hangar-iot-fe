@@ -15,10 +15,16 @@ import { DropdownModule } from 'primeng/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 import { StatusComponent } from './status/status.component';
-import { myRxStompConfig } from './my-rx-stomp.config';
-import { HomeComponent } from './home/home.component';
 import { Page1Component } from './page1/page1.component';
-
+import { LoginComponent } from './login/login.component';
+import { PasswordModule } from 'primeng/password';
+import { JwtInterceptorService } from './service/jwt-interceptor.service';
+import { MenuComponent } from './menu/menu.component';
+import { MenubarModule } from 'primeng/menubar';
+import { RxStompConfig } from './rx-stomp.config';
+import { SessionService } from './service/session.service';
+import { HttpErrorInterceptorService } from './service/http-error-interceptor.service';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
     declarations: [
@@ -26,18 +32,24 @@ import { Page1Component } from './page1/page1.component';
         DashboardComponent,
         Httpstatus404Component,
         StatusComponent,
-        HomeComponent,
         Page1Component,
+        LoginComponent,
+        MenuComponent,
     ],
     imports: [
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
         FormsModule,
-        SelectButtonModule, MessagesModule, MessageModule, ButtonModule, DropdownModule, BrowserAnimationsModule
+        SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
+        MenubarModule
     ],
     providers: [
-        { provide: InjectableRxStompConfig, useValue: myRxStompConfig },
+        MessageService,
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorService, multi: true },
+        //{ provide: InjectableRxStompConfig, useValue: myRxStompConfig },
+        { provide: InjectableRxStompConfig, useClass: RxStompConfig, deps: [SessionService] },
         { provide: RxStompService, useFactory: rxStompServiceFactory, deps: [InjectableRxStompConfig] }
     ],
     bootstrap: [AppComponent]

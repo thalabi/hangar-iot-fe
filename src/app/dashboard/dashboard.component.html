@@ -27,7 +27,7 @@
 
     <div class="formgroup-inline">
         <div class="field-radiobutton">
-            <label for="deviceNameForSensorData" class="font-bold" style="width:8.5rem;">Sensor data</label>
+            <label for="deviceNameForSensorData" class="font-bold" style="width:5.5rem;">Sensor data</label>
             <p-dropdown id="deviceNameForSensorData" [options]="deviceNameList" [(ngModel)]="deviceNameForSensorData"
                 placeholder="Select device" (onChange)="onSensorDataForDeviceName($event)" [showClear]="true">
             </p-dropdown>
@@ -81,8 +81,3 @@
         <button pButton type="button" label="Refresh" (click)="onRefresh($event)"></button>
     </div>
 </ng-container>
-
-<!-- <div>cabinHeaterMessage: {{cabinHeaterMessage}}</div>
-<div>tanisHeaterMessage: {{tanisHeaterMessage}}</div> -->
-
-<a [routerLink]="['/home']" style="text-decoration: none; color: #007ad9;">Home</a>

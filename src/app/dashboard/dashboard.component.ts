@@ -5,6 +5,7 @@ import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 import { delay, Subject, Subscription, takeUntil } from 'rxjs';
 import { RestService } from '../service/rest.service';
+import { SessionService } from '../service/session.service';
 import { Device } from './Device';
 import { DeviceNameRequest } from './DeviceNameRequest';
 import { DeviceResponse } from './DeviceResponse';
@@ -37,7 +38,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     constructor(
         private restService: RestService,
-        private rxStompService: RxStompService
+        private rxStompService: RxStompService,
+
+        private sessionService: SessionService
     ) { }
 
     ngOnInit(): void {
@@ -60,7 +63,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7
     private webSocketConnectAndSubscribe(): void {
+        // let token: string = ''
+        // this.sessionService.tokenObservable.subscribe(message => token = message)
+        // console.log('token before setting in websocket header', token)
+        // this.rxStompService.configure(
+        //     {
+        //         connectHeaders: {
+        //             Authorization: `Bearer ${token}`
 
+        //         }
+        //     })
         this.rxStompService.activate()
 
         this.deviceNameList.forEach(deviceName => {
@@ -95,13 +107,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         console.log('retrieveData()')
 
         this.deviceList.forEach(device => {
-
-            // this.restService.getPowerState(device.name)
-            //     .subscribe((data: PowerStateResponse) => {
-            //         console.log('powerStateData', data)
-            //         this.cabinHeaterPowerState = data.POWER
-            //         device.powerState = data.POWER
-            //     });
 
             const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
             deviceNameRequest.deviceName = device.name
