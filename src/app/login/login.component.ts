@@ -3,8 +3,8 @@ import { RestService } from '../service/rest.service';
 import { SessionService } from '../service/session.service';
 import { CustomUserDetails } from './CustomUserDetails';
 import { Router } from '@angular/router';
-import { LoginRequest } from '../security/LoginRequest';
-import { LoginResponse } from '../security/LoginResponse';
+import { LoginRequest } from './LoginRequest';
+import { LoginResponse } from './LoginResponse';
 import { AuthenticationService } from '../security/authentication.service';
 import { MessageService } from 'primeng/api';
 

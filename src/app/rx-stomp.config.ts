@@ -39,19 +39,21 @@ export class RxStompConfig extends InjectableRxStompConfig {
             console.log(new Date(), msg);
         }
 
-        this.beforeConnect = (stompClient: any): Promise<void> => {
-            console.log('beforeConnect')
-            console.log('stompClient', stompClient)
-            return new Promise<void>((resolve, _) => {
-                let token: string = ''
-                this.sessionService.tokenObservable.subscribe(message => token = message)
-                console.log('token before setting in websocket header', token)
-                stompClient.connectHeaders = {
-                    Authorization: `Bearer ${token}`
+        // Below code does not work in setting the header
 
-                }
-                resolve();
-            })
-        }
+        // this.beforeConnect = (stompClient: any): Promise<void> => {
+        //     console.log('beforeConnect')
+        //     console.log('stompClient', stompClient)
+        //     return new Promise<void>((resolve, _) => {
+        //         let token: string = ''
+        //         this.sessionService.tokenObservable.subscribe(message => token = message)
+        //         console.log('token before setting in websocket header', token)
+        //         stompClient.connectHeaders = {
+        //             Authorization: `Bearer ${token}`
+
+        //         }
+        //         resolve();
+        //     })
+        // }
     }
 };

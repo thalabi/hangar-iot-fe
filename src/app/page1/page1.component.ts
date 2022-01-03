@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { Device } from '../dashboard/Device';
 import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
@@ -12,10 +13,12 @@ export class Page1Component implements OnInit {
     deviceNameList: Array<string> = []
     constructor(
         private restService: RestService,
+        private messageService: MessageService
     ) { }
 
     ngOnInit(): void {
         console.log('ngOnInit')
+        this.messageService.clear()
 
         this.restService.getDeviceList()
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {

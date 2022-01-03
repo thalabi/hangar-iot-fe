@@ -5,8 +5,8 @@ import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { HttpErrorInterceptorService } from '../service/http-error-interceptor.service';
 //import { ConfigService } from '../service/config.service';
-import { LoginRequest } from './LoginRequest';
-import { LoginResponse } from './LoginResponse';
+import { LoginRequest } from '../login/LoginRequest';
+import { LoginResponse } from '../login/LoginResponse';
 
 @Injectable({
     providedIn: 'root'

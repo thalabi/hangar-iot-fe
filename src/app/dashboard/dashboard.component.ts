@@ -3,6 +3,7 @@ import { waitForAsync } from '@angular/core/testing';
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
+import { MessageService } from 'primeng/api';
 import { delay, Subject, Subscription, takeUntil } from 'rxjs';
 import { RestService } from '../service/rest.service';
 import { SessionService } from '../service/session.service';
@@ -39,12 +40,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     constructor(
         private restService: RestService,
         private rxStompService: RxStompService,
-
-        private sessionService: SessionService
+        private messageService: MessageService
     ) { }
 
     ngOnInit(): void {
         console.log('ngOnInit')
+        this.messageService.clear()
 
         this.restService.getDeviceList()
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {
@@ -63,16 +64,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7
     private webSocketConnectAndSubscribe(): void {
-        // let token: string = ''
-        // this.sessionService.tokenObservable.subscribe(message => token = message)
-        // console.log('token before setting in websocket header', token)
-        // this.rxStompService.configure(
-        //     {
-        //         connectHeaders: {
-        //             Authorization: `Bearer ${token}`
-
-        //         }
-        //     })
         this.rxStompService.activate()
 
         this.deviceNameList.forEach(deviceName => {
@@ -129,12 +120,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         }
                     });
 
-            // this.restService.getSensorData(device.name)
-            //     .subscribe((data: SensorDataResponse) => {
-            //         console.log('sensorData', data)
-            //         this.deviceNameSensorDataMap[device.name] = data;
-            //         console.log('deviceNameSensorDataMap', this.deviceNameSensorDataMap)
-            //     });
         });
     }
 
@@ -148,7 +133,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .subscribe(
                 {
                     complete: () => {
-                        //                    this.messageService.add({ severity: 'info', summary: '200', detail: 'Your password has been reset. Please click the link below to login.' })
                         const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
                         deviceNameRequest.deviceName = deviceName
                         this.restService.triggerSensorData(deviceNameRequest)
@@ -162,16 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                                 });
 
                     },
-                    // error: (err: HttpErrorResponse) => {
-                    //     console.error(err)
-                    //     if (err.status === 400) { // Could not find a user with this email
-                    //         this.messageService.add({ severity: 'error', summary: err.status.toString(), detail: err.error })
-                    //     } else {
-                    //         this.messageService.add({ severity: 'error', summary: err.status.toString(), detail: 'Server error. Please contact support.' })
-                    //     }
-                    // }
                 });
-
     }
 
     onRefresh(event: any) {
