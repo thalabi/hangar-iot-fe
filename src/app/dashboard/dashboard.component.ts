@@ -57,7 +57,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 })
 
                 this.webSocketConnectAndSubscribe()
-                this.retrieveData()
+                // sleep for some time for subscriptions to be processed before triggering power state and sensor data
+                setTimeout(() => {
+                    console.log('sleep');
+                    this.retrieveData()
+                }, 1000);
+                //this.retrieveData()
             });
 
     }
@@ -159,5 +164,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.webSocketUnsubscribeAndDisconnect()
+    }
+
+    private sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
