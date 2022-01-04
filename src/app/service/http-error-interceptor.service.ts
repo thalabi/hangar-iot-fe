@@ -31,8 +31,9 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
                         // most likely token is expired
                         this.sessionService.setIsTokenExpired(true)
                         this.router.navigate(['/login']);
+                    } else {
+                        this.messageService.add({ severity: 'error', summary: message })
                     }
-                    this.messageService.add({ severity: 'error', summary: message })
                     return throwError(() => new Error(message));
                 })
             )

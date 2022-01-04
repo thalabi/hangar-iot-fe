@@ -37,11 +37,12 @@ export class LoginComponent implements OnInit {
         this.sessionService.setCustomUserDetails({} as CustomUserDetails);
 
         this.messageService.clear()
-        this.sessionService.isTokenExpiredSourceObservable.subscribe(message => {
-            let isTokenExpired = message
-            if (isTokenExpired) {
+        let displaySessionExpiredCount: number = 0;
+        this.sessionService.isTokenExpiredSourceObservable.subscribe(isTokenExpired => {
+            if (isTokenExpired && displaySessionExpiredCount === 0) {
                 this.messageService.add({ severity: 'warn', summary: 'Session expired' })
             }
+            displaySessionExpiredCount++;
         });
     }
 
