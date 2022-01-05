@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { waitForAsync } from '@angular/core/testing';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 import { MessageService } from 'primeng/api';
-import { delay, Subject, Subscription, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { RestService } from '../service/rest.service';
-import { SessionService } from '../service/session.service';
 import { Device } from './Device';
+import { DeviceAttributes } from './DeviceAttributes';
 import { DeviceNameRequest } from './DeviceNameRequest';
 import { DeviceResponse } from './DeviceResponse';
 import { PowerStateResponse } from './PowerStateResponse';
@@ -21,19 +19,8 @@ import { SensorDataResponse } from './SensorDataResponse';
 export class DashboardComponent implements OnInit, OnDestroy {
 
     powerStateOptions: any = [{ label: 'Off', value: 'OFF' }, { label: 'On', value: 'ON' }]
-    cabinHeaterPowerState: string = 'OFF'
-    tanisHeaterPowerState: string = 'OFF'
-    pingResponse: any;
 
-    deviceNameList: Array<string> = []
-    deviceList: Array<Device> = []
-    deviceNameForSensorData: string = ''
-    deviceNameSensorDataMap: Record<string, SensorDataResponse> = {} as any;
-    deviceNamePowerStateMap: Record<string, PowerStateResponse> = {} as any;
-
-    //id: any
-    cabinHeaterMessage: string | undefined;
-    tanisHeaterMessage: string | undefined;
+    deviceAttributesMap: Record<string, DeviceAttributes> = {} as any;
 
     topicSubscriptionArray: Array<Subscription> = []
 
@@ -51,9 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {
                 console.log('deviceResponseList', deviceResponseList)
                 deviceResponseList.forEach(deviceResponse => {
-                    let device: Device = { name: deviceResponse.name, description: deviceResponse.description }
-                    this.deviceList.push(device)
-                    this.deviceNameList.push(device.name)
+                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, powerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse }
                 })
 
 
@@ -67,6 +52,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     // console.log('connected?', this.rxStompService.connected())
                     this.webSocketConnectAndSubscribe()
                     this.retrieveData()
+
+                    console.log('this.deviceAttributesMap', this.deviceAttributesMap)
                 })
 
             });
@@ -77,15 +64,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private webSocketConnectAndSubscribe(): void {
         // this.rxStompService.activate()
 
-        this.deviceNameList.forEach(deviceName => {
+        Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
             // subscribe to POWER state topic
             console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/POWER`)
             let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/stat/${deviceName}/POWER`).subscribe((message: Message) => {
                 console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
-                // TODO load power state into a map
-                this.deviceNamePowerStateMap[deviceName] = JSON.parse(message.body);
+                this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
             });
             this.topicSubscriptionArray.push(powerTopicSubscription)
 
@@ -93,7 +79,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
             let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`).subscribe((message: Message) => {
                 console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
-                this.deviceNameSensorDataMap[deviceName] = JSON.parse(message.body);
+                this.deviceAttributesMap[deviceName].sensorData = JSON.parse(message.body);
             });
             this.topicSubscriptionArray.push(sensorTopSubscription)
 
@@ -108,10 +94,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private retrieveData() {
         console.log('retrieveData()')
 
-        this.deviceList.forEach(device => {
+        Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
             const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
-            deviceNameRequest.deviceName = device.name
+            deviceNameRequest.deviceName = deviceName
             this.restService.triggerPowerState(deviceNameRequest)
                 .subscribe(
                     {
@@ -134,7 +120,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
     }
 
-    cabinHeaterPowerStateToggle(deviceName: string) {
+    toggleDevicePower(deviceName: string) {
         console.log('cabinHeaterPowerStateToggle')
         console.log('deviceName', deviceName)
         const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;

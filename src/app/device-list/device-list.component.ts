@@ -6,10 +6,10 @@ import { RestService } from '../service/rest.service';
 
 @Component({
     selector: 'app-page1',
-    templateUrl: './page1.component.html',
-    styleUrls: ['./page1.component.css']
+    templateUrl: './device-list.component.html',
+    styleUrls: ['./device-list.component.css']
 })
-export class Page1Component implements OnInit {
+export class DeviceListComponent implements OnInit {
     deviceNameList: Array<string> = []
     constructor(
         private restService: RestService,

@@ -26,7 +26,7 @@ export class MenuComponent implements OnInit {
                         label: 'Dashboard', routerLink: ['/home']
                     },
                     {
-                        label: 'Devices', routerLink: ['/devices']
+                        label: 'Devices', routerLink: ['/deviceList']
                     },
                     // {
                     //     label: 'File Transfer',

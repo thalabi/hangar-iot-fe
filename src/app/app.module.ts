@@ -15,7 +15,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
 import { StatusComponent } from './status/status.component';
-import { Page1Component } from './page1/page1.component';
 import { LoginComponent } from './login/login.component';
 import { PasswordModule } from 'primeng/password';
 import { JwtInterceptorService } from './service/jwt-interceptor.service';
@@ -25,6 +24,7 @@ import { RxStompConfig } from './rx-stomp.config';
 import { SessionService } from './service/session.service';
 import { HttpErrorInterceptorService } from './service/http-error-interceptor.service';
 import { MessageService } from 'primeng/api';
+import { DeviceListComponent } from './device-list/device-list.component';
 
 @NgModule({
     declarations: [
@@ -32,9 +32,9 @@ import { MessageService } from 'primeng/api';
         DashboardComponent,
         Httpstatus404Component,
         StatusComponent,
-        Page1Component,
         LoginComponent,
         MenuComponent,
+        DeviceListComponent,
     ],
     imports: [
         BrowserModule,
