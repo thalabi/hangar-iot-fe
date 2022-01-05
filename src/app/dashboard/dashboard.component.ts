@@ -56,27 +56,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     this.deviceNameList.push(device.name)
                 })
 
-                this.webSocketConnectAndSubscribe()
-                // sleep for some time for subscriptions to be processed before triggering power state and sensor data
-                setTimeout(() => {
-                    console.log('sleep');
+
+                this.rxStompService.activate()
+
+                //console.log('connected?', this.rxStompService.connected())
+
+                // wait for connection to be established before subscribing to topics
+                this.rxStompService.connected$.subscribe(rsStompState => {
+                    // console.log('rsStompState', rsStompState)
+                    // console.log('connected?', this.rxStompService.connected())
+                    this.webSocketConnectAndSubscribe()
                     this.retrieveData()
-                }, 1000);
-                //this.retrieveData()
+                })
+
             });
 
     }
 
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7
     private webSocketConnectAndSubscribe(): void {
-        this.rxStompService.activate()
+        // this.rxStompService.activate()
 
         this.deviceNameList.forEach(deviceName => {
 
             // subscribe to POWER state topic
+            console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/POWER`)
             let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/stat/${deviceName}/POWER`).subscribe((message: Message) => {
                 console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
-                //this.cabinHeaterMessage = message.body;
 
                 // TODO load power state into a map
                 this.deviceNamePowerStateMap[deviceName] = JSON.parse(message.body);
@@ -84,9 +90,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.topicSubscriptionArray.push(powerTopicSubscription)
 
             // subscribe to SENSOR telemetry topic
+            console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
             let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`).subscribe((message: Message) => {
                 console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
-                //this.cabinHeaterMessage = message.body;
                 this.deviceNameSensorDataMap[deviceName] = JSON.parse(message.body);
             });
             this.topicSubscriptionArray.push(sensorTopSubscription)

@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit {
                         this.sessionService.setToken(this.loginResponse.token);
                         this.sessionService.setCustomUserDetails(this.loginResponse.customUserDetails);
                         this.sessionService.setIsAuthenticated(true);
+                        this.sessionService.setIsTokenExpired(false);
                         this.router.navigate(['/home']);
                     },
                     error: (error: Error) => {

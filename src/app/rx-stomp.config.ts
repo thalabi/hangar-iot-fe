@@ -4,12 +4,12 @@ import { SessionService } from './service/session.service';
 
 
 export class RxStompConfig extends InjectableRxStompConfig {
-    constructor(private sessionService: SessionService) {
+    constructor(/*private sessionService: SessionService*/) {
         super()
 
-        let token: string = ''
-        this.sessionService.tokenObservable.subscribe(message => token = message)
-        console.log('token before setting in websocket header', token)
+        // let token: string = ''
+        // this.sessionService.tokenObservable.subscribe(message => token = message)
+        // console.log('token before setting in websocket header', token)
 
 
         // Which server?
