@@ -25,6 +25,7 @@ import { SessionService } from './service/session.service';
 import { HttpErrorInterceptorService } from './service/http-error-interceptor.service';
 import { MessageService } from 'primeng/api';
 import { DeviceListComponent } from './device-list/device-list.component';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
     declarations: [
@@ -42,7 +43,7 @@ import { DeviceListComponent } from './device-list/device-list.component';
         HttpClientModule,
         FormsModule,
         SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
-        MenubarModule
+        MenubarModule, TooltipModule
     ],
     providers: [
         MessageService,

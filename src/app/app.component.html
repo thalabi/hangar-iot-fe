@@ -2,3 +2,10 @@
 <app-menu></app-menu>
 <div style="margin-top: 1rem;"></div>
 <router-outlet></router-outlet>
+
+<div style="margin-top: 1rem; text-align: center">
+    <small style="color: darkgrey">&copy; Copyright 2022 Kernel Development &amp; Consulting
+        <span pTooltip="BE {{serverBuildInfo}}<br/>FE {{clientBuildInfo}}" [escape]="false"
+            tooltipPosition="top">(Version Info)</span>
+    </small>
+</div>
