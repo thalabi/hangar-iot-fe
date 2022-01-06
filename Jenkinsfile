@@ -28,7 +28,7 @@ pipeline {
                 cd src/environments
                 ls -l
                 cat *
-                NOW=$(date -u +"%F %T")
+                NOW=$(date -u +"%F %H:%M UTC")
                 echo $NOW
                 cat environment.prod.ts
                 sed -i -e "s/@buildVersion@/${BRANCH_NAME}/" \
