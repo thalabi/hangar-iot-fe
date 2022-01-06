@@ -33,7 +33,7 @@ pipeline {
                 cat environment.prod.ts
                 sed -i -e "s/@buildVersion@/${BRANCH_NAME}/" \
                     -e "s/@buildTimestamp@/${NOW}/" \
-                    -e "s/<hostname>/${HANGAR_IOT_TARGET_HOSTNAME}/" \
+                    -e "s/@hostname@/${HANGAR_IOT_TARGET_HOSTNAME}/" \
                     environment.prod.ts
                 cat environment.prod.ts
                 ls -l
