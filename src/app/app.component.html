@@ -4,8 +4,15 @@
 <router-outlet></router-outlet>
 
 <div style="margin-top: 1rem; text-align: center">
-    <small style="color: darkgrey">&copy; Copyright 2022 Kernel Development &amp; Consulting
-        <span pTooltip="BE {{serverBuildInfo}}<br/>FE {{clientBuildInfo}}" [escape]="false"
-            tooltipPosition="top">(Version Info)</span>
+    <small style="color: darkgrey">&copy; Copyright 2022 Kernel Development &amp; Consulting Inc
+        <a (click)="buildInfo.toggle($event)" class="underline-dotted">(Version Info)</a>
     </small>
 </div>
+
+
+<p-overlayPanel [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" #op [dismissable]="true"
+    [showCloseIcon]="true" #buildInfo>
+    <ng-template pTemplate>
+        BE {{serverBuildInfo}}<br />FE {{clientBuildInfo}}
+    </ng-template>
+</p-overlayPanel>
