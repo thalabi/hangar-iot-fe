@@ -4,10 +4,11 @@ pipeline {
         maven 'Maven-3.8.4' 
         jdk 'jdk-17' 
     }
-    //environment {
-        // Add path nodejs and npm
-        //PATH = '/usr/local/node-v16.13.1-linux-x64/bin:${env.PATH}'
-    //}
+
+    environment {
+        HANGAR_IOT_TARGET_HOSTNAME = credentials('HANGAR_IOT_TARGET_HOSTNAME')
+    }
+
     stages {
 
         stage ('Initialize') {
@@ -32,7 +33,7 @@ pipeline {
                 cat environment.prod.ts
                 sed -i -e "s/@buildVersion@/${BRANCH_NAME}/" \
                     -e "s/@buildTimestamp@/${NOW}/" \
-                    -e "s/localhost/kerneldc.com/" \
+                    -e "s/<hostname>/${HANGAR_IOT_TARGET_HOSTNAME}/" \
                     environment.prod.ts
                 cat environment.prod.ts
                 ls -l
