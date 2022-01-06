@@ -26,6 +26,7 @@ import { HttpErrorInterceptorService } from './service/http-error-interceptor.se
 import { MessageService } from 'primeng/api';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel'
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
     declarations: [
@@ -42,7 +43,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel'
         AppRoutingModule,
         HttpClientModule,
         FormsModule,
-        SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
+        InputTextModule, SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
         MenubarModule, OverlayPanelModule
     ],
     providers: [
