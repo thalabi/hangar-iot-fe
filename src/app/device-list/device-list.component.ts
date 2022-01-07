@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { Device } from '../dashboard/Device';
 import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
 
@@ -11,6 +10,7 @@ import { RestService } from '../service/rest.service';
 })
 export class DeviceListComponent implements OnInit {
     deviceNameList: Array<string> = []
+    deviceList: Array<DeviceResponse> = []
     constructor(
         private restService: RestService,
         private messageService: MessageService
@@ -23,6 +23,7 @@ export class DeviceListComponent implements OnInit {
         this.restService.getDeviceList()
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {
                 console.log('deviceResponseList', deviceResponseList)
+                this.deviceList = deviceResponseList
                 deviceResponseList.forEach(deviceResponse => {
                     this.deviceNameList.push(deviceResponse.name)
                 })

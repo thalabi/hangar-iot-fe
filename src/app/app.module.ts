@@ -27,6 +27,8 @@ import { MessageService } from 'primeng/api';
 import { DeviceListComponent } from './device-list/device-list.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel'
 import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { BooleanPipe } from './boolean.pipe'
 
 @NgModule({
     declarations: [
@@ -37,6 +39,7 @@ import { InputTextModule } from 'primeng/inputtext';
         LoginComponent,
         MenuComponent,
         DeviceListComponent,
+        BooleanPipe,
     ],
     imports: [
         BrowserModule,
@@ -44,7 +47,7 @@ import { InputTextModule } from 'primeng/inputtext';
         HttpClientModule,
         FormsModule,
         InputTextModule, SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
-        MenubarModule, OverlayPanelModule
+        MenubarModule, OverlayPanelModule, TableModule
     ],
     providers: [
         MessageService,

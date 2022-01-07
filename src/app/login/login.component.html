@@ -2,7 +2,7 @@
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm">
 
         <div class="grid field">
-            <label for="username" class="col-fixed" style="width:100px">Username</label>
+            <label for="username" class="col-fixed" style="width:4.5rem;">Username</label>
             <div class="col">
                 <input id="username" type="text" pInputText name="username" [(ngModel)]="form.username" required
                     #username="ngModel">
@@ -14,7 +14,7 @@
         </div>
 
         <div class="grid field">
-            <label for="password" class="col-fixed" style="width:100px">Password</label>
+            <label for="password" class="col-fixed" style="width:4.5rem;">Password</label>
             <div class="col">
                 <input id="password" type="password" pPassword name="password" [(ngModel)]="form.password" required
                     #password="ngModel" [feedback]="false">

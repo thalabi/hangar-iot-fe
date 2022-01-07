@@ -4,7 +4,8 @@
         <div class="field-radiobutton" *ngFor="let entry of deviceAttributesMap | keyvalue">
             <ng-container *ngIf="deviceAttributesMap[entry.key]?.powerState?.POWER">
 
-                <label for="deviceState" class="font-bold">{{deviceAttributesMap[entry.key].description}}</label>
+                <label for="deviceState" class="font-bold"
+                    style="width:5.5rem;">{{deviceAttributesMap[entry.key].description}}</label>
 
                 <p-selectButton id="deviceState" [options]="powerStateOptions"
                     [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label"

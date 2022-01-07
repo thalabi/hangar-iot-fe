@@ -4,7 +4,6 @@ import { Message } from '@stomp/stompjs';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { RestService } from '../service/rest.service';
-import { Device } from './Device';
 import { DeviceAttributes } from './DeviceAttributes';
 import { DeviceNameRequest } from './DeviceNameRequest';
 import { DeviceResponse } from './DeviceResponse';
