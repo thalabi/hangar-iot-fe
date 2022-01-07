@@ -5,7 +5,7 @@
             <ng-container *ngIf="deviceAttributesMap[entry.key]?.powerState?.POWER">
 
                 <label for="deviceState" class="font-bold col-fixed"
-                    style="width: 7rem;">{{deviceAttributesMap[entry.key].description}}</label>
+                    style="width: 7.5rem;">{{deviceAttributesMap[entry.key].description}}</label>
 
                 <p-selectButton id="deviceState" [options]="powerStateOptions"
                     [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label"
@@ -20,7 +20,7 @@
     <div class="formgroup-inline">
         <div class="field-radiobutton">
 
-            <label for="sensorDataSelection" class="font-bold col-fixed" style="width: 7rem;">Sensor data</label>
+            <label for="sensorDataSelection" class="font-bold col-fixed" style="width: 7.5rem;">Sensor data</label>
 
             <p-dropdown id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
                 optionLabel="value.description" optionValue="key" placeholder=" Select device"
