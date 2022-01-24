@@ -1,0 +1,50 @@
+<div class="formgroup-inline">
+    <div class="field-radiobutton">
+
+        <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Device</label>
+
+        <p-dropdown id="deviceSelection" [options]="deviceResponseList" [(ngModel)]="selectedDevice"
+            optionLabel="description" optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)"
+            [showClear]="true">
+        </p-dropdown>
+
+    </div>
+</div>
+
+<ng-container *ngIf="selectedDevice">
+    <div class="formgroup-inline">
+        <div class="field-radiobutton">
+
+            <label for="commandSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Command</label>
+
+            <p-dropdown id="commandSelection" [options]="commandList" [(ngModel)]="selectedCommand"
+                placeholder="Select command" (onChange)="onSelectCommand($event)" [showClear]="true">
+            </p-dropdown>
+
+        </div>
+    </div>
+
+    <ng-container *ngIf="selectedCommand">
+        <div class="formgroup-inline">
+            <div class="field-radiobutton">
+
+                <label for="commandArguments" class="font-bold col-fixed p-component"
+                    style="width: 7rem;">Arguments(s)</label>
+                <input id="commandArguments" type="text" pInputText name="commandArguments" [(ngModel)]="arguments">
+
+            </div>
+        </div>
+
+        <div style="margin-left: 0.5rem;">
+            <button pButton type="button" label="Submit" (click)="onSubmit($event)"></button>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="commandResult">
+        <p-fieldset legend="Result">
+            <pre>{{commandResult | json}}</pre>
+        </p-fieldset>
+    </ng-container>
+
+
+</ng-container>

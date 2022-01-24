@@ -28,14 +28,13 @@ export class MenuComponent implements OnInit {
                     {
                         label: 'Devices', routerLink: ['/deviceList']
                     },
-                    // {
-                    //     label: 'File Transfer',
-                    //     items: [
-                    //         { label: 'Plain', routerLink: ['/fileTransfer'] },
-                    //         { label: 'PrimeNG', routerLink: ['/fileTransferPrimeNg'] },
-
-                    //     ]
-                    // },
+                    {
+                        label: 'Admin',
+                        items: [
+                            { label: 'Command', routerLink: ['/executeCommand'] },
+                            { label: 'Timers', routerLink: ['/timers'] }
+                        ]
+                    },
                     {
                         icon: 'pi pi-user',
                         items: [

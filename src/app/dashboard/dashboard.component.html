@@ -4,12 +4,12 @@
         <div class="field-radiobutton" *ngFor="let entry of deviceAttributesMap | keyvalue">
             <ng-container *ngIf="deviceAttributesMap[entry.key]?.powerState?.POWER">
 
-                <label for="deviceState" class="font-bold col-fixed"
+                <label for="deviceState" class="font-bold col-fixed p-component"
                     style="width: 8rem;">{{deviceAttributesMap[entry.key].description}}</label>
 
                 <p-selectButton id="deviceState" [options]="powerStateOptions"
                     [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label"
-                    optionValue="value" (onChange)="toggleDevicePower(entry.key)">
+                    optionValue="value" (onChange)="toggleDevicePower($event, entry.key)">
                 </p-selectButton>
 
             </ng-container>
@@ -20,7 +20,8 @@
     <div class="formgroup-inline">
         <div class="field-radiobutton">
 
-            <label for="sensorDataSelection" class="font-bold col-fixed" style="width: 8rem;">Sensor data</label>
+            <label for="sensorDataSelection" class="font-bold col-fixed p-component" style="width: 8rem;">Sensor
+                data</label>
 
             <p-dropdown id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
                 optionLabel="value.description" optionValue="key" placeholder=" Select device"
@@ -31,45 +32,53 @@
     </div>
 
     <div class="form-grid" style="margin-left: 0.5rem;"
-        *ngIf="deviceAttributesMap[selectedDeviceName.value]?.sensorData?.ENERGY">
+        *ngIf="selectedDeviceName.value && ! deviceAttributesMap[selectedDeviceName.value]?.sensorData?.ENERGY">
+        <div class="grid">
+            <div class="col" style="font-style: italic;">Device does not provide telemetry or no data received.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-grid" style="margin-left: 1rem;"
+        *ngIf="selectedDeviceName.value && deviceAttributesMap[selectedDeviceName.value]?.sensorData?.ENERGY">
 
         <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Time</div>
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Time</div>
             <div class="col">
                 {{deviceAttributesMap[selectedDeviceName.value].sensorData.Time | date:'medium'}}
             </div>
         </div>
         <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Voltage</div>
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Voltage</div>
             <div class="col">
                 {{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Voltage}} V
             </div>
         </div>
         <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Current</div>
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Current</div>
             <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Current}} A</div>
         </div>
         <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Power</div>
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Power</div>
             <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Power}} W</div>
         </div>
         <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Energy yesterday</div>
-            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Yesterday}} kWh</div>
-        </div>
-        <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Energy today</div>
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy today</div>
             <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Today}} kWh</div>
         </div>
         <div class="grid">
-            <div class="col-fixed font-bold" style="width:9rem;">Energy total</div>
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy yesterday</div>
+            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Yesterday}} kWh</div>
+        </div>
+        <div class="grid">
+            <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy total</div>
             <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Total}} kWh (since
                 {{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.TotalStartTime | date:'medium'}})
             </div>
         </div>
     </div>
 
-    <div style="margin-left: 0.5rem;">
+    <div style="margin-left: 1rem; margin-top: 0.5rem;">
         <button pButton type="button" label="Refresh" (click)="onRefresh($event)"></button>
     </div>
 </ng-container>

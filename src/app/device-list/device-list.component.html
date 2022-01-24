@@ -8,6 +8,11 @@
             <th>Telemetry</th>
             <th>Make</th>
             <th>Model</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>TZ</th>
+            <th>Time DST</th>
+            <th>Time STD</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-device>
@@ -19,6 +24,11 @@
             <td>{{device.telemetry | boolean}}</td>
             <td>{{device.iotDeviceMake}}</td>
             <td>{{device.iotDeviceModel}}</td>
+            <td>{{device.config.latitudeDegrees}}</td>
+            <td>{{device.config.longitudeDegrees}}</td>
+            <td>{{device.config.timezoneOffset}}</td>
+            <td>{{device.config.timeDst}}</td>
+            <td>{{device.config.timeStd}}</td>
         </tr>
     </ng-template>
 </p-table>

@@ -6,4 +6,11 @@ export interface DeviceResponse {
     telemetry: boolean
     iotDeviceMake: string
     iotDeviceModel: string
+    config: {
+        latitudeDegrees: number
+        longtitudeDegrees: number
+        timezoneOffset: string
+        timeDst: string
+        timeStd: string
+    }
 }

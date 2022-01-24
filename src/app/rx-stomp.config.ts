@@ -35,9 +35,9 @@ export class RxStompConfig extends InjectableRxStompConfig {
         // Will log diagnostics on console
         // It can be quite verbose, not recommended in production
         // Skip this key to stop logging to console
-        this.debug = (msg: string): void => {
-            console.log(new Date(), msg);
-        }
+        // this.debug = (msg: string): void => {
+        //     console.log(new Date(), msg);
+        // }
 
         // Below code does not work in setting the header
 

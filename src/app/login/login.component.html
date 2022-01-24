@@ -16,8 +16,8 @@
         <div class="grid field">
             <label for="password" class="col-fixed" style="width:5.5rem;">Password</label>
             <div class="col">
-                <input id="password" type="password" pPassword name="password" [(ngModel)]="form.password" required
-                    #password="ngModel" [feedback]="false">
+                <p-password id="password" name="password" [(ngModel)]="form.password" required [feedback]="false"
+                    [toggleMask]="true" #password="ngModel"></p-password>
                 <div class="p-error" style="margin-top: 0.3rem;"
                     *ngIf="password.invalid && (password.dirty || password.touched)">
                     Password is required

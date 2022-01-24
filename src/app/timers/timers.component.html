@@ -1,0 +1,112 @@
+<div class="formgroup-inline">
+    <div class="field-radiobutton">
+
+        <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 4rem;">Device</label>
+
+        <p-dropdown id="deviceSelection" [options]="deviceResponseList" [(ngModel)]="selectedDevice"
+            optionLabel="description" optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)"
+            [showClear]="true">
+        </p-dropdown>
+
+    </div>
+</div>
+<ng-container *ngIf="selectedDevice">
+    <div class="formgroup-inline">
+        <div class="field-radiobutton">
+
+            <label for="enableDisableTimers" class="font-bold col-fixed p-component" style="width: 4rem;">Timers</label>
+
+            <p-selectButton id="enableDisableTimers" [options]="enableDisableTimers" [(ngModel)]="timersEnable"
+                optionLabel="label" optionValue="value">
+            </p-selectButton>
+
+        </div>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="timerTable.length > 0">
+    <div style="margin-left: 1rem;">
+        <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm" responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align:center"></th>
+                    <th style="text-align:center">Enabled</th>
+                    <th style="text-align:center">Time</th>
+                    <th style="text-align:center">Days</th>
+                    <th style="text-align:center">Power</th>
+                    <th style="width:4rem"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-timer let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="timer">
+                    <td style="text-align:center">
+                        {{timer.id}}
+                    </td>
+                    <td style="text-align:center">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="yesNo" [(ngModel)]="timer.enableUi">
+                                </p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{timer.enableUi}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td style="text-align:center">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="hours" [(ngModel)]="timer.timeHh">
+                                </p-dropdown>:<p-dropdown [options]="minutes" [(ngModel)]="timer.timeMm">
+                                </p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{timer.timeHh}}:{{timer.timeMm}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td style="text-align:center">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <!-- <input pInputText type="text" [(ngModel)]="timer.days" required style="width: 5rem;"> -->
+                                <p-multiSelect [options]="daysOfWeek" [(ngModel)]="timer.daysUi"
+                                    defaultLabel="Select Day(s)" optionLabel="name" optionValue="code"
+                                    selectedItemsLabel="{0} items selected"></p-multiSelect>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{timer.daysUi}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td style="text-align:center">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="onOff" [(ngModel)]="timer.actionUi">
+                                </p-dropdown>
+
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{timer.actionUi}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td style="text-align:center">
+                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                            (click)="onRowEditInit(timer)" class="p-button-rounded p-button-text"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                            (click)="onRowEditSave(timer)"
+                            class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                            (click)="onRowEditCancel(timer, ri)"
+                            class="p-button-rounded p-button-text p-button-danger"></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <div style="margin-left: 1rem; margin-top: 0.5rem;">
+        <button pButton type="button" label="Save" (click)="onSave($event)" [disabled]="editingFlag"></button>
+    </div>
+
+</ng-container>

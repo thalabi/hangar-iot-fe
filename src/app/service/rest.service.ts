@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 import { DeviceNameRequest } from '../dashboard/DeviceNameRequest';
 import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { environment } from '../../environments/environment';
+import { CommandResponse } from '../execute-command/CommandResponse';
+import { FreeFormatCommandRequest } from '../execute-command/FreeFormatCommandRequest';
+import { TimersRequestResponse } from '../timers/TimersRequestResponse';
+import { TogglePowerRequest } from '../dashboard/TogglePowerRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -23,19 +27,11 @@ export class RestService {
         this.serviceUrl = environment.serviceUrl
     }
 
-    // getPing() {
-    //     return this.http.get(`${this.serviceUrl}/hangarIotController/ping`/*, { headers: this.jsonHeader }*/);
-    // }
-
     getDeviceList(): Observable<Array<DeviceResponse>> {
         return this.http.get<Array<DeviceResponse>>(`${this.serviceUrl}/hangarIotController/getDeviceList`)
     }
 
-    // getPowerState(deviceName: string): Observable<PowerStateResponse> {
-    //     return this.http.get<PowerStateResponse>(`${this.serviceUrl}/hangarIotController/getPowerState?deviceName=${deviceName}`)
-    // }
-
-    togglePower(deviceNameRequest: DeviceNameRequest): Observable<void> {
+    togglePower(deviceNameRequest: TogglePowerRequest): Observable<void> {
         console.log('RestService.togglePower')
         return this.http.post<void>(`${this.serviceUrl}/hangarIotController/togglePower`, deviceNameRequest)
     }
@@ -49,8 +45,21 @@ export class RestService {
         console.log('RestService.triggerSensorData')
         return this.http.post<void>(`${this.serviceUrl}/hangarIotController/triggerSensorData`, deviceNameRequest)
     }
-    // getSensorData(deviceName: string): Observable<SensorDataResponse> {
-    //     return this.http.get<SensorDataResponse>(`${this.serviceUrl}/hangarIotController/getSensorData?deviceName=${deviceName}`)
-    // }
 
+    getCommandList(): Observable<Array<CommandResponse>> {
+        return this.http.get<Array<CommandResponse>>(`${this.serviceUrl}/hangarIotController/getCommandList`)
+    }
+
+    executeFreeFormatCommand(freeFormatCommandRequest: FreeFormatCommandRequest): Observable<string> {
+        console.log('RestService.triggerSensorData')
+        return this.http.post<string>(`${this.serviceUrl}/hangarIotController/executeFreeFormatCommand`, freeFormatCommandRequest)
+    }
+
+    getTimers(deviceName: string): Observable<TimersRequestResponse> {
+        return this.http.get<TimersRequestResponse>(`${this.serviceUrl}/hangarIotController/getTimers?deviceName=${deviceName}`)
+    }
+
+    setTimers(timersRequestResponse: TimersRequestResponse): Observable<void> {
+        return this.http.post<void>(`${this.serviceUrl}/hangarIotController/setTimers`, timersRequestResponse)
+    }
 }

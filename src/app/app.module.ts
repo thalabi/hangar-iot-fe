@@ -28,7 +28,11 @@ import { DeviceListComponent } from './device-list/device-list.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel'
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
-import { BooleanPipe } from './boolean.pipe'
+import { BooleanPipe } from './boolean.pipe';
+import { ExecuteCommandComponent } from './execute-command/execute-command.component';
+import { FieldsetModule } from 'primeng/fieldset';
+import { TimersComponent } from './timers/timers.component';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
     declarations: [
@@ -40,6 +44,8 @@ import { BooleanPipe } from './boolean.pipe'
         MenuComponent,
         DeviceListComponent,
         BooleanPipe,
+        ExecuteCommandComponent,
+        TimersComponent,
     ],
     imports: [
         BrowserModule,
@@ -47,7 +53,7 @@ import { BooleanPipe } from './boolean.pipe'
         HttpClientModule,
         FormsModule,
         InputTextModule, SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
-        MenubarModule, OverlayPanelModule, TableModule
+        MenubarModule, OverlayPanelModule, TableModule, FieldsetModule, MultiSelectModule
     ],
     providers: [
         MessageService,
