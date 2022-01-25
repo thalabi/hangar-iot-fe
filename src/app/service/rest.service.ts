@@ -59,7 +59,7 @@ export class RestService {
         return this.http.get<TimersRequestResponse>(`${this.serviceUrl}/hangarIotController/getTimers?deviceName=${deviceName}`)
     }
 
-    setTimers(timersRequestResponse: TimersRequestResponse): Observable<void> {
-        return this.http.post<void>(`${this.serviceUrl}/hangarIotController/setTimers`, timersRequestResponse)
+    setTimers(timersRequestResponse: TimersRequestResponse): Observable<string> {
+        return this.http.post<string>(`${this.serviceUrl}/hangarIotController/setTimers`, timersRequestResponse)
     }
 }

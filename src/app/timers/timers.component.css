@@ -1,3 +1,5 @@
 :host ::ng-deep .p-datatable table {
-    min-width: 0;
+    /*min-width: 0;*/
+    table-layout: auto;
+    width: 100%;
 }

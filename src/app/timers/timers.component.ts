@@ -13,6 +13,7 @@ import { TimersRequestResponse } from './TimersRequestResponse';
 export class TimersComponent implements OnInit {
 
     deviceResponseList: Array<DeviceResponse> = {} as Array<DeviceResponse>;
+    timersRequestResponse: TimersRequestResponse = {} as TimersRequestResponse
     selectedDevice: string = ''
     timersEnable: string = ''
     timerTable: Array<Timer> = []
@@ -48,15 +49,16 @@ export class TimersComponent implements OnInit {
     onSelectDevice(event: any) {
         console.log('this.selectedDevice', this.selectedDevice)
         this.restService.getTimers(this.selectedDevice)
-            .subscribe((timersRequestResponse: TimersRequestResponse) => {
-                console.log('timersRequestResponse', timersRequestResponse)
-                this.transformTimersResponse(timersRequestResponse)
+            .subscribe((response: TimersRequestResponse) => {
+                this.timersRequestResponse = response
+                console.log('timersRequestResponse', this.timersRequestResponse)
+                this.transformTimersResponse(this.timersRequestResponse)
             });
 
     }
 
     onRowEditInit(timer: Timer) {
-        this.savedTimers[timer.id] = timer
+        this.savedTimers[timer.id] = { ...timer }
         this.editingFlag++
 
     }
@@ -95,53 +97,151 @@ export class TimersComponent implements OnInit {
                 timerTable.repeat = 0
             }
         })
-        const timersRequestResponse: TimersRequestResponse = {} as TimersRequestResponse
-        timersRequestResponse.deviceName = this.selectedDevice;
-        timersRequestResponse.timers = this.timersEnable
-        timersRequestResponse.timer1 = this.timerTable[0]
-        timersRequestResponse.timer2 = this.timerTable[1]
-        timersRequestResponse.timer3 = this.timerTable[2]
-        timersRequestResponse.timer4 = this.timerTable[3]
-        timersRequestResponse.timer5 = this.timerTable[4]
-        timersRequestResponse.timer6 = this.timerTable[5]
-        timersRequestResponse.timer7 = this.timerTable[6]
-        timersRequestResponse.timer8 = this.timerTable[7]
-        timersRequestResponse.timer9 = this.timerTable[8]
-        timersRequestResponse.timer10 = this.timerTable[9]
-        timersRequestResponse.timer11 = this.timerTable[10]
-        timersRequestResponse.timer12 = this.timerTable[11]
-        timersRequestResponse.timer13 = this.timerTable[12]
-        timersRequestResponse.timer14 = this.timerTable[13]
-        timersRequestResponse.timer15 = this.timerTable[14]
-        timersRequestResponse.timer16 = this.timerTable[15]
-        console.log('timersRequestResponse', timersRequestResponse)
+        this.timersRequestResponse.deviceName = this.selectedDevice;
 
-        this.restService.setTimers(timersRequestResponse)
-            .subscribe((response: any) => {
-                console.log('response', response)
-            })
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Timers updated' });
+        console.log('timersRequestResponse before', this.timersRequestResponse)
+        if (this.timersRequestResponse.timers !== this.timersEnable) {
+            this.timersRequestResponse.timers = this.timersEnable
+            this.timersRequestResponse.timersModified = true
+        }
+
+        console.log('this.timersRequestResponse.timer1', this.timersRequestResponse.timer1, 'this.timerTable[0]', this.timerTable[0])
+        if (!this.timerEqual(this.timersRequestResponse.timer1, this.timerTable[0])) {
+            this.timersRequestResponse.timer1 = this.timerTable[0]
+            this.timersRequestResponse.timer1Modified = true
+        } else {
+            this.timersRequestResponse.timer1Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer2, this.timerTable[1])) {
+            this.timersRequestResponse.timer2 = this.timerTable[1]
+            this.timersRequestResponse.timer2Modified = true
+        } else {
+            this.timersRequestResponse.timer2Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer3, this.timerTable[2])) {
+            this.timersRequestResponse.timer3 = this.timerTable[2]
+            this.timersRequestResponse.timer3Modified = true
+        } else {
+            this.timersRequestResponse.timer3Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer4, this.timerTable[3])) {
+            this.timersRequestResponse.timer4 = this.timerTable[3]
+            this.timersRequestResponse.timer4Modified = true
+        } else {
+            this.timersRequestResponse.timer4Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer5, this.timerTable[4])) {
+            this.timersRequestResponse.timer5 = this.timerTable[4]
+            this.timersRequestResponse.timer5Modified = true
+        } else {
+            this.timersRequestResponse.timer5Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer6, this.timerTable[5])) {
+            this.timersRequestResponse.timer6 = this.timerTable[5]
+            this.timersRequestResponse.timer6Modified = true
+        } else {
+            this.timersRequestResponse.timer6Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer7, this.timerTable[6])) {
+            this.timersRequestResponse.timer7 = this.timerTable[6]
+            this.timersRequestResponse.timer7Modified = true
+        } else {
+            this.timersRequestResponse.timer7Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer8, this.timerTable[7])) {
+            this.timersRequestResponse.timer8 = this.timerTable[7]
+            this.timersRequestResponse.timer8Modified = true
+        } else {
+            this.timersRequestResponse.timer8Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer9, this.timerTable[8])) {
+            this.timersRequestResponse.timer9 = this.timerTable[8]
+            this.timersRequestResponse.timer9Modified = true
+        } else {
+            this.timersRequestResponse.timer9Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer10, this.timerTable[9])) {
+            this.timersRequestResponse.timer10 = this.timerTable[9]
+            this.timersRequestResponse.timer10Modified = true
+        } else {
+            this.timersRequestResponse.timer10Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer11, this.timerTable[10])) {
+            this.timersRequestResponse.timer11 = this.timerTable[10]
+            this.timersRequestResponse.timer11Modified = true
+        } else {
+            this.timersRequestResponse.timer11Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer12, this.timerTable[11])) {
+            this.timersRequestResponse.timer12 = this.timerTable[11]
+            this.timersRequestResponse.timer12Modified = true
+        } else {
+            this.timersRequestResponse.timer12Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer13, this.timerTable[12])) {
+            this.timersRequestResponse.timer13 = this.timerTable[12]
+            this.timersRequestResponse.timer13Modified = true
+        } else {
+            this.timersRequestResponse.timer13Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer14, this.timerTable[13])) {
+            this.timersRequestResponse.timer14 = this.timerTable[13]
+            this.timersRequestResponse.timer14Modified = true
+        } else {
+            this.timersRequestResponse.timer14Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer15, this.timerTable[14])) {
+            this.timersRequestResponse.timer15 = this.timerTable[14]
+            this.timersRequestResponse.timer15Modified = true
+        } else {
+            this.timersRequestResponse.timer15Modified = false
+        }
+        if (!this.timerEqual(this.timersRequestResponse.timer16, this.timerTable[15])) {
+            this.timersRequestResponse.timer16 = this.timerTable[15]
+            this.timersRequestResponse.timer16Modified = true
+        } else {
+            this.timersRequestResponse.timer16Modified = false
+        }
+        console.log('timersRequestResponse after', this.timersRequestResponse)
+
+        let response: string = ''
+        this.restService.setTimers(this.timersRequestResponse)
+            .subscribe(
+                {
+                    next: (resp: string) => {
+                        response = resp
+                        console.log(response)
+                    },
+                    complete: () => {
+                        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Timers updated' });
+                    },
+                    error: () => {
+                        this.messageService.add({ severity: 'error', summary: 'Timers failed to update', detail: response });
+                        // exception handled by http-error-interceptor
+                    }
+                })
+
 
     }
 
     private transformTimersResponse(timersRequestResponse: TimersRequestResponse) {
         this.timersEnable = timersRequestResponse.timers
-        this.timerTable[0] = timersRequestResponse.timer1
-        this.timerTable[1] = timersRequestResponse.timer2
-        this.timerTable[2] = timersRequestResponse.timer3
-        this.timerTable[3] = timersRequestResponse.timer4
-        this.timerTable[4] = timersRequestResponse.timer5
-        this.timerTable[5] = timersRequestResponse.timer6
-        this.timerTable[6] = timersRequestResponse.timer7
-        this.timerTable[7] = timersRequestResponse.timer8
-        this.timerTable[8] = timersRequestResponse.timer9
-        this.timerTable[9] = timersRequestResponse.timer10
-        this.timerTable[10] = timersRequestResponse.timer11
-        this.timerTable[11] = timersRequestResponse.timer12
-        this.timerTable[12] = timersRequestResponse.timer13
-        this.timerTable[13] = timersRequestResponse.timer14
-        this.timerTable[14] = timersRequestResponse.timer15
-        this.timerTable[15] = timersRequestResponse.timer16
+        this.timerTable[0] = { ...timersRequestResponse.timer1 }
+        this.timerTable[1] = { ...timersRequestResponse.timer2 }
+        this.timerTable[2] = { ...timersRequestResponse.timer3 }
+        this.timerTable[3] = { ...timersRequestResponse.timer4 }
+        this.timerTable[4] = { ...timersRequestResponse.timer5 }
+        this.timerTable[5] = { ...timersRequestResponse.timer6 }
+        this.timerTable[6] = { ...timersRequestResponse.timer7 }
+        this.timerTable[7] = { ...timersRequestResponse.timer8 }
+        this.timerTable[8] = { ...timersRequestResponse.timer9 }
+        this.timerTable[9] = { ...timersRequestResponse.timer10 }
+        this.timerTable[10] = { ...timersRequestResponse.timer11 }
+        this.timerTable[11] = { ...timersRequestResponse.timer12 }
+        this.timerTable[12] = { ...timersRequestResponse.timer13 }
+        this.timerTable[13] = { ...timersRequestResponse.timer14 }
+        this.timerTable[14] = { ...timersRequestResponse.timer15 }
+        this.timerTable[15] = { ...timersRequestResponse.timer16 }
         let i = 0
         this.timerTable.forEach(timer => {
             timer.id = ++i
@@ -173,5 +273,13 @@ export class TimersComponent implements OnInit {
             timer.actionUi = timer.action === 1 ? 'On' : 'Off'
         })
         console.log('timerTable', this.timerTable)
+    }
+
+    private timerEqual(timer1: Timer, timer2: Timer): boolean {
+        if (timer1.enable === timer2.enable && timer1.time === timer2.time && timer1.days === timer2.days && timer1.action === timer2.action) {
+            return true
+        } else {
+            return false
+        }
     }
 }

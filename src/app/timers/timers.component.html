@@ -25,8 +25,9 @@
 </ng-container>
 
 <ng-container *ngIf="timerTable.length > 0">
-    <div style="margin-left: 1rem;">
-        <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm" responsiveLayout="scroll">
+    <div style="margin-left: 1rem; width: 600px;">
+        <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm" [paginator]="true"
+            [rows]="8">
             <ng-template pTemplate="header">
                 <tr>
                     <th style="text-align:center"></th>
@@ -39,29 +40,23 @@
             </ng-template>
             <ng-template pTemplate="body" let-timer let-editing="editing" let-ri="rowIndex">
                 <tr [pEditableRow]="timer">
-                    <td style="text-align:center">
-                        {{timer.id}}
-                    </td>
+                    <td style="text-align:center">{{timer.id}}</td>
                     <td style="text-align:center">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <p-dropdown [options]="yesNo" [(ngModel)]="timer.enableUi">
                                 </p-dropdown>
                             </ng-template>
-                            <ng-template pTemplate="output">
-                                {{timer.enableUi}}
-                            </ng-template>
+                            <ng-template pTemplate="output">{{timer.enableUi}}</ng-template>
                         </p-cellEditor>
                     </td>
                     <td style="text-align:center">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <p-dropdown [options]="hours" [(ngModel)]="timer.timeHh">
-                                </p-dropdown>:<p-dropdown [options]="minutes" [(ngModel)]="timer.timeMm">
-                                </p-dropdown>
+                                </p-dropdown>:<p-dropdown [options]="minutes" [(ngModel)]="timer.timeMm"></p-dropdown>
                             </ng-template>
-                            <ng-template pTemplate="output">
-                                {{timer.timeHh}}:{{timer.timeMm}}
+                            <ng-template pTemplate="output">{{timer.timeHh}}:{{timer.timeMm}}
                             </ng-template>
                         </p-cellEditor>
                     </td>
@@ -73,9 +68,7 @@
                                     defaultLabel="Select Day(s)" optionLabel="name" optionValue="code"
                                     selectedItemsLabel="{0} items selected"></p-multiSelect>
                             </ng-template>
-                            <ng-template pTemplate="output">
-                                {{timer.daysUi}}
-                            </ng-template>
+                            <ng-template pTemplate="output">{{timer.daysUi}}</ng-template>
                         </p-cellEditor>
                     </td>
                     <td style="text-align:center">
@@ -85,9 +78,7 @@
                                 </p-dropdown>
 
                             </ng-template>
-                            <ng-template pTemplate="output">
-                                {{timer.actionUi}}
-                            </ng-template>
+                            <ng-template pTemplate="output">{{timer.actionUi}}</ng-template>
                         </p-cellEditor>
                     </td>
                     <td style="text-align:center">
