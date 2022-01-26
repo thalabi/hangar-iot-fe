@@ -16,9 +16,7 @@
 
             <label for="enableDisableTimers" class="font-bold col-fixed p-component" style="width: 4rem;">Timers</label>
 
-            <p-selectButton id="enableDisableTimers" [options]="enableDisableTimers" [(ngModel)]="timersEnable"
-                optionLabel="label" optionValue="value">
-            </p-selectButton>
+            <p-toggleButton [(ngModel)]="timersEnable" onIcon="pi pi-check" offIcon="pi pi-times"></p-toggleButton>
 
         </div>
     </div>
@@ -26,8 +24,8 @@
 
 <ng-container *ngIf="timerTable.length > 0">
     <div style="margin-left: 1rem; width: 600px;">
-        <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm" [paginator]="true"
-            [rows]="8">
+        <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm p-datatable-striped"
+            [paginator]="true" [rows]="8">
             <ng-template pTemplate="header">
                 <tr>
                     <th style="text-align:center"></th>

@@ -15,7 +15,7 @@ export class TimersComponent implements OnInit {
     deviceResponseList: Array<DeviceResponse> = {} as Array<DeviceResponse>;
     timersRequestResponse: TimersRequestResponse = {} as TimersRequestResponse
     selectedDevice: string = ''
-    timersEnable: string = ''
+    timersEnable: boolean = false
     timerTable: Array<Timer> = []
     editingFlag: number = 0
 
@@ -100,8 +100,8 @@ export class TimersComponent implements OnInit {
         this.timersRequestResponse.deviceName = this.selectedDevice;
 
         console.log('timersRequestResponse before', this.timersRequestResponse)
-        if (this.timersRequestResponse.timers !== this.timersEnable) {
-            this.timersRequestResponse.timers = this.timersEnable
+        if ((this.timersRequestResponse.timers === "ON") !== this.timersEnable) {
+            this.timersRequestResponse.timers = this.timersEnable ? "ON" : "OFF"
             this.timersRequestResponse.timersModified = true
         }
 
@@ -225,7 +225,7 @@ export class TimersComponent implements OnInit {
     }
 
     private transformTimersResponse(timersRequestResponse: TimersRequestResponse) {
-        this.timersEnable = timersRequestResponse.timers
+        this.timersEnable = timersRequestResponse.timers === "ON"
         this.timerTable[0] = { ...timersRequestResponse.timer1 }
         this.timerTable[1] = { ...timersRequestResponse.timer2 }
         this.timerTable[2] = { ...timersRequestResponse.timer3 }

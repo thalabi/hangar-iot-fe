@@ -6,6 +6,7 @@ export interface DeviceResponse {
     telemetry: boolean
     iotDeviceMake: string
     iotDeviceModel: string
+    enableDataSaver: boolean
     config: {
         latitudeDegrees: number
         longtitudeDegrees: number

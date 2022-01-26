@@ -33,6 +33,7 @@ import { ExecuteCommandComponent } from './execute-command/execute-command.compo
 import { FieldsetModule } from 'primeng/fieldset';
 import { TimersComponent } from './timers/timers.component';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @NgModule({
     declarations: [
@@ -53,7 +54,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
         HttpClientModule,
         FormsModule,
         InputTextModule, SelectButtonModule, MessageModule, MessagesModule, ButtonModule, DropdownModule, BrowserAnimationsModule, PasswordModule,
-        MenubarModule, OverlayPanelModule, TableModule, FieldsetModule, MultiSelectModule
+        MenubarModule, OverlayPanelModule, TableModule, FieldsetModule, MultiSelectModule, ToggleButtonModule
     ],
     providers: [
         MessageService,
