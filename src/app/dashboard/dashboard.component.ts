@@ -2,13 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { RestService } from '../service/rest.service';
 import { DeviceAttributes } from './DeviceAttributes';
 import { DeviceNameRequest } from './DeviceNameRequest';
 import { DeviceResponse } from './DeviceResponse';
 import { PowerStateResponse } from './PowerStateResponse';
 import { SensorDataResponse } from './SensorDataResponse';
+import { ConnectionStateResponse } from './ConnectionStateResponse';
 import { TogglePowerRequest } from './TogglePowerRequest';
 
 @Component({
@@ -23,7 +24,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     deviceResponseList: Array<DeviceResponse> = {} as Array<DeviceResponse>;
     deviceAttributesMap: Record<string, DeviceAttributes> = {} as any;
 
-    topicSubscriptionArray: Array<Subscription> = []
+    subscriptionArray: Array<Subscription> = []
+
+    selectedDeviceNameForSensorData: string = ''
 
     constructor(
         private restService: RestService,
@@ -40,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 console.log('deviceResponseList', deviceResponseList)
                 this.deviceResponseList = deviceResponseList
                 this.deviceResponseList.forEach(deviceResponse => {
-                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, powerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse }
+                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, telemetry: deviceResponse.telemetry, powerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) }
                 })
 
 
@@ -49,15 +52,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 //console.log('connected?', this.rxStompService.connected())
 
                 // wait for connection to be established before subscribing to topics
-                this.rxStompService.connected$.subscribe(rsStompState => {
+                let rxStompServiceConnectedSubscription = this.rxStompService.connected$.subscribe(rsStompState => {
                     // console.log('rsStompState', rsStompState)
                     // console.log('connected?', this.rxStompService.connected())
                     this.webSocketConnectAndSubscribe()
-                    this.retrieveData()
+                    this.triggerPublishConnectionState()
+                    this.triggerPublishPowerState()
 
                     console.log('this.deviceAttributesMap', this.deviceAttributesMap)
                 })
-
+                this.subscriptionArray.push(rxStompServiceConnectedSubscription)
             });
 
     }
@@ -75,67 +79,84 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
                 this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
             });
-            this.topicSubscriptionArray.push(powerTopicSubscription)
+            this.subscriptionArray.push(powerTopicSubscription)
 
             // subscribe to SENSOR telemetry topic if device is capable of sending telemetry data
-            const deviceResponse = this.deviceResponseList.find(deviceResponse => deviceResponse.name === deviceName)
-            console.log('Device support telemetry?', deviceResponse?.telemetry)
-            if (deviceResponse?.telemetry) {
+            if (this.deviceAttributesMap[deviceName]?.telemetry) {
 
                 console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
                 let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`).subscribe((message: Message) => {
                     console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
                     this.deviceAttributesMap[deviceName].sensorData = JSON.parse(message.body);
                 });
-                this.topicSubscriptionArray.push(sensorTopSubscription)
+                this.subscriptionArray.push(sensorTopSubscription)
             }
+
+            // subscribe to LWT (last will and testament) topic, it contains device state Online or Offline
+            console.log(`subscribing to topic: /topic/state-and-telemetry/tele/${deviceName}/LWT`)
+            let lwtTopicSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/LWT`).subscribe((message: Message) => {
+                console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+
+                //this.deviceAttributesMap[deviceName].connectionState = JSON.parse(message.body);
+                this.deviceAttributesMap[deviceName].connectionStateSubject.next(JSON.parse(message.body));
+            });
+            this.subscriptionArray.push(lwtTopicSubscription)
+
         })
     }
 
     private webSocketUnsubscribeAndDisconnect(): void {
-        this.topicSubscriptionArray.forEach(topicSubscription => topicSubscription.unsubscribe())
+        this.subscriptionArray.forEach(topicSubscription => {
+            console.log('unsubscribing from Web Socket topic', topicSubscription)
+            topicSubscription.unsubscribe()
+        })
         this.rxStompService.deactivate();
     }
 
-    private retrieveData() {
-        console.log('retrieveData()')
+    private triggerPublishConnectionState() {
+        console.log('triggerPublishConnectionState()')
+
+        Object.keys(this.deviceAttributesMap).forEach(deviceName => {
+            const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
+            deviceNameRequest.deviceName = deviceName
+
+            this.restService.triggerPublishConnectionState(deviceNameRequest).subscribe()
+        })
+    }
+
+    private triggerPublishPowerState() {
+        console.log('triggerPublishPowerState()')
 
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
-            const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
-            deviceNameRequest.deviceName = deviceName
-            this.restService.triggerPowerState(deviceNameRequest)
-                .subscribe(
-                    {
-                        complete: () => {
+            let connectionStateSubscription = this.deviceAttributesMap[deviceName].connectionStateSubject
+                .subscribe((connectionStateResponse: ConnectionStateResponse) => {
+                    console.log('deviceName: [%s] connectionStateResponse: [%o]', deviceName, connectionStateResponse)
+                    if (connectionStateResponse.LWT === 'Online') {
+                        const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
+                        deviceNameRequest.deviceName = deviceName
 
-                        },
-                        error: (err: any /*HttpErrorResponse*/) => {
-                        }
-                    });
-            const deviceResponse = this.deviceResponseList.find(deviceResponse => deviceResponse.name === deviceName)
-            console.log('Device support telemetry?', deviceResponse?.telemetry)
-            if (deviceResponse?.telemetry) {
-                this.restService.triggerSensorData(deviceNameRequest)
-                    .subscribe(
-                        {
-                            complete: () => {
-
-                            },
-                            error: (err: any /*HttpErrorResponse*/) => {
-                            }
-                        });
-            }
+                        // trigger publishing power state
+                        this.restService.triggerPublishPowerState(deviceNameRequest).subscribe()
+                    }
+                })
+            this.subscriptionArray.push(connectionStateSubscription)
         });
     }
 
-    //toggleDevicePower(event: any, deviceName: string) {
+    private triggerPublishSensorData(deviceName: string) {
+        console.log('triggerPublishSensorData()')
+        // trigger publishing sensor data if device supports it
+        if (this.deviceAttributesMap[deviceName]?.telemetry) {
+            const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
+            deviceNameRequest.deviceName = deviceName
+            this.restService.triggerPublishSensorData(deviceNameRequest).subscribe()
+        }
+    }
+
     toggleDevicePower(event: { originalEvent: PointerEvent, value: string }, deviceName: string) {
         console.log('toggleDevicePower')
         console.log('event', event)
-        //console.log('deviceName', deviceName)
-        //const domEvent: PointerEvent = event.originalEvent
-        //const changedValue: string = event.value
         console.log('changedValue', event.value)
         console.log('domEvent', event.originalEvent)
         const powerStateRequested = event.value
@@ -145,31 +166,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
             .subscribe(
                 {
                     complete: () => {
-                        const deviceResponse = this.deviceResponseList.find(deviceResponse => deviceResponse.name === deviceName)
                         // trigger sensor data only if device supports telemetry
-                        console.log('Device support telemetry?', deviceResponse?.telemetry)
-                        if (deviceResponse?.telemetry) {
-                            this.restService.triggerSensorData(togglePowerRequest)
-                                .subscribe(
-                                    {
-                                        complete: () => {
-
-                                        },
-                                        error: (err: any /*HttpErrorResponse*/) => {
-                                        }
-                                    });
+                        if (this.deviceAttributesMap[deviceName]?.telemetry) {
+                            this.restService.triggerPublishSensorData(togglePowerRequest).subscribe()
                         }
 
                     },
                 });
     }
 
-    onRefresh(event: any) {
-        this.retrieveData()
+    onSelectSensorDataForDeviceName(event: any) {
+        console.log('onSensorDataForDeviceName, selectedDeviceNameForSensorData', this.selectedDeviceNameForSensorData)
+        if (this.selectedDeviceNameForSensorData && this.deviceAttributesMap[this.selectedDeviceNameForSensorData]?.connectionStateSubject.getValue().LWT === 'Online') {
+            this.triggerPublishSensorData(this.selectedDeviceNameForSensorData)
+        }
     }
 
-    onSensorDataForDeviceName(event: any) {
-
+    onRefreshSensorData(event: any) {
+        console.log('onRefreshSensorData, selectedDeviceNameForSensorData', this.selectedDeviceNameForSensorData)
+        this.triggerPublishSensorData(this.selectedDeviceNameForSensorData)
     }
 
     ngOnDestroy(): void {

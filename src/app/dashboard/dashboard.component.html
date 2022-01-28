@@ -2,17 +2,18 @@
 
     <div class="formgroup-inline">
         <div class="field-radiobutton" *ngFor="let entry of deviceAttributesMap | keyvalue">
-            <ng-container *ngIf="deviceAttributesMap[entry.key]?.powerState?.POWER">
+            <!-- <ng-container *ngIf="deviceAttributesMap[entry.key]?.powerState?.POWER"> -->
 
-                <label for="deviceState" class="font-bold col-fixed p-component"
-                    style="width: 8rem;">{{deviceAttributesMap[entry.key].description}}</label>
+            <label for="deviceState" class="font-bold col-fixed p-component"
+                style="width: 8rem;">{{deviceAttributesMap[entry.key].description}}</label>
 
-                <p-selectButton id="deviceState" [options]="powerStateOptions"
-                    [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label"
-                    optionValue="value" (onChange)="toggleDevicePower($event, entry.key)">
-                </p-selectButton>
+            <p-selectButton id="deviceState" [options]="powerStateOptions"
+                [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label" optionValue="value"
+                (onChange)="toggleDevicePower($event, entry.key)"
+                [disabled]="(deviceAttributesMap[entry.key]?.connectionStateSubject | async)?.LWT === 'Offline'">
+            </p-selectButton>
 
-            </ng-container>
+            <!-- </ng-container> -->
         </div>
     </div>
 
@@ -24,15 +25,15 @@
                 data</label>
 
             <p-dropdown id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
-                optionLabel="value.description" optionValue="key" placeholder=" Select device"
-                (onChange)="onSensorDataForDeviceName($event)" [showClear]="true" #selectedDeviceName>
+                [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.description" optionValue="key"
+                placeholder=" Select device" (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true">
             </p-dropdown>
 
         </div>
     </div>
 
     <div class="form-grid" style="margin-left: 0.5rem;"
-        *ngIf="selectedDeviceName.value && ! deviceAttributesMap[selectedDeviceName.value]?.sensorData?.ENERGY">
+        *ngIf="selectedDeviceNameForSensorData && ! deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY">
         <div class="grid">
             <div class="col" style="font-style: italic;">Device does not provide telemetry or no data received.
             </div>
@@ -40,45 +41,49 @@
     </div>
 
     <div class="form-grid" style="margin-left: 1rem;"
-        *ngIf="selectedDeviceName.value && deviceAttributesMap[selectedDeviceName.value]?.sensorData?.ENERGY">
+        *ngIf="selectedDeviceNameForSensorData && deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY">
 
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Time</div>
             <div class="col">
-                {{deviceAttributesMap[selectedDeviceName.value].sensorData.Time | date:'medium'}}
+                {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.Time | date:'medium'}}
             </div>
         </div>
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Voltage</div>
             <div class="col">
-                {{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Voltage}} V
+                {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Voltage}} V
             </div>
         </div>
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Current</div>
-            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Current}} A</div>
+            <div class="col">{{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Current}} A</div>
         </div>
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Power</div>
-            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Power}} W</div>
+            <div class="col">{{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Power}} W</div>
         </div>
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy today</div>
-            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Today}} kWh</div>
+            <div class="col">{{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Today}} kWh</div>
         </div>
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy yesterday</div>
-            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Yesterday}} kWh</div>
+            <div class="col">{{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Yesterday}} kWh
+            </div>
         </div>
         <div class="grid">
             <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy total</div>
-            <div class="col">{{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.Total}} kWh (since
-                {{deviceAttributesMap[selectedDeviceName.value].sensorData.ENERGY.TotalStartTime | date:'medium'}})
+            <div class="col">{{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Total}} kWh (since
+                {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.TotalStartTime |
+                date:'medium'}})
             </div>
         </div>
     </div>
 
     <div style="margin-left: 1rem; margin-top: 0.5rem;">
-        <button pButton type="button" label="Refresh" (click)="onRefresh($event)"></button>
+        <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)"
+            [disabled]="! selectedDeviceNameForSensorData || ! deviceAttributesMap[selectedDeviceNameForSensorData]?.telemetry
+            || (deviceAttributesMap[selectedDeviceNameForSensorData]?.connectionStateSubject | async)?.LWT === 'Offline'"></button>
     </div>
 </ng-container>
