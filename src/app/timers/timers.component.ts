@@ -48,13 +48,7 @@ export class TimersComponent implements OnInit {
 
     onSelectDevice(event: any) {
         console.log('this.selectedDevice', this.selectedDevice)
-        this.restService.getTimers(this.selectedDevice)
-            .subscribe((response: TimersRequestResponse) => {
-                this.timersRequestResponse = response
-                console.log('timersRequestResponse', this.timersRequestResponse)
-                this.transformTimersResponse(this.timersRequestResponse)
-            });
-
+        this.getTimers()
     }
 
     onRowEditInit(timer: Timer) {
@@ -103,9 +97,10 @@ export class TimersComponent implements OnInit {
         if ((this.timersRequestResponse.timers === "ON") !== this.timersEnable) {
             this.timersRequestResponse.timers = this.timersEnable ? "ON" : "OFF"
             this.timersRequestResponse.timersModified = true
+        } else {
+            this.timersRequestResponse.timersModified = false
         }
 
-        console.log('this.timersRequestResponse.timer1', this.timersRequestResponse.timer1, 'this.timerTable[0]', this.timerTable[0])
         if (!this.timerEqual(this.timersRequestResponse.timer1, this.timerTable[0])) {
             this.timersRequestResponse.timer1 = this.timerTable[0]
             this.timersRequestResponse.timer1Modified = true
@@ -214,16 +209,27 @@ export class TimersComponent implements OnInit {
                     },
                     complete: () => {
                         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Timers updated' });
+                        this.getTimers()
                     },
                     error: () => {
                         this.messageService.add({ severity: 'error', summary: 'Timers failed to update', detail: response });
                         // exception handled by http-error-interceptor
+                        this.getTimers()
                     }
                 })
 
 
     }
 
+    private getTimers() {
+        this.restService.getTimers(this.selectedDevice)
+            .subscribe((response: TimersRequestResponse) => {
+                this.timersRequestResponse = response
+                console.log('timersRequestResponse', this.timersRequestResponse)
+                this.transformTimersResponse(this.timersRequestResponse)
+            });
+
+    }
     private transformTimersResponse(timersRequestResponse: TimersRequestResponse) {
         this.timersEnable = timersRequestResponse.timers === "ON"
         this.timerTable[0] = { ...timersRequestResponse.timer1 }
