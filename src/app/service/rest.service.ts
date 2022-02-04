@@ -8,6 +8,7 @@ import { CommandResponse } from '../execute-command/CommandResponse';
 import { FreeFormatCommandRequest } from '../execute-command/FreeFormatCommandRequest';
 import { TimersRequestResponse } from '../timers/TimersRequestResponse';
 import { TogglePowerRequest } from '../dashboard/TogglePowerRequest';
+import { TimersRequestResponse2 } from '../timers/TimersRequestResponse2';
 
 @Injectable({
     providedIn: 'root'
@@ -60,11 +61,10 @@ export class RestService {
         return this.http.post<string>(`${this.serviceUrl}/hangarIotController/executeFreeFormatCommand`, freeFormatCommandRequest)
     }
 
-    getTimers(deviceName: string): Observable<TimersRequestResponse> {
-        return this.http.get<TimersRequestResponse>(`${this.serviceUrl}/hangarIotController/getTimers?deviceName=${deviceName}`)
+    getTimers(deviceName: string): Observable<TimersRequestResponse2> {
+        return this.http.get<TimersRequestResponse2>(`${this.serviceUrl}/hangarIotController/getTimers?deviceName=${deviceName}`)
     }
-
-    setTimers(timersRequestResponse: TimersRequestResponse): Observable<string> {
+    setTimers(timersRequestResponse: TimersRequestResponse2): Observable<string> {
         return this.http.post<string>(`${this.serviceUrl}/hangarIotController/setTimers`, timersRequestResponse)
     }
 }
