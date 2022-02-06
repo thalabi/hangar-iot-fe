@@ -24,9 +24,9 @@
 </ng-container>
 
 <ng-container *ngIf="timerTable.length > 0">
-    <div style="margin-left: 1rem; width: 600px;">
+    <div>
         <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm p-datatable-striped"
-            [paginator]="true" [rows]="8">
+            responsiveLayout="scroll" [paginator]="true" [rows]="8" [style]="{'margin-left': '1rem'}">
             <ng-template pTemplate="header">
                 <tr>
                     <th style="text-align:center"></th>
