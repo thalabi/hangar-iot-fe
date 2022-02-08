@@ -8,8 +8,5 @@ export interface DeviceAttributes {
     telemetry: boolean
     powerState: PowerStateResponse
     sensorData: SensorDataResponse
-    //state: string
-    //stateChangeTimestamp: number
-    //connectionState: ConnectionStateResponse
-    connectionStateSubject: BehaviorSubject<ConnectionStateResponse>
+    connectionStateBehaviorSubject: BehaviorSubject<ConnectionStateResponse>
 }

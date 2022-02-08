@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { RxStompService } from '@stomp/ng2-stompjs';
 import { MessageService } from 'primeng/api';
+import { BaseComponent } from '../base/base.component';
 import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
 import { Timer } from './Timer';
@@ -10,7 +12,7 @@ import { TimersRequestResponse2 } from './TimersRequestResponse2';
     templateUrl: './timers.component.html',
     styleUrls: ['./timers.component.css']
 })
-export class TimersComponent implements OnInit {
+export class TimersComponent extends BaseComponent implements OnInit, OnDestroy {
 
     deviceResponseList: Array<DeviceResponse> = {} as Array<DeviceResponse>;
     timersRequestResponse: TimersRequestResponse2 = {} as TimersRequestResponse2
@@ -31,24 +33,25 @@ export class TimersComponent implements OnInit {
 
 
     constructor(
-        private restService: RestService,
+        protected override restService: RestService,
+        protected override rxStompService: RxStompService,
         private messageService: MessageService
-    ) { }
+    ) {
+        super(restService, rxStompService);
+    }
 
     ngOnInit(): void {
         console.log('ngOnInit')
         this.messageService.clear()
 
-        this.restService.getDeviceList()
-            .subscribe((deviceResponseList: Array<DeviceResponse>) => {
-                console.log('deviceResponseList', deviceResponseList)
-                this.deviceResponseList = deviceResponseList
-            });
+        super.init()
     }
 
     onSelectDevice(event: any) {
         console.log('this.selectedDevice', this.selectedDevice)
-        this.getTimers()
+        if (this.deviceAttributesMap[this.selectedDevice]?.connectionStateBehaviorSubject?.getValue().state === 'ONLINE') {
+            this.getTimers()
+        }
     }
 
     onRowEditInit(timer: Timer) {
@@ -114,6 +117,7 @@ export class TimersComponent implements OnInit {
         }
         console.log('timersRequestResponse after', this.timersRequestResponse)
 
+        this.messageService.clear()
         let response: string = ''
         this.restService.setTimers(this.timersRequestResponse)
             .subscribe(
@@ -136,6 +140,10 @@ export class TimersComponent implements OnInit {
 
     }
 
+    ngOnDestroy(): void {
+        super.destroy()
+    }
+
     private getTimers() {
         this.restService.getTimers(this.selectedDevice)
             .subscribe((response: TimersRequestResponse2) => {
@@ -146,6 +154,7 @@ export class TimersComponent implements OnInit {
 
     }
     private transformTimersResponse(timersRequestResponse: TimersRequestResponse2) {
+        console.log('timersRequestResponse.timers', timersRequestResponse.timers)
         this.timersEnable = timersRequestResponse.timers === "ON"
         for (let i: number = 0; i < 16; i++) {
             this.timerTable[i] = { ...timersRequestResponse.timerArray[i] }

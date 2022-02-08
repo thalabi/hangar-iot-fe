@@ -6,7 +6,6 @@ import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { environment } from '../../environments/environment';
 import { CommandResponse } from '../execute-command/CommandResponse';
 import { FreeFormatCommandRequest } from '../execute-command/FreeFormatCommandRequest';
-import { TimersRequestResponse } from '../timers/TimersRequestResponse';
 import { TogglePowerRequest } from '../dashboard/TogglePowerRequest';
 import { TimersRequestResponse2 } from '../timers/TimersRequestResponse2';
 

@@ -10,8 +10,7 @@
 
             <p-selectButton id="deviceState" [options]="powerStateOptions"
                 [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label" optionValue="value"
-                (onChange)="toggleDevicePower($event, entry.key)"
-                [disabled]="(deviceAttributesMap[entry.key]?.connectionStateSubject | async)?.LWT === 'Offline'">
+                (onChange)="toggleDevicePower($event, entry.key)">
             </p-selectButton>
 
             <!-- </ng-container> -->
@@ -85,6 +84,6 @@
     <div style="margin-left: 1rem; margin-top: 0.5rem;">
         <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)"
             [disabled]="! selectedDeviceNameForSensorData || ! deviceAttributesMap[selectedDeviceNameForSensorData]?.telemetry
-            || (deviceAttributesMap[selectedDeviceNameForSensorData]?.connectionStateSubject | async)?.LWT === 'Offline'"></button>
+            || (deviceAttributesMap[selectedDeviceNameForSensorData]?.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></button>
     </div>
 </ng-container>

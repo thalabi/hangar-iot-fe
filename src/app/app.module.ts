@@ -34,6 +34,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { TimersComponent } from './timers/timers.component';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { BaseComponent } from './base/base.component';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
         BooleanPipe,
         ExecuteCommandComponent,
         TimersComponent,
+        BaseComponent,
     ],
     imports: [
         BrowserModule,

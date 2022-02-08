@@ -51,9 +51,11 @@ export class ExecuteCommandComponent implements OnInit {
 
     onSelectDevice(event: any) {
         console.log('this.selectedDevice', this.selectedDevice)
+        this.commandResult = ''
     }
     onSelectCommand(event: any) {
         console.log('this.selectedCommand', this.selectedCommand)
+        this.commandResult = ''
     }
     onSubmit(event: any) {
         console.log('this.arguments', this.arguments)

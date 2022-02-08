@@ -1,4 +1,4 @@
 export interface ConnectionStateResponse {
-    LWT: string
+    state: string
     timestamp: string
 }

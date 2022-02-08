@@ -1,6 +1,5 @@
 import { InjectableRxStompConfig } from '@stomp/ng2-stompjs';
 import { environment } from '../environments/environment';
-import { SessionService } from './service/session.service';
 
 
 export class RxStompConfig extends InjectableRxStompConfig {
