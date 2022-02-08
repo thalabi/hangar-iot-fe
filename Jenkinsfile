@@ -5,9 +5,9 @@ pipeline {
         jdk 'jdk-17' 
     }
 
-    environment {
-        HANGAR_IOT_TARGET_HOSTNAME = credentials('HANGAR_IOT_TARGET_HOSTNAME')
-    }
+    // environment {
+    //     HANGAR_IOT_TARGET_HOSTNAME = credentials('HANGAR_IOT_TARGET_HOSTNAME')
+    // }
 
     stages {
 
