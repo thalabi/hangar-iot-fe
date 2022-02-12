@@ -15,6 +15,7 @@
             <th>TZ</th>
             <th>Time DST</th>
             <th>Time STD</th>
+            <th>Group</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-device>
@@ -32,6 +33,6 @@
             <td>{{device.config.timezoneOffset}}</td>
             <td>{{device.config.timeDst}}</td>
             <td>{{device.config.timeStd}}</td>
-        </tr>
+            <td>{{device.group}}</td>
     </ng-template>
 </p-table>
