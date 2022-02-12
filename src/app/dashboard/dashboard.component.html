@@ -10,7 +10,8 @@
 
             <p-selectButton id="deviceState" [options]="powerStateOptions" optionLabel="label" optionValue="value"
                 [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER"
-                (onChange)="toggleDevicePower($event, entry.key)">
+                (onChange)="toggleDevicePower($event, entry.key)"
+                [disabled]="(deviceAttributesMap[entry.key]?.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
             </p-selectButton>
 
             <!-- </ng-container> -->
