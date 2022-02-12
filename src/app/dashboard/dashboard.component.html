@@ -8,8 +8,8 @@
             <label for="deviceState" class="font-bold col-fixed p-component"
                 style="width: 8rem;">{{deviceAttributesMap[entry.key].description}}</label>
 
-            <p-selectButton id="deviceState" [options]="powerStateOptions"
-                [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER" optionLabel="label" optionValue="value"
+            <p-selectButton id="deviceState" [options]="powerStateOptions" optionLabel="label" optionValue="value"
+                [(ngModel)]="deviceAttributesMap[entry.key].powerState.POWER"
                 (onChange)="toggleDevicePower($event, entry.key)">
             </p-selectButton>
 

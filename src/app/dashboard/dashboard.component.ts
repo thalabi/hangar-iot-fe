@@ -50,6 +50,10 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         const powerStateRequested = event.value
         const togglePowerRequest: TogglePowerRequest = { deviceName, powerStateRequested }
 
+        if (powerStateRequested === this.deviceAttributesMap[deviceName].savedPowerState.POWER) {
+            return
+        }
+
         this.restService.togglePower(togglePowerRequest)
             .subscribe(
                 {

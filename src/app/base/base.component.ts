@@ -40,7 +40,7 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
                 console.log('deviceResponseList', deviceResponseList)
                 //this.deviceResponseList = deviceResponseList
                 deviceResponseList.forEach(deviceResponse => {
-                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, telemetry: deviceResponse.telemetry, powerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) }
+                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, telemetry: deviceResponse.telemetry, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) }
                 })
 
 
@@ -74,6 +74,7 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
                 console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
                 this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
+                this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
             });
             this.subscriptionArray.push(powerTopicSubscription)
 
