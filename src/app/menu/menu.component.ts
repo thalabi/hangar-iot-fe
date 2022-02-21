@@ -17,7 +17,7 @@ export class MenuComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('ngOnInit()')
-        this.sessionService.customUserDetailsObservable.subscribe(message => {
+        this.sessionService.customUserDetailsBehaviorSubject.subscribe(message => {
             let customUserDetails: CustomUserDetails = message;
             if (customUserDetails?.id) {
                 console.log('this.customUserDetails?.id is true')

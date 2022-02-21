@@ -12,7 +12,7 @@ export class JwtInterceptorService implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let token: string = ''
-        this.sessionService.tokenObservable.subscribe(message => token = message)
+        this.sessionService.tokenBehaviorSubject.subscribe(message => token = message)
         let jwtReq: HttpRequest<any>
         if (token) {
             let jwtReqHeaders = req.headers.append('Authorization', `Bearer ${token}`)

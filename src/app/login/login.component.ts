@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
 
         this.messageService.clear()
         let displaySessionExpiredCount: number = 0;
-        this.sessionService.isTokenExpiredSourceObservable.subscribe(isTokenExpired => {
+        this.sessionService.isTokenExpiredBehaviorSubject.subscribe(isTokenExpired => {
             if (isTokenExpired && displaySessionExpiredCount === 0) {
                 this.messageService.add({ severity: 'warn', summary: 'Session expired' })
             }

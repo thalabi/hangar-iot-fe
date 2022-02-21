@@ -7,31 +7,31 @@ import { CustomUserDetails } from '../login/CustomUserDetails';
 })
 export class SessionService {
 
-    private tokenSource = new BehaviorSubject<string>('');
-    private customUserDetailsSource = new BehaviorSubject<CustomUserDetails>({} as CustomUserDetails);
-    private isAuthenticatedSource = new BehaviorSubject<boolean>(false);
-    private isTokenExpiredSource = new BehaviorSubject<boolean>(false);
-    tokenObservable = this.tokenSource.asObservable();
-    customUserDetailsObservable = this.customUserDetailsSource.asObservable();
-    isAuthenticatedSourceObservable = this.isAuthenticatedSource.asObservable();
-    isTokenExpiredSourceObservable = this.isTokenExpiredSource.asObservable();
+    public tokenBehaviorSubject = new BehaviorSubject<string>('');
+    public customUserDetailsBehaviorSubject = new BehaviorSubject<CustomUserDetails>({} as CustomUserDetails);
+    public isAuthenticatedBehaviorSubject = new BehaviorSubject<boolean>(false);
+    public isTokenExpiredBehaviorSubject = new BehaviorSubject<boolean>(false);
+    //tokenObservable = this.tokenBehaviorSubject.asObservable();
+    //customUserDetailsObservable = this.customUserDetailsBehaviorSubject.asObservable();
+    //isAuthenticatedSourceObservable = this.isAuthenticatedBehaviorSubject.asObservable();
+    //isTokenExpiredSourceObservable = this.isTokenExpiredBehaviorSubject.asObservable();
 
     constructor() { }
 
     setToken(token: string) {
         console.log('setToken()')
-        this.tokenSource.next(token);
+        this.tokenBehaviorSubject.next(token);
     }
     setCustomUserDetails(customUserDetails: CustomUserDetails) {
         console.log('setCustomUserDetails(), customUserDetails:', customUserDetails)
-        this.customUserDetailsSource.next(customUserDetails);
+        this.customUserDetailsBehaviorSubject.next(customUserDetails);
     }
     setIsAuthenticated(isAuthenticated: boolean) {
         console.log('setIsAuthenticated()')
-        this.isAuthenticatedSource.next(isAuthenticated);
+        this.isAuthenticatedBehaviorSubject.next(isAuthenticated);
     }
     setIsTokenExpired(isTokenExpired: boolean) {
         console.log('setIsTokenExpired()')
-        this.isTokenExpiredSource.next(isTokenExpired);
+        this.isTokenExpiredBehaviorSubject.next(isTokenExpired);
     }
 }
