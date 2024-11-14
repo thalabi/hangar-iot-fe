@@ -4,5 +4,5 @@ export const environment = {
     buildVersion: "@buildVersion@",
     buildTimestamp: "@buildTimestamp@",
     beRestServiceUrl: "@beRestServiceUrl@",
-    websocketUrl: "wss://@backendHostname@:@backendPort@/hangar-iot-websocket"
+    websocketUrl: "@websocketUrl@"
 };
