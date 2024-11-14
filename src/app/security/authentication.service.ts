@@ -12,17 +12,17 @@ import { LoginResponse } from '../login/LoginResponse';
     providedIn: 'root'
 })
 export class AuthenticationService {
-    readonly serviceUrl: string
+    readonly beRestServiceUrl: string
     public static readonly authenticatePathname: string = '/securityController/authenticate'
 
     constructor(
         private http: HttpClient,
     ) {
-        this.serviceUrl = environment.serviceUrl
+        this.beRestServiceUrl = environment.beRestServiceUrl
     }
 
     authenticate(loginRequest: LoginRequest): Observable<LoginResponse> {
-        return this.http.post<LoginResponse>(this.serviceUrl + AuthenticationService.authenticatePathname, loginRequest)
+        return this.http.post<LoginResponse>(this.beRestServiceUrl + AuthenticationService.authenticatePathname, loginRequest)
             .pipe(
                 catchError((httpErrorResponse: HttpErrorResponse) => {
                     console.error('httpErrorResponse', httpErrorResponse)

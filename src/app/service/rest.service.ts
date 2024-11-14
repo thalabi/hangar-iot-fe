@@ -14,56 +14,56 @@ import { TimersRequestResponse2 } from '../timers/TimersRequestResponse2';
 })
 export class RestService {
 
-    readonly serviceUrl: string | undefined;
+    readonly beRestServiceUrl: string | undefined;
 
     constructor(
         private http: HttpClient,
         //private configService: ConfigService,
     ) {
         //const applicationProperties = this.configService.getApplicationProperties();
-        //this.serviceUrl = applicationProperties?.serviceUrl;
+        //this.beRestServiceUrl = applicationProperties?.beRestServiceUrl;
         console.log('environment.production', environment.production); // Logs false for default environment
         console.log('environment', environment)
-        this.serviceUrl = environment.serviceUrl
+        this.beRestServiceUrl = environment.beRestServiceUrl
     }
 
     getDeviceList(): Observable<Array<DeviceResponse>> {
-        return this.http.get<Array<DeviceResponse>>(`${this.serviceUrl}/hangarIotController/getDeviceList`)
+        return this.http.get<Array<DeviceResponse>>(`${this.beRestServiceUrl}/hangarIotController/getDeviceList`)
     }
 
     togglePower(deviceNameRequest: TogglePowerRequest): Observable<void> {
         console.log('RestService.togglePower')
-        return this.http.post<void>(`${this.serviceUrl}/hangarIotController/togglePower`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/hangarIotController/togglePower`, deviceNameRequest)
     }
 
     triggerPublishConnectionState(deviceNameRequest: DeviceNameRequest): Observable<void> {
         console.log('RestService.triggerPublishConnectionState')
-        return this.http.post<void>(`${this.serviceUrl}/hangarIotController/triggerPublishConnectionState`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/hangarIotController/triggerPublishConnectionState`, deviceNameRequest)
     }
 
     triggerPublishPowerState(deviceNameRequest: DeviceNameRequest): Observable<void> {
         console.log('RestService.triggerPublishPowerState')
-        return this.http.post<void>(`${this.serviceUrl}/hangarIotController/triggerPublishPowerState`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/hangarIotController/triggerPublishPowerState`, deviceNameRequest)
     }
 
     triggerPublishSensorData(deviceNameRequest: DeviceNameRequest): Observable<void> {
         console.log('RestService.triggerPublishSensorData')
-        return this.http.post<void>(`${this.serviceUrl}/hangarIotController/triggerPublishSensorData`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/hangarIotController/triggerPublishSensorData`, deviceNameRequest)
     }
 
     getCommandList(): Observable<Array<CommandResponse>> {
-        return this.http.get<Array<CommandResponse>>(`${this.serviceUrl}/hangarIotController/getCommandList`)
+        return this.http.get<Array<CommandResponse>>(`${this.beRestServiceUrl}/hangarIotController/getCommandList`)
     }
 
     executeFreeFormatCommand(freeFormatCommandRequest: FreeFormatCommandRequest): Observable<string> {
         console.log('RestService.triggerSensorData')
-        return this.http.post<string>(`${this.serviceUrl}/hangarIotController/executeFreeFormatCommand`, freeFormatCommandRequest)
+        return this.http.post<string>(`${this.beRestServiceUrl}/hangarIotController/executeFreeFormatCommand`, freeFormatCommandRequest)
     }
 
     getTimers(deviceName: string): Observable<TimersRequestResponse2> {
-        return this.http.get<TimersRequestResponse2>(`${this.serviceUrl}/hangarIotController/getTimers?deviceName=${deviceName}`)
+        return this.http.get<TimersRequestResponse2>(`${this.beRestServiceUrl}/hangarIotController/getTimers?deviceName=${deviceName}`)
     }
     setTimers(timersRequestResponse: TimersRequestResponse2): Observable<string> {
-        return this.http.post<string>(`${this.serviceUrl}/hangarIotController/setTimers`, timersRequestResponse)
+        return this.http.post<string>(`${this.beRestServiceUrl}/hangarIotController/setTimers`, timersRequestResponse)
     }
 }

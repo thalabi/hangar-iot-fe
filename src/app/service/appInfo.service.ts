@@ -7,13 +7,13 @@ import { environment } from '../../environments/environment';
     providedIn: 'root'
 })
 export class AppInfoService {
-    readonly serviceUrl: string = environment.serviceUrl;
+    readonly beRestServiceUrl: string = environment.beRestServiceUrl;
 
     constructor(
         private http: HttpClient
     ) { }
 
     getBuildInfo(): Observable<string> {
-        return this.http.get(this.serviceUrl + '/appInfoController/getBuildInfo', { responseType: "text" });
+        return this.http.get(this.beRestServiceUrl + '/appInfoController/getBuildInfo', { responseType: "text" });
     }
 }
