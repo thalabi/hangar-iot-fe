@@ -5,9 +5,17 @@ import { RestService } from '../service/rest.service';
 import { DeviceNameRequest } from './DeviceNameRequest';
 import { TogglePowerRequest } from './TogglePowerRequest';
 import { BaseComponent } from '../base/base.component';
+import { CommonModule } from '@angular/common';
+import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { SelectButtonChangeEvent, SelectButtonModule } from 'primeng/selectbutton';
 
 @Component({
+    standalone: true,
     selector: 'app-dashboard',
+    imports: [CommonModule, FormsModule, DropdownModule, SelectModule, SelectButtonModule],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
@@ -42,7 +50,8 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         }
     }
 
-    toggleDevicePower(event: { originalEvent: PointerEvent, value: string }, deviceName: string) {
+    // toggleDevicePower(event: { originalEvent: PointerEvent, value: string }, deviceName: string) {
+    toggleDevicePower(event: SelectButtonChangeEvent, deviceName: string) {
         console.log('toggleDevicePower')
         console.log('event', event)
         console.log('changedValue', event.value)

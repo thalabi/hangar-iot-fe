@@ -4,9 +4,15 @@ import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
 import { CommandResponse } from './CommandResponse';
 import { FreeFormatCommandRequest } from './FreeFormatCommandRequest';
+import { CommonModule } from '@angular/common';
+import { FieldsetModule } from 'primeng/fieldset'
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
+    standalone: true,
     selector: 'app-execute-command',
+    imports: [CommonModule, FormsModule, DropdownModule, FieldsetModule],
     templateUrl: './execute-command.component.html',
     styleUrls: ['./execute-command.component.css']
 })
@@ -29,6 +35,8 @@ export class ExecuteCommandComponent implements OnInit {
     ngOnInit(): void {
         console.log('ngOnInit')
         this.messageService.clear()
+        console.log('this.deviceList', this.deviceList)
+        console.log('this.commandList', this.commandList)
 
         this.restService.getDeviceList()
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {

@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
+import { CommonModule } from '@angular/common';
+import { TableModule } from 'primeng/table';
+import { FormsModule } from '@angular/forms';
 
 @Component({
+    standalone: true,
     selector: 'app-page1',
+    imports: [CommonModule, FormsModule, TableModule],
     templateUrl: './device-list.component.html',
     styleUrls: ['./device-list.component.css']
 })

@@ -1,37 +1,44 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { CustomUserDetails } from '../login/CustomUserDetails';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { AuthService, UserInfo } from '../auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SessionService {
 
-    public tokenBehaviorSubject = new BehaviorSubject<string>('');
-    public customUserDetailsBehaviorSubject = new BehaviorSubject<CustomUserDetails>({} as CustomUserDetails);
-    public isAuthenticatedBehaviorSubject = new BehaviorSubject<boolean>(false);
-    public isTokenExpiredBehaviorSubject = new BehaviorSubject<boolean>(false);
-    //tokenObservable = this.tokenBehaviorSubject.asObservable();
-    //customUserDetailsObservable = this.customUserDetailsBehaviorSubject.asObservable();
-    //isAuthenticatedSourceObservable = this.isAuthenticatedBehaviorSubject.asObservable();
-    //isTokenExpiredSourceObservable = this.isTokenExpiredBehaviorSubject.asObservable();
+    private userInfoSource = new BehaviorSubject<UserInfo>({} as UserInfo);
+    public userInfo$ = this.userInfoSource.asObservable();
 
-    constructor() { }
+    private disableParentMessagesSource = new BehaviorSubject<boolean>(false)
+    public disableParentMessages$ = this.disableParentMessagesSource.asObservable()
 
-    setToken(token: string) {
-        console.log('setToken()')
-        this.tokenBehaviorSubject.next(token);
+    private backendExceptionstackTraceSource = new BehaviorSubject<string>('')
+    public backendExceptionstackTrace$ = this.backendExceptionstackTraceSource.asObservable()
+
+    constructor(private authService: AuthService) {
+        this.authService.isAuthenticated$
+            .pipe(distinctUntilChanged())
+            .subscribe(authenticated => {
+                console.log('authenticated', authenticated)
+                if (authenticated) {
+                    this.authService.getUserInfo().subscribe((userInfo: UserInfo) => {
+                        console.log('userInfo', userInfo)
+                        this.userInfoSource.next(userInfo)
+                    })
+                }
+            })
     }
-    setCustomUserDetails(customUserDetails: CustomUserDetails) {
-        console.log('setCustomUserDetails(), customUserDetails:', customUserDetails)
-        this.customUserDetailsBehaviorSubject.next(customUserDetails);
+
+    setDisableParentMessages(disableParentMessages: boolean) {
+        this.disableParentMessagesSource.next(disableParentMessages)
     }
-    setIsAuthenticated(isAuthenticated: boolean) {
-        console.log('setIsAuthenticated()')
-        this.isAuthenticatedBehaviorSubject.next(isAuthenticated);
+
+    setBackendExceptionstackTrace(backendExceptionstackTrace: string) {
+        this.backendExceptionstackTraceSource.next(backendExceptionstackTrace)
     }
-    setIsTokenExpired(isTokenExpired: boolean) {
-        console.log('setIsTokenExpired()')
-        this.isTokenExpiredBehaviorSubject.next(isTokenExpired);
+    clearBackendStackTrace() {
+        this.backendExceptionstackTraceSource.next('')
     }
+
 }

@@ -29,6 +29,7 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
         protected restService: RestService,
         protected rxStompService: RxStompService
     ) {
+        console.log('In BaseComponent constructor')
     }
 
     // ngOnInit(): void {

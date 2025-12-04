@@ -1,26 +1,26 @@
 export const environment = {
     production: false,
 
-    buildVersion: "",
-    buildTimestamp: "",
-    beRestServiceUrl: "",
+    buildVersion: "@buildVersion@",
+    buildTimestamp: "@buildTimestamp@",
+    beRestServiceUrl: "https://localhost:8444",
 
-    websocketUrl: "",
+    websocketUrl: "wss://localhost:8444/protected/hangar-iot-websocket",
 
     // when adding or changing keycloak json, update auth-config.ts and auth-module-config.ts as well
     keycloak: {
-        issuer: '',
-        clientId: '',
+        issuer: 'https://localhost:8083/realms/hi',
+        clientId: 'hi',
         requireHttps: true,
 
         // prefixes of urls to send with Bearer token
         // prefixes have to be in lowerr case
-        urlPrefixesWithBearerToken: ['']
+        urlPrefixesWithBearerToken: ['https://localhost:8444/protected']
     },
     idle: {
         // times are in seconds
-        inactivityTimer: '',
-        timeoutTimer: ''
+        inactivityTimer: '299',
+        timeoutTimer: '1'
     }
 };
 

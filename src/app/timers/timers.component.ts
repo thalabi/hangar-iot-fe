@@ -6,9 +6,18 @@ import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
 import { Timer } from './Timer';
 import { TimersRequestResponse2 } from './TimersRequestResponse2';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { TableEditCompleteEvent, TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { SelectChangeEvent, SelectModule } from 'primeng/select';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
+    standalone: true,
     selector: 'app-timers',
+    imports: [CommonModule, FormsModule, DropdownModule, ButtonModule, TableModule, MultiSelectModule],
     templateUrl: './timers.component.html',
     styleUrls: ['./timers.component.css']
 })
