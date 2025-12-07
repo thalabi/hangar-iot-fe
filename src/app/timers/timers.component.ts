@@ -6,18 +6,17 @@ import { DeviceResponse } from '../dashboard/DeviceResponse';
 import { RestService } from '../service/rest.service';
 import { Timer } from './Timer';
 import { TimersRequestResponse2 } from './TimersRequestResponse2';
-import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
-import { TableEditCompleteEvent, TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { SelectChangeEvent, SelectModule } from 'primeng/select';
+import { TableModule } from 'primeng/table';
+import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     standalone: true,
     selector: 'app-timers',
-    imports: [CommonModule, FormsModule, DropdownModule, ButtonModule, TableModule, MultiSelectModule],
+    imports: [CommonModule, FormsModule, SelectModule, ButtonModule, TableModule, MultiSelectModule],
     templateUrl: './timers.component.html',
     styleUrls: ['./timers.component.css']
 })
@@ -34,12 +33,36 @@ export class TimersComponent extends BaseComponent implements OnInit, OnDestroy 
 
     enableDisableTimers: any = [{ label: 'Off', value: 'OFF' }, { label: 'On', value: 'ON' }]
 
-    yesNo: string[] = ['Yes', 'No']
-    hours: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
-    minutes: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59']
-    onOff: string[] = ['On', 'Off']
-    daysOfWeek: any = [{ name: 'Sunday', code: 'Su' }, { name: 'Monday', code: 'M' }, { name: 'Tuesday', code: 'Tu' }, { name: 'Wednesday', code: 'W' }, { name: 'Thursday', code: 'Th' }, { name: 'Friday', code: 'F' }, { name: 'Saturday', code: 'Sa' }]
+    // yesNo: string[] = ['Yes', 'No']
+    yesNo = [
+        { label: 'Yes', value: 'Yes' },
+        { label: 'No', value: 'No' }
+    ];
+    // onOff: string[] = ['On', 'Off']
+    onOff = [
+        { label: 'On', value: 'On' },
+        { label: 'Off', value: 'Off' }
+    ];
 
+    // minutes: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59']
+    minutes = Array.from({ length: 60 }, (_, i) => {
+        const m = i.toString().padStart(2, '0');
+        return { label: m, value: m };
+    });
+    // hours: string[] = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+    hours = Array.from({ length: 24 }, (_, i) => {
+        const h = i.toString().padStart(2, '0');
+        return { label: h, value: h };
+    });
+    daysOfWeek = [
+        { name: 'Sunday', code: 'Su' },
+        { name: 'Monday', code: 'M' },
+        { name: 'Tuesday', code: 'Tu' },
+        { name: 'Wednesday', code: 'W' },
+        { name: 'Thursday', code: 'Th' },
+        { name: 'Friday', code: 'F' },
+        { name: 'Saturday', code: 'Sa' }
+    ];
 
     constructor(
         protected override restService: RestService,

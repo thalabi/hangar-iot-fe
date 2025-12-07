@@ -7,25 +7,28 @@ import { FreeFormatCommandRequest } from './FreeFormatCommandRequest';
 import { CommonModule } from '@angular/common';
 import { FieldsetModule } from 'primeng/fieldset'
 import { FormsModule } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     standalone: true,
     selector: 'app-execute-command',
-    imports: [CommonModule, FormsModule, DropdownModule, FieldsetModule],
+    imports: [CommonModule, FormsModule, SelectModule, FieldsetModule, ButtonModule],
     templateUrl: './execute-command.component.html',
     styleUrls: ['./execute-command.component.css']
 })
 export class ExecuteCommandComponent implements OnInit {
 
-    deviceResponseList: Array<DeviceResponse> = {} as Array<DeviceResponse>;
-    commandResponseList: Array<CommandResponse> = {} as Array<CommandResponse>;
+    deviceResponseList: Array<DeviceResponse> = []//{} as Array<DeviceResponse>;
+    commandResponseList: Array<CommandResponse> = []//{} as Array<CommandResponse>;
     deviceList: string[] = []
     commandList: string[] = []
     selectedDevice: string = ''
     selectedCommand: string = ''
     arguments: string = ''
     commandResult: string = ''
+
+    htmlSnippetDisabled = true
 
     constructor(
         private restService: RestService,
@@ -37,6 +40,8 @@ export class ExecuteCommandComponent implements OnInit {
         this.messageService.clear()
         console.log('this.deviceList', this.deviceList)
         console.log('this.commandList', this.commandList)
+
+
 
         this.restService.getDeviceList()
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {

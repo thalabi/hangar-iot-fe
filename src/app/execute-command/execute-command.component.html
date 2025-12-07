@@ -4,10 +4,10 @@
 
         <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Device</label>
 
-        <p-dropdown id="deviceSelection" [options]="deviceResponseList" [(ngModel)]="selectedDevice"
+        <p-select id="deviceSelection" [options]="deviceResponseList" [(ngModel)]="selectedDevice"
             optionLabel="description" optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)"
             [showClear]="true">
-        </p-dropdown>
+        </p-select>
 
     </div>
 </div>
@@ -18,9 +18,9 @@
 
             <label for="commandSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Command</label>
 
-            <p-dropdown id="commandSelection" [options]="commandList" [(ngModel)]="selectedCommand"
+            <p-select id="commandSelection" [options]="commandList" [(ngModel)]="selectedCommand"
                 placeholder="Select command" (onChange)="onSelectCommand($event)" [showClear]="true">
-            </p-dropdown>
+            </p-select>
 
         </div>
     </div>

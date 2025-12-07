@@ -6,16 +6,14 @@ import { DeviceNameRequest } from './DeviceNameRequest';
 import { TogglePowerRequest } from './TogglePowerRequest';
 import { BaseComponent } from '../base/base.component';
 import { CommonModule } from '@angular/common';
-import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
 import { SelectButtonChangeEvent, SelectButtonModule } from 'primeng/selectbutton';
 
 @Component({
     standalone: true,
     selector: 'app-dashboard',
-    imports: [CommonModule, FormsModule, DropdownModule, SelectModule, SelectButtonModule],
+    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })

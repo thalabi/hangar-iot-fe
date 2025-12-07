@@ -4,11 +4,11 @@
 
         <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 4rem;">Device</label>
 
-        <p-dropdown id="deviceSelection" [options]="deviceAttributesMap | keyvalue" [(ngModel)]="selectedDevice"
+        <p-select id="deviceSelection" [options]="deviceAttributesMap | keyvalue" [(ngModel)]="selectedDevice"
             optionLabel="value.description" optionValue="key" placeholder="Select device"
             (onChange)="onSelectDevice($event)" [showClear]="true"
-            optionDisabled="deviceAttributesMap[selectedDevice].online">
-        </p-dropdown>
+            optionDisabled="deviceAttributesMap[selectedDevice]?.online">
+        </p-select>
 
     </div>
 </div>
@@ -45,8 +45,8 @@
                         <td style="text-align:center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <p-dropdown [options]="yesNo" [(ngModel)]="timer.enableUi">
-                                    </p-dropdown>
+                                    <p-select [options]="yesNo" [(ngModel)]="timer.enableUi">
+                                    </p-select>
                                 </ng-template>
                                 <ng-template pTemplate="output">{{timer.enableUi}}</ng-template>
                             </p-cellEditor>
@@ -54,9 +54,9 @@
                         <td style="text-align:center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <p-dropdown [options]="hours" [(ngModel)]="timer.timeHh">
-                                    </p-dropdown>:<p-dropdown [options]="minutes" [(ngModel)]="timer.timeMm">
-                                    </p-dropdown>
+                                    <p-select [options]="hours" [(ngModel)]="timer.timeHh">
+                                    </p-select>:<p-select [options]="minutes" [(ngModel)]="timer.timeMm">
+                                    </p-select>
                                 </ng-template>
                                 <ng-template pTemplate="output">{{timer.timeHh}}:{{timer.timeMm}}
                                 </ng-template>
@@ -65,7 +65,6 @@
                         <td style="text-align:center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <!-- <input pInputText type="text" [(ngModel)]="timer.days" required style="width: 5rem;"> -->
                                     <p-multiSelect [options]="daysOfWeek" [(ngModel)]="timer.daysUi"
                                         defaultLabel="Select Day(s)" optionLabel="name" optionValue="code"
                                         selectedItemsLabel="{0} items selected"></p-multiSelect>
@@ -76,8 +75,8 @@
                         <td style="text-align:center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <p-dropdown [options]="onOff" [(ngModel)]="timer.actionUi">
-                                    </p-dropdown>
+                                    <p-select [options]="onOff" [(ngModel)]="timer.actionUi">
+                                    </p-select>
 
                                 </ng-template>
                                 <ng-template pTemplate="output">{{timer.actionUi}}</ng-template>

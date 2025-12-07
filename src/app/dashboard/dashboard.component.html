@@ -25,10 +25,10 @@
             <label for="sensorDataSelection" class="font-bold col-fixed p-component" style="width: 8rem;">Sensor
                 data</label>
 
-            <p-dropdown id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
+            <p-select id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
                 [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.description" optionValue="key"
                 placeholder=" Select device" (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true">
-            </p-dropdown>
+            </p-select>
 
         </div>
     </div>
