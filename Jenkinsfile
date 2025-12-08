@@ -42,7 +42,7 @@ pipeline {
                 pwd
 
                 export PATH=/var/lib/jenkins/nodejs/node-v20.19.6-linux-x64/bin/:$PATH
-                npm install && node_modules/.bin/ng build
+                npm install && node_modules/.bin/ng build --inline-critical-css=false
                 '''
             }
 		}
