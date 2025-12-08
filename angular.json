@@ -54,7 +54,13 @@
                         "styles": [
                             "src/styles.css"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "optimization": {
+                            "styles": {
+                                "minify": true,
+                                "inlineCritical": false
+                            }
+                        }
                     },
                     "configurations": {
                         "production": {
