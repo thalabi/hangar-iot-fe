@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonChangeEvent, SelectButtonModule } from 'primeng/selectbutton';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     standalone: true,
     selector: 'app-dashboard',
-    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule],
+    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
