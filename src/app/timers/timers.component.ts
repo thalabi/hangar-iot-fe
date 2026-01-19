@@ -72,11 +72,11 @@ export class TimersComponent extends BaseComponent implements OnInit, OnDestroy 
         super(restService, rxStompService);
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         console.log('ngOnInit')
         this.messageService.clear()
 
-        super.init()
+        super.ngOnInit()
     }
 
     onSelectDevice(event: any) {
@@ -172,8 +172,8 @@ export class TimersComponent extends BaseComponent implements OnInit, OnDestroy 
 
     }
 
-    ngOnDestroy(): void {
-        super.destroy()
+    override ngOnDestroy(): void {
+        super.ngOnDestroy()
     }
 
     private getTimers() {

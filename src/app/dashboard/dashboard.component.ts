@@ -32,11 +32,11 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         super(restService, rxStompService);
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         console.log('ngOnInit')
         this.messageService.clear()
 
-        super.init()
+        super.ngOnInit()
     }
 
     private triggerPublishSensorData(deviceName: string) {
@@ -87,8 +87,8 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         this.triggerPublishSensorData(this.selectedDeviceNameForSensorData)
     }
 
-    ngOnDestroy(): void {
-        super.destroy()
+    override ngOnDestroy(): void {
+        super.ngOnDestroy()
     }
 
     private sleep(ms: number) {

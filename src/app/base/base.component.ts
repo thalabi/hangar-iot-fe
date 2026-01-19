@@ -1,8 +1,10 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 
-import { BehaviorSubject, distinctUntilChanged, skip, Subscription, take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { BehaviorSubject, distinctUntilChanged, skip, Subscription, switchMap, take, tap } from 'rxjs';
 import { ConnectionStateResponse } from '../dashboard/ConnectionStateResponse';
 import { DeviceAttributes } from '../dashboard/DeviceAttributes';
 import { DeviceNameRequest } from '../dashboard/DeviceNameRequest';
@@ -20,7 +22,7 @@ import { RestService } from '../service/rest.service';
   `,
     styleUrls: ['./base.component.css']
 })
-export class BaseComponent /*implements OnInit, OnDestroy*/ {
+export class BaseComponent implements OnInit, OnDestroy {
 
     protected destroyRef = inject(DestroyRef);
 
@@ -28,48 +30,50 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
     public subscriptionArray: Array<Subscription> = []
 
     constructor(
+        // protected destroyRef: DestroyRef,
         protected restService: RestService,
         protected rxStompService: RxStompService
     ) {
         console.log('In BaseComponent constructor')
+
+        this.destroyRef.onDestroy(() => {
+            console.log('Cleanup logic runs');
+        });
     }
 
-    // ngOnInit(): void {
-    // }
-
-    protected init() {
+    public ngOnInit() {
         this.restService.getDeviceList()
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((deviceResponseList: Array<DeviceResponse>) => {
                 console.log('deviceResponseList', deviceResponseList)
                 //this.deviceResponseList = deviceResponseList
                 deviceResponseList.forEach(deviceResponse => {
-                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, telemetry: deviceResponse.telemetry, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) }
-                })
-
+                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, telemetry: deviceResponse.telemetry, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
+                });
 
                 this.rxStompService.activate();
-
 
                 //console.log('connected?', this.rxStompService.connected())
 
                 // wait for connection to be established before subscribing to topics
                 this.rxStompService.connected$
-                    // .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
-                    .pipe(take(1)) // automatically unsubscribe on destroy
+                    .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
                     .subscribe(rsStompState => {
-                        this.webSocketConnectAndSubscribe()
-                        this.triggerPublishConnectionState()
-                        this.triggerPublishPowerState()
+                        this.webSocketConnectAndSubscribe();
+                        this.triggerPublishConnectionState();
+                        this.triggerPublishPowerState();
 
-                        console.log('this.deviceAttributesMap', this.deviceAttributesMap)
-                    })
+                        console.log('this.deviceAttributesMap', this.deviceAttributesMap);
+                    });
             });
 
     }
 
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7
     private webSocketConnectAndSubscribe(): void {
-        // this.rxStompService.activate()
+        // Unsubscribe from previous topic listeners before creating new ones.
+        // Otherwise, every reconnection adds a duplicate listener.
+        this.subscriptionArray.forEach(sub => sub.unsubscribe());
 
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
@@ -77,34 +81,43 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
             // console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/POWER`)
             console.log(`subscribing to topic: /topic/${deviceName}/power`)
             // let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/stat/${deviceName}/POWER`).subscribe((message: Message) => {
-            let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/${deviceName}/power`).subscribe((message: Message) => {
-                console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+            // let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/${deviceName}/power`)
+            this.rxStompService.watch(`/topic/${deviceName}/power`)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((message: Message) => {
+                    console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
-                this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
-                this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
-            });
-            this.subscriptionArray.push(powerTopicSubscription)
+                    this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
+                    this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
+                });
+            // this.subscriptionArray.push(powerTopicSubscription)
 
             // subscribe to SENSOR telemetry topic if device is capable of sending telemetry data
             if (this.deviceAttributesMap[deviceName]?.telemetry) {
 
                 console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
-                let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`).subscribe((message: Message) => {
-                    console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
-                    this.deviceAttributesMap[deviceName].sensorData = JSON.parse(message.body);
-                });
-                this.subscriptionArray.push(sensorTopSubscription)
+                // let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`)
+                this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe((message: Message) => {
+                        console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+                        this.deviceAttributesMap[deviceName].sensorData = JSON.parse(message.body);
+                    });
+                // this.subscriptionArray.push(sensorTopSubscription)
             }
 
             console.log(`subscribing to topic: /topic/${deviceName}/state`)
-            let stateTopicSubscription: Subscription = this.rxStompService.watch(`/topic/${deviceName}/state`).subscribe((message: Message) => {
-                console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+            // let stateTopicSubscription: Subscription = this.rxStompService.watch(`/topic/${deviceName}/state`)
+            this.rxStompService.watch(`/topic/${deviceName}/state`)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((message: Message) => {
+                    console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
-                //this.deviceAttributesMap[deviceName].connectionState = JSON.parse(message.body);
-                this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject.next(JSON.parse(message.body));
+                    //this.deviceAttributesMap[deviceName].connectionState = JSON.parse(message.body);
+                    this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject.next(JSON.parse(message.body));
 
-            });
-            this.subscriptionArray.push(stateTopicSubscription)
+                });
+            // this.subscriptionArray.push(stateTopicSubscription)
 
         })
     }
@@ -133,10 +146,11 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
 
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
-            let connectionStateSubscription = this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject
+            this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject
                 .pipe(
-                    skip(1), // Ignore the current value emitted on subscribe
-                    distinctUntilChanged((prev, curr) => prev.state === curr.state) // Only fire if state actually changes
+                    takeUntilDestroyed(this.destroyRef),
+                    distinctUntilChanged((prev, curr) => prev.state === curr.state), // Only fire if state actually changes
+                    skip(1) // Ignore the current value emitted on subscribe
                 )
                 .subscribe((connectionStateResponse: ConnectionStateResponse) => {
                     console.log('deviceName: [%s] connectionStateResponse: [%o]', deviceName, connectionStateResponse)
@@ -148,7 +162,6 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
                         this.restService.triggerPublishPowerState(deviceNameRequest).pipe(take(1)).subscribe()
                     }
                 })
-            this.subscriptionArray.push(connectionStateSubscription)
         });
     }
 
@@ -158,11 +171,8 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    protected destroy() {
+    public ngOnDestroy() {
         this.webSocketUnsubscribeAndDisconnect()
     }
-}
-function takeUntilDestroyed(destroyRef: DestroyRef): import("rxjs").OperatorFunction<import("@stomp/rx-stomp").RxStompState, unknown> {
-    throw new Error('Function not implemented.');
 }
 
