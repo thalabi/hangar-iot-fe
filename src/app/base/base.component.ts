@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { Message } from '@stomp/stompjs';
 
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, skip, Subscription, take } from 'rxjs';
 import { ConnectionStateResponse } from '../dashboard/ConnectionStateResponse';
 import { DeviceAttributes } from '../dashboard/DeviceAttributes';
 import { DeviceNameRequest } from '../dashboard/DeviceNameRequest';
@@ -21,6 +21,8 @@ import { RestService } from '../service/rest.service';
     styleUrls: ['./base.component.css']
 })
 export class BaseComponent /*implements OnInit, OnDestroy*/ {
+
+    protected destroyRef = inject(DestroyRef);
 
     public deviceAttributesMap: Record<string, DeviceAttributes> = {} as any;
     public subscriptionArray: Array<Subscription> = []
@@ -51,14 +53,16 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
                 //console.log('connected?', this.rxStompService.connected())
 
                 // wait for connection to be established before subscribing to topics
-                let rxStompServiceConnectedSubscription = this.rxStompService.connected$.subscribe(rsStompState => {
-                    this.webSocketConnectAndSubscribe()
-                    this.triggerPublishConnectionState()
-                    this.triggerPublishPowerState()
+                this.rxStompService.connected$
+                    // .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
+                    .pipe(take(1)) // automatically unsubscribe on destroy
+                    .subscribe(rsStompState => {
+                        this.webSocketConnectAndSubscribe()
+                        this.triggerPublishConnectionState()
+                        this.triggerPublishPowerState()
 
-                    console.log('this.deviceAttributesMap', this.deviceAttributesMap)
-                })
-                this.subscriptionArray.push(rxStompServiceConnectedSubscription)
+                        console.log('this.deviceAttributesMap', this.deviceAttributesMap)
+                    })
             });
 
     }
@@ -130,6 +134,10 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
             let connectionStateSubscription = this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject
+                .pipe(
+                    skip(1), // Ignore the current value emitted on subscribe
+                    distinctUntilChanged((prev, curr) => prev.state === curr.state) // Only fire if state actually changes
+                )
                 .subscribe((connectionStateResponse: ConnectionStateResponse) => {
                     console.log('deviceName: [%s] connectionStateResponse: [%o]', deviceName, connectionStateResponse)
                     if (connectionStateResponse.state === 'ONLINE') {
@@ -137,7 +145,7 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
                         deviceNameRequest.deviceName = deviceName
 
                         // trigger publishing power state
-                        this.restService.triggerPublishPowerState(deviceNameRequest).subscribe()
+                        this.restService.triggerPublishPowerState(deviceNameRequest).pipe(take(1)).subscribe()
                     }
                 })
             this.subscriptionArray.push(connectionStateSubscription)
@@ -154,3 +162,7 @@ export class BaseComponent /*implements OnInit, OnDestroy*/ {
         this.webSocketUnsubscribeAndDisconnect()
     }
 }
+function takeUntilDestroyed(destroyRef: DestroyRef): import("rxjs").OperatorFunction<import("@stomp/rx-stomp").RxStompState, unknown> {
+    throw new Error('Function not implemented.');
+}
+

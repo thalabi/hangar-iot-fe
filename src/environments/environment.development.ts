@@ -19,7 +19,7 @@ export const environment = {
     },
     idle: {
         // times are in seconds
-        inactivityTimer: '299',
+        inactivityTimer: '299', // 5 minutes minus 1 second
         timeoutTimer: '1'
     }
 };

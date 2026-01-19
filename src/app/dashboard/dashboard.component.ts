@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnDestroy, OnInit } from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { MessageService } from 'primeng/api';
 import { RestService } from '../service/rest.service';
