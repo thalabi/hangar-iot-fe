@@ -20,7 +20,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class DashboardComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    powerStateOptions: any = [{ label: 'Off', value: 'OFF' }, { label: 'On', value: 'ON' }]
+    powerStateOptions: any = [{ label: 'Off', value: 'off' }, { label: 'On', value: 'on' }]
 
     selectedDeviceNameForSensorData: string = ''
 
@@ -58,7 +58,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         const powerStateRequested = event.value
         const togglePowerRequest: TogglePowerRequest = { deviceName, powerStateRequested }
 
-        if (powerStateRequested === this.deviceAttributesMap[deviceName].savedPowerState.POWER) {
+        if (powerStateRequested === this.deviceAttributesMap[deviceName].savedPowerState.power) {
             return
         }
 
