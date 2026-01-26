@@ -42,7 +42,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     private triggerPublishSensorData(deviceName: string) {
         console.log('triggerPublishSensorData()')
         // trigger publishing sensor data if device supports it
-        if (this.deviceAttributesMap[deviceName]?.telemetry) {
+        if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
             const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
             deviceNameRequest.deviceName = deviceName
             this.restService.triggerPublishSensorData(deviceNameRequest).subscribe()
@@ -67,7 +67,7 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
                 {
                     complete: () => {
                         // trigger sensor data only if device supports telemetry
-                        if (this.deviceAttributesMap[deviceName]?.telemetry) {
+                        if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
                             this.restService.triggerPublishSensorData(togglePowerRequest).subscribe()
                         }
 

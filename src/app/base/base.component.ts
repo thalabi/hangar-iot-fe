@@ -8,7 +8,7 @@ import { BehaviorSubject, distinctUntilChanged, skip, Subscription, switchMap, t
 import { ConnectionStateResponse } from '../dashboard/ConnectionStateResponse';
 import { DeviceAttributes } from '../dashboard/DeviceAttributes';
 import { DeviceNameRequest } from '../dashboard/DeviceNameRequest';
-import { DeviceResponse } from '../dashboard/DeviceResponse';
+import { Device } from '../dashboard/Device';
 import { PowerStateResponse } from '../dashboard/PowerStateResponse';
 import { SensorDataResponse } from '../dashboard/SensorDataResponse';
 import { RestService } from '../service/rest.service';
@@ -39,11 +39,11 @@ export class BaseComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this.restService.getDeviceList()
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((deviceResponseList: Array<DeviceResponse>) => {
+            .subscribe((deviceResponseList: Array<Device>) => {
                 console.log('deviceResponseList', deviceResponseList)
                 //this.deviceResponseList = deviceResponseList
                 deviceResponseList.forEach(deviceResponse => {
-                    this.deviceAttributesMap[deviceResponse.name] = { description: deviceResponse.description, telemetry: deviceResponse.telemetry, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
+                    this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
                 });
 
                 this.rxStompService.activate();
@@ -82,7 +82,7 @@ export class BaseComponent implements OnInit, OnDestroy {
                 });
 
             // subscribe to SENSOR telemetry topic if device is capable of sending telemetry data
-            if (this.deviceAttributesMap[deviceName]?.telemetry) {
+            if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
 
                 console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
                 // let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`)
@@ -140,7 +140,8 @@ export class BaseComponent implements OnInit, OnDestroy {
                 )
                 .subscribe((connectionStateResponse: ConnectionStateResponse) => {
                     console.log('deviceName: [%s] connectionStateResponse: [%o]', deviceName, connectionStateResponse)
-                    if (connectionStateResponse.state === 'ONLINE') {
+                    const passive = this.deviceAttributesMap[deviceName].device.passive;
+                    if (! /* not */ passive && connectionStateResponse.state === 'ONLINE') {
                         const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
                         deviceNameRequest.deviceName = deviceName
 

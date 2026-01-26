@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService, SharedModule } from 'primeng/api';
-import { DeviceResponse } from '../dashboard/DeviceResponse';
+import { Device } from '../dashboard/Device';
 import { RestService } from '../service/rest.service';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class DeviceListComponent implements OnInit {
     deviceNameList: Array<string> = []
-    deviceList: Array<DeviceResponse> = []
+    deviceList: Array<Device> = []
     constructor(
         private restService: RestService,
         private messageService: MessageService
@@ -26,7 +26,7 @@ export class DeviceListComponent implements OnInit {
         this.messageService.clear()
 
         this.restService.getDeviceList()
-            .subscribe((deviceResponseList: Array<DeviceResponse>) => {
+            .subscribe((deviceResponseList: Array<Device>) => {
                 console.log('deviceResponseList', deviceResponseList)
                 this.deviceList = deviceResponseList
                 deviceResponseList.forEach(deviceResponse => {

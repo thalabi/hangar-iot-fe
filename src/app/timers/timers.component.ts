@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { MessageService } from 'primeng/api';
 import { BaseComponent } from '../base/base.component';
-import { DeviceResponse } from '../dashboard/DeviceResponse';
+import { Device } from '../dashboard/Device';
 import { RestService } from '../service/rest.service';
 import { Timer } from './Timer';
 import { TimersRequestResponse2 } from './TimersRequestResponse2';
@@ -22,7 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class TimersComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    deviceResponseList: Array<DeviceResponse> = {} as Array<DeviceResponse>;
+    deviceResponseList: Array<Device> = {} as Array<Device>;
     timersRequestResponse: TimersRequestResponse2 = {} as TimersRequestResponse2
     selectedDevice: string = ''
     timersEnable: boolean = false

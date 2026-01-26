@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DeviceNameRequest } from '../dashboard/DeviceNameRequest';
-import { DeviceResponse } from '../dashboard/DeviceResponse';
+import { Device } from '../dashboard/Device';
 import { environment } from '../../environments/environment';
 import { CommandResponse } from '../execute-command/CommandResponse';
 import { FreeFormatCommandRequest } from '../execute-command/FreeFormatCommandRequest';
@@ -27,8 +27,8 @@ export class RestService {
         this.beRestServiceUrl = environment.beRestServiceUrl
     }
 
-    getDeviceList(): Observable<Array<DeviceResponse>> {
-        return this.http.get<Array<DeviceResponse>>(`${this.beRestServiceUrl}/protected/hangarIotController/getDeviceList`)
+    getDeviceList(): Observable<Array<Device>> {
+        return this.http.get<Array<Device>>(`${this.beRestServiceUrl}/protected/hangarIotController/getDeviceList`)
     }
 
     togglePower(deviceNameRequest: TogglePowerRequest): Observable<void> {

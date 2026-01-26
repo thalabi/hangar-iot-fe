@@ -6,15 +6,25 @@
             <!-- <ng-container *ngIf="deviceAttributesMap[entry.key]?.powerState?.POWER"> -->
 
             <label for="deviceState" class="font-bold col-fixed p-component"
-                style="width: 8rem;">{{deviceAttributesMap[entry.key].description}}</label>
+                style="width: 8rem;">{{deviceAttributesMap[entry.key].device.description}}</label>
 
-            <p-selectButton id="deviceState" [options]="powerStateOptions" optionLabel="label" optionValue="value"
-                [(ngModel)]="deviceAttributesMap[entry.key].powerState.power"
-                (onChange)="toggleDevicePower($event, entry.key)"
-                [disabled]="(deviceAttributesMap[entry.key].connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
-            </p-selectButton>
-
-            <!-- </ng-container> -->
+            <ng-container
+                *ngIf="entry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container>
+            <ng-template #activeDeviceTemplate>
+                <p-selectButton id="deviceState" [options]="powerStateOptions" optionLabel="label" optionValue="value"
+                    [(ngModel)]="deviceAttributesMap[entry.key].powerState.power"
+                    (onChange)="toggleDevicePower($event, entry.key)"
+                    [disabled]="(deviceAttributesMap[entry.key].connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
+                </p-selectButton>
+            </ng-template>
+            <ng-template #passiveDeviceTemplate>
+                passive device
+                <!-- <p-selectButton id="deviceState" [options]="powerStateOptions" optionLabel="label" optionValue="value"
+                    [(ngModel)]="deviceAttributesMap[entry.key].powerState.power"
+                    (onChange)="toggleDevicePower($event, entry.key)"
+                    [disabled]="(deviceAttributesMap[entry.key].connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
+                </p-selectButton> -->
+            </ng-template>
         </div>
     </div>
 
@@ -84,7 +94,7 @@
 
     <div style="margin-left: 1rem; margin-top: 0.5rem;">
         <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)"
-            [disabled]="! selectedDeviceNameForSensorData || ! deviceAttributesMap[selectedDeviceNameForSensorData].telemetry
+            [disabled]="! selectedDeviceNameForSensorData || ! deviceAttributesMap[selectedDeviceNameForSensorData].device.telemetry
             || (deviceAttributesMap[selectedDeviceNameForSensorData].connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></button>
     </div>
 </ng-container>

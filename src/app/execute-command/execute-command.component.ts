@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { DeviceResponse } from '../dashboard/DeviceResponse';
+import { Device } from '../dashboard/Device';
 import { RestService } from '../service/rest.service';
 import { CommandResponse } from './CommandResponse';
 import { FreeFormatCommandRequest } from './FreeFormatCommandRequest';
@@ -19,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class ExecuteCommandComponent implements OnInit {
 
-    deviceResponseList: Array<DeviceResponse> = []//{} as Array<DeviceResponse>;
+    deviceResponseList: Array<Device> = []//{} as Array<DeviceResponse>;
     commandResponseList: Array<CommandResponse> = []//{} as Array<CommandResponse>;
     deviceList: string[] = []
     commandList: string[] = []
@@ -44,7 +44,7 @@ export class ExecuteCommandComponent implements OnInit {
 
 
         this.restService.getDeviceList()
-            .subscribe((deviceResponseList: Array<DeviceResponse>) => {
+            .subscribe((deviceResponseList: Array<Device>) => {
                 console.log('deviceResponseList', deviceResponseList)
                 this.deviceResponseList = deviceResponseList
                 this.deviceResponseList.forEach(deviceResponse => {

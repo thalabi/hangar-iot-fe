@@ -4,7 +4,6 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Location</th>
             <th>Type</th>
             <th>Telemetry</th>
             <th>Make</th>
@@ -15,6 +14,9 @@
             <th>TZ</th>
             <th>Time DST</th>
             <th>Time STD</th>
+            <th>Location</th>
+            <th>Bridge</th>
+            <th>Passive</th>
             <th>Group</th>
         </tr>
     </ng-template>
@@ -22,18 +24,19 @@
         <tr>
             <td>{{device.name}}</td>
             <td>{{device.description}}</td>
-            <td>{{device.location}}</td>
             <td>{{device.deviceType}}</td>
-            <!-- <td>{{device.telemetry | boolean}}</td> -->
             <td>{{device.telemetry}}</td>
-            <td>{{device.iotDeviceMake}}</td>
-            <td>{{device.iotDeviceModel}}</td>
+            <td>{{device.make}}</td>
+            <td>{{device.model}}</td>
             <td>{{device.enableDataSaver}}</td>
-            <td>{{device.config.latitudeDegrees}}</td>
-            <td>{{device.config.longitudeDegrees}}</td>
-            <td>{{device.config.timezoneOffset}}</td>
-            <td>{{device.config.timeDst}}</td>
-            <td>{{device.config.timeStd}}</td>
+            <td>{{device.deviceConfig.latitudeDegrees}}</td>
+            <td>{{device.deviceConfig.longitudeDegrees}}</td>
+            <td>{{device.deviceConfig.timezoneOffset}}</td>
+            <td>{{device.deviceConfig.timeDst}}</td>
+            <td>{{device.deviceConfig.timeStd}}</td>
+            <td>{{device.location}}</td>
+            <td>{{device.bridge}}</td>
+            <td>{{device.passive}}</td>
             <td>{{device.group}}</td>
     </ng-template>
 </p-table>

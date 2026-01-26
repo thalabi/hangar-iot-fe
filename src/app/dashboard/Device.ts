@@ -1,17 +1,19 @@
-export interface DeviceResponse {
+export interface Device {
     name: string
     description: string
-    location: string
     deviceType: string
     telemetry: boolean
-    iotDeviceMake: string
-    iotDeviceModel: string
+    make: string
+    model: string
     enableDataSaver: boolean
-    config: {
+    deviceConfig: {
         latitudeDegrees: number
         longtitudeDegrees: number
         timezoneOffset: string
         timeDst: string
         timeStd: string
     }
+    location: string
+    bridge: string
+    passive: boolean
 }
