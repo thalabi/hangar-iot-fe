@@ -36,7 +36,7 @@
                 data</label>
 
             <p-select id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
-                [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.description" optionValue="key"
+                [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.device.description" optionValue="key"
                 placeholder=" Select device" (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true">
             </p-select>
 

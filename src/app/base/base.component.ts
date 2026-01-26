@@ -68,10 +68,7 @@ export class BaseComponent implements OnInit, OnDestroy {
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
             // subscribe to POWER state topic
-            // console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/POWER`)
             console.log(`subscribing to topic: /topic/${deviceName}/power`)
-            // let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/stat/${deviceName}/POWER`).subscribe((message: Message) => {
-            // let powerTopicSubscription: Subscription = this.rxStompService.watch(`/topic/${deviceName}/power`)
             this.rxStompService.watch(`/topic/${deviceName}/power`)
                 .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
                 .subscribe((message: Message) => {
@@ -85,7 +82,6 @@ export class BaseComponent implements OnInit, OnDestroy {
             if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
 
                 console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
-                // let sensorTopSubscription: Subscription = this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`)
                 this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`)
                     .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
                     .subscribe((message: Message) => {
@@ -101,7 +97,6 @@ export class BaseComponent implements OnInit, OnDestroy {
                 .subscribe((message: Message) => {
                     console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
-                    //this.deviceAttributesMap[deviceName].connectionState = JSON.parse(message.body);
                     this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject.next(JSON.parse(message.body));
 
                 });
