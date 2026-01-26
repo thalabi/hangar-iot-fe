@@ -16,4 +16,5 @@ export interface Device {
     location: string
     bridge: string
     passive: boolean
+    isManaged: boolean
 }
