@@ -12,6 +12,7 @@ import { Device } from '../dashboard/Device';
 import { PowerStateResponse } from '../dashboard/PowerStateResponse';
 import { SensorDataResponse } from '../dashboard/SensorDataResponse';
 import { RestService } from '../service/rest.service';
+import { Area } from '../dashboard/Area';
 
 @Component({
     selector: 'app-base',
@@ -27,6 +28,8 @@ export class BaseComponent implements OnInit, OnDestroy {
     protected destroyRef = inject(DestroyRef);
 
     public deviceAttributesMap: Record<string, DeviceAttributes> = {} as any;
+    public zoneMap: Record<string, Zone> = {} as any;
+    public areaMap: Record<string, Area> = {} as any;
 
     constructor(
         // protected destroyRef: DestroyRef,
@@ -42,9 +45,8 @@ export class BaseComponent implements OnInit, OnDestroy {
             .subscribe((deviceResponseList: Array<Device>) => {
                 console.log('deviceResponseList', deviceResponseList)
                 //this.deviceResponseList = deviceResponseList
-                deviceResponseList.forEach(deviceResponse => {
-                    this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
-                });
+                this.populateDeviceAttributesMap(deviceResponseList);
+                this.populateZoneAndAreaMaps(deviceResponseList);
 
                 this.rxStompService.activate();
 
@@ -60,6 +62,24 @@ export class BaseComponent implements OnInit, OnDestroy {
                     });
             });
 
+    }
+
+    private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
+        deviceResponseList.forEach(deviceResponse => {
+            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
+        });
+    }
+    private populateZoneAndAreaMaps(deviceResponseList: Array<Device>) {
+        deviceResponseList.forEach(deviceResponse => {
+            if (deviceResponse.zone) {
+                this.zoneMap[deviceResponse.zone.name] = deviceResponse.zone;
+            }
+            if (deviceResponse.area) {
+                this.areaMap[deviceResponse.area.name] = deviceResponse.area;
+            }
+        });
+        console.log('this.zoneMap', this.zoneMap)
+        console.log('this.areaMap', this.areaMap)
     }
 
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7

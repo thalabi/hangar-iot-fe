@@ -17,7 +17,8 @@
             <th>Location</th>
             <th>Bridge</th>
             <th>Passive</th>
-            <th>Group</th>
+            <th>Zone</th>
+            <th>Area</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-device>
@@ -37,6 +38,7 @@
             <td>{{device.location}}</td>
             <td>{{device.bridge}}</td>
             <td>{{device.passive}}</td>
-            <td>{{device.group}}</td>
+            <td>{{device.zone?.name}}</td>
+            <td>{{device.area?.name}}</td>
     </ng-template>
 </p-table>
