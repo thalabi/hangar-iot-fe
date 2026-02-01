@@ -10,11 +10,14 @@ import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonChangeEvent, SelectButtonModule } from 'primeng/selectbutton';
 import { ButtonModule } from 'primeng/button';
+import { TabsModule } from 'primeng/tabs';
+import { CardModule } from 'primeng/card';
+import { DeviceAttributes } from './DeviceAttributes';
 
 @Component({
     standalone: true,
     selector: 'app-dashboard',
-    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule],
+    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule, TabsModule, CardModule],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
@@ -86,6 +89,24 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         console.log('onRefreshSensorData, selectedDeviceNameForSensorData', this.selectedDeviceNameForSensorData)
         this.triggerPublishSensorData(this.selectedDeviceNameForSensorData)
     }
+
+    filterOnZone(zoneName: string): Record<string, DeviceAttributes> {
+        return Object.fromEntries(
+            Object.entries(this.deviceAttributesMap)
+                .filter(
+                    ([_, deviceAttribute]) => deviceAttribute?.device?.zone?.name === zoneName
+                )
+        );
+    }
+    filterOnZoneAndArea(zoneName: string, areaName: string): Record<string, DeviceAttributes> {
+        return Object.fromEntries(
+            Object.entries(this.deviceAttributesMap)
+                .filter(
+                    ([_, deviceAttribute]) => deviceAttribute?.device?.zone?.name === zoneName && deviceAttribute?.device?.area?.name === areaName
+                )
+        );
+    }
+
 
     override ngOnDestroy(): void {
         super.ngOnDestroy()

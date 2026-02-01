@@ -12,6 +12,7 @@ import { Device } from '../dashboard/Device';
 import { PowerStateResponse } from '../dashboard/PowerStateResponse';
 import { SensorDataResponse } from '../dashboard/SensorDataResponse';
 import { RestService } from '../service/rest.service';
+import { Zone } from '../dashboard/Zone';
 import { Area } from '../dashboard/Area';
 
 @Component({
@@ -30,6 +31,14 @@ export class BaseComponent implements OnInit, OnDestroy {
     public deviceAttributesMap: Record<string, DeviceAttributes> = {} as any;
     public zoneMap: Record<string, Zone> = {} as any;
     public areaMap: Record<string, Area> = {} as any;
+    /**
+     * groupedDeviceAttributesMap[zoneId][areaId] = DeviceAttributes
+     *
+     * - Outer key (number): zone.id
+     * - Inner key (number): area.id
+     * - string: device.name
+     */
+    public groupedDeviceAttributesMap: Record<string, Record<string, Record<string, DeviceAttributes>>> = {} as any;
 
     constructor(
         // protected destroyRef: DestroyRef,
@@ -46,7 +55,7 @@ export class BaseComponent implements OnInit, OnDestroy {
                 console.log('deviceResponseList', deviceResponseList)
                 //this.deviceResponseList = deviceResponseList
                 this.populateDeviceAttributesMap(deviceResponseList);
-                this.populateZoneAndAreaMaps(deviceResponseList);
+                // this.populateZoneAndAreaMaps(deviceResponseList);
 
                 this.rxStompService.activate();
 
@@ -59,6 +68,7 @@ export class BaseComponent implements OnInit, OnDestroy {
                         this.triggerPublishPowerState();
 
                         console.log('this.deviceAttributesMap', this.deviceAttributesMap);
+                        console.log('this.groupedDeviceAttributesMap', this.groupedDeviceAttributesMap);
                     });
             });
 
@@ -67,6 +77,12 @@ export class BaseComponent implements OnInit, OnDestroy {
     private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
             this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
+            // ensure zone map exists
+            this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
+            // ensure area map exists within the zone
+            this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0] || {};
+            // assign device attributes by device name into the area map
+            this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0][deviceResponse.name] = this.deviceAttributesMap[deviceResponse.name];
         });
     }
     private populateZoneAndAreaMaps(deviceResponseList: Array<Device>) {

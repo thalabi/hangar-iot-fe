@@ -1,3 +1,4 @@
+import { Zone } from "./Zone"
 import { Area } from "./Area"
 
 export interface Device {
@@ -19,6 +20,6 @@ export interface Device {
     bridge: string
     passive: boolean
     isManaged: boolean
-    zone: Zone
-    area: Area
+    zone: Zone | null
+    area: Area | null
 }
