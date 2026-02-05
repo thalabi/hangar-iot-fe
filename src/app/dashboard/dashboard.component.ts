@@ -107,6 +107,40 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         );
     }
 
+    extractFromJsonStringOld(jsonString: string | null, fieldName: string): any | null {
+        if (!jsonString) {
+            return null;
+        }
+        let jsonObject: any;
+
+        try {
+            // Parse the string into a JavaScript object
+            jsonObject = JSON.parse(jsonString);
+        } catch (error) {
+            console.error("Error parsing JSON string:", error);
+            return null;
+        }
+
+        // Check if the field exists and is not undefined
+        if (fieldName in jsonObject) {
+            return jsonObject[fieldName];
+        } else {
+            console.warn(`Field '${fieldName}' not found.`);
+            return null;
+        }
+    }
+    extractFromJsonString(jsonString: string | null, key: string, fallback: string = '-'): string {
+        try {
+            if (!jsonString) return fallback;
+
+            const jsonObject = JSON.parse(jsonString);
+            // Use optional chaining and nullish coalescing to find the key
+            return jsonObject?.[key] ?? fallback;
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            return fallback;
+        }
+    }
 
     override ngOnDestroy(): void {
         super.ngOnDestroy()

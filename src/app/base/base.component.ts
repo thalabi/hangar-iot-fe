@@ -76,7 +76,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
     private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
-            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse) };
+            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbee2MqttState: null } as DeviceAttributes;
             // ensure zone map exists
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
             // ensure area map exists within the zone
@@ -103,7 +103,7 @@ export class BaseComponent implements OnInit, OnDestroy {
         console.log('webSocketConnectAndSubscribe()')
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
-            // subscribe to POWER state topic
+            // subscribe to POWER topic
             console.log(`subscribing to topic: /topic/${deviceName}/power`)
             this.rxStompService.watch(`/topic/${deviceName}/power`)
                 .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
@@ -126,18 +126,28 @@ export class BaseComponent implements OnInit, OnDestroy {
                     });
             }
 
+            // subscribe to state topic
             console.log(`subscribing to topic: /topic/${deviceName}/state`)
-            // let stateTopicSubscription: Subscription = this.rxStompService.watch(`/topic/${deviceName}/state`)
             this.rxStompService.watch(`/topic/${deviceName}/state`)
                 .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
                 .subscribe((message: Message) => {
                     console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
                     this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject.next(JSON.parse(message.body));
-
                 });
 
+            // subscribe to zigbee2mqtt state topic
+            if (this.deviceAttributesMap[deviceName]?.device.bridge === 'ZIGBEE2MQTT') {
+                console.log(`subscribing to topic: /topic/zigbee2mqtt/${deviceName}`)
+                this.rxStompService.watch(`/topic/zigbee2mqtt/${deviceName}`)
+                    .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
+                    .subscribe((message: Message) => {
+                        console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+                        this.deviceAttributesMap[deviceName].zigbee2MqttState = message.body;
+                    });
+            }
         })
+
     }
 
     private webSocketCleanup() {

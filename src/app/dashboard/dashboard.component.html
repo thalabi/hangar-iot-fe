@@ -45,6 +45,7 @@
                                     <ng-container
                                         *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate">
                                     </ng-container>
+                                    <!-- active device template -->
                                     <ng-template #activeDeviceTemplate>
                                         <p-selectButton id="deviceState" [options]="powerStateOptions"
                                             optionLabel="label" optionValue="value"
@@ -53,73 +54,31 @@
                                             [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
                                         </p-selectButton>
                                     </ng-template>
+                                    <!-- active passive template -->
                                     <ng-template #passiveDeviceTemplate>
-                                        <span class="text-color-secondary">passive</span>
+                                        <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
+                                            <span *ngSwitchCase="'MOTION_SENSOR'">
+                                                {{extractFromJsonString(deviceAttributeEntry.value.zigbee2MqttState,
+                                                'occupancy')}}</span>
+                                            <span
+                                                *ngSwitchCase="'BODY_SENSOR'">{{extractFromJsonString(deviceAttributeEntry.value.zigbee2MqttState,
+                                                'occupancy')}}</span>
+                                            <span *ngSwitchDefault>unhandled device</span>
+                                        </ng-container>
+                                        <span
+                                            class="text-color-secondary">{{deviceAttributeEntry.value.device.deviceType}}</span>
                                     </ng-template>
+                                    <span *ngIf="deviceAttributeEntry.value.zigbee2MqttState"
+                                        class="ml-2 text-color-secondary">({{deviceAttributeEntry.value.zigbee2MqttState}})</span>
                                 </div>
                             </div>
 
                         </ng-template>
 
-
-
-                        <!-- <p-card [header]="areaEntry.key">
-
-                            <div *ngFor="let deviceAttribute of areaEntry.value|keyvalue">
-                                deviceAttribute: {{deviceAttribute.key}} -
-                                {{deviceAttribute.value.device.description}}
-                            </div>
-
-                        </p-card> -->
-
-
-
-                        <!-- <ng-container *ngFor="let deviceAttributeEntry of areaEntry.value | keyvalue">
-                            deviceAttributeEntry.key-0: {{deviceAttributeEntry.key}}
-                            <ng-container *ngIf="areaEntry.key !== '0'; else noCard">
-                                Card:
-                                <p-card [header]="areaEntry.key">
-                                    <ng-container
-                                        *ngTemplateOutlet="cardContent; context: { $implicit: deviceAttributeEntry }">
-                                    </ng-container>
-                                </p-card>
-                            </ng-container>
-
-                            <ng-template #noCard>
-                                No card:
-                                <ng-container
-                                    *ngTemplateOutlet="cardContent; context: { $implicit: deviceAttributeEntry }">
-                                </ng-container>
-                            </ng-template>
-
-                        </ng-container> -->
-
-                        <!-- <ng-template #cardContent let-deviceAttributeEntry> -->
-
-                        <!-- <label for="deviceState" class="font-bold col-fixed p-component"
-                                style="width: 8rem;">{{deviceAttributeEntry.device.area?.name}}
-                                {{deviceAttributeEntry.value.device.description}}
-                            </label>
-
-                            <ng-container
-                                *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate">
-                            </ng-container>
-                            <ng-template #activeDeviceTemplate>
-                                <p-selectButton id="deviceState" [options]="powerStateOptions" optionLabel="label"
-                                    optionValue="value" [(ngModel)]="deviceAttributeEntry.value.powerState.power"
-                                    (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
-                                    [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
-                                </p-selectButton>
-                            </ng-template>
-                            <ng-template #passiveDeviceTemplate>
-                                passive device
-                            </ng-template> -->
-
-                        <!-- </ng-template> -->
-
                     </div>
                 </div>
 
+                <!-- sensor data section -->
 
                 <div class="formgroup-inline">
                     <div class="field-radiobutton">

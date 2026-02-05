@@ -6,10 +6,9 @@ import { Device } from "./Device";
 
 export interface DeviceAttributes {
     device: Device
-    // description: string
-    // telemetry: boolean
     powerState: PowerStateResponse
     savedPowerState: PowerStateResponse
     sensorData: SensorDataResponse
     connectionStateBehaviorSubject: BehaviorSubject<ConnectionStateResponse>
+    zigbee2MqttState: string | null
 }
