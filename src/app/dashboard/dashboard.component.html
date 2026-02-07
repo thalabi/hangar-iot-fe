@@ -37,7 +37,9 @@
 
                                 <div class="col-12 md:col-8">
                                     <label for="deviceState" class="font-bold col-fixed">
-                                        {{deviceAttributeEntry.value.device.description}}
+                                        {{deviceAttributeEntry.value.device.description}}<span
+                                            *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT'"
+                                            class="ml-1 pi pi-info-circle"></span>
                                     </label>
                                 </div>
 
@@ -57,16 +59,16 @@
                                     <!-- active passive template -->
                                     <ng-template #passiveDeviceTemplate>
                                         <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
-                                            <span *ngSwitchCase="'MOTION_SENSOR'">
+                                            <!-- <span *ngSwitchCase="'MOTION_SENSOR'">
                                                 {{extractFromJsonString(deviceAttributeEntry.value.zigbee2MqttState,
-                                                'occupancy')}}</span>
+                                                'occupancy') ? 'Detected' : 'Clear'}}</span> -->
+                                            <span *ngSwitchCase="'MOTION_SENSOR'">
+                                                {{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbee2MqttState)}}</span>
                                             <span
-                                                *ngSwitchCase="'BODY_SENSOR'">{{extractFromJsonString(deviceAttributeEntry.value.zigbee2MqttState,
-                                                'occupancy')}}</span>
+                                                *ngSwitchCase="'BODY_SENSOR'">{{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbee2MqttState)}}</span>
                                             <span *ngSwitchDefault>unhandled device</span>
                                         </ng-container>
-                                        <span
-                                            class="text-color-secondary">{{deviceAttributeEntry.value.device.deviceType}}</span>
+                                        <!-- <span class="text-color-secondary">{{deviceAttributeEntry.value.device.deviceType}}</span> -->
                                     </ng-template>
                                     <span *ngIf="deviceAttributeEntry.value.zigbee2MqttState"
                                         class="ml-2 text-color-secondary">({{deviceAttributeEntry.value.zigbee2MqttState}})</span>

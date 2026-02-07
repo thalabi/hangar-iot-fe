@@ -41,9 +41,9 @@ export class RestService {
         return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/publishConnectionState`, deviceNameRequest)
     }
 
-    triggerPublishPowerState(deviceNameRequest: DeviceNameRequest): Observable<void> {
-        console.log('RestService.triggerPublishPowerState')
-        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/triggerPublishPowerState`, deviceNameRequest)
+    triggerPublishState(deviceNameRequest: DeviceNameRequest): Observable<void> {
+        console.log('RestService.triggerPublishState')
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/triggerPublishState`, deviceNameRequest)
     }
 
     triggerPublishSensorData(deviceNameRequest: DeviceNameRequest): Observable<void> {

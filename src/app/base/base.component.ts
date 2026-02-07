@@ -65,7 +65,7 @@ export class BaseComponent implements OnInit, OnDestroy {
                     .subscribe(rsStompState => {
                         this.webSocketConnectAndSubscribe();
                         this.publishConnectionState();
-                        this.triggerPublishPowerState();
+                        this.triggerPublishState();
 
                         console.log('this.deviceAttributesMap', this.deviceAttributesMap);
                         console.log('this.groupedDeviceAttributesMap', this.groupedDeviceAttributesMap);
@@ -168,8 +168,8 @@ export class BaseComponent implements OnInit, OnDestroy {
         })
     }
 
-    private triggerPublishPowerState() {
-        console.log('triggerPublishPowerState()')
+    private triggerPublishState() {
+        console.log('triggerPublishState()')
 
         Object.keys(this.deviceAttributesMap).forEach(deviceName => {
 
@@ -181,14 +181,11 @@ export class BaseComponent implements OnInit, OnDestroy {
                 )
                 .subscribe((connectionStateResponse: ConnectionStateResponse) => {
                     console.log('deviceName: [%s] connectionStateResponse: [%o]', deviceName, connectionStateResponse)
-                    const passive = this.deviceAttributesMap[deviceName].device.passive;
-                    if (! /* not */ passive && connectionStateResponse.state === 'ONLINE') {
-                        const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
-                        deviceNameRequest.deviceName = deviceName
+                    const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
+                    deviceNameRequest.deviceName = deviceName
 
-                        // trigger publishing power state
-                        this.restService.triggerPublishPowerState(deviceNameRequest).pipe(take(1)).subscribe()
-                    }
+                    // trigger publishing state
+                    this.restService.triggerPublishState(deviceNameRequest).pipe(take(1)).subscribe()
                 })
         });
     }

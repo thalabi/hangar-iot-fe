@@ -129,10 +129,15 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
             return null;
         }
     }
-    extractFromJsonString(jsonString: string | null, key: string, fallback: string = '-'): string {
-        try {
-            if (!jsonString) return fallback;
+    extractOccupancyFromJsonString(jsonString: string | null): string {
+        const occupancy = this.extractFromJsonString(jsonString, 'occupancy')
+        if (occupancy === '-') return '-'
+        return (occupancy === true || occupancy === 'true') ? 'Detected' : 'Clear'
+    }
+    extractFromJsonString(jsonString: string | null, key: string, fallback: string = '-'): any {
+        if (!jsonString) return fallback;
 
+        try {
             const jsonObject = JSON.parse(jsonString);
             // Use optional chaining and nullish coalescing to find the key
             return jsonObject?.[key] ?? fallback;
