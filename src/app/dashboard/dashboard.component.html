@@ -37,10 +37,15 @@
 
                                 <div class="col-12 md:col-8">
                                     <label for="deviceState" class="font-bold col-fixed">
-                                        {{deviceAttributeEntry.value.device.description}}<span
-                                            *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT'"
-                                            class="ml-1 pi pi-info-circle"></span>
+                                        {{deviceAttributeEntry.value.device.description}}
+                                        <a (click)="stateInfo.toggle($event)">
+                                            <span *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT'"
+                                                class="pi pi-info-circle"
+                                                style="font-size: 0.6rem; vertical-align: super;"></span></a>
                                     </label>
+                                    <p-popover [dismissable]="true" #stateInfo>
+                                        {{deviceAttributeEntry.value.zigbee2MqttState}}
+                                    </p-popover>
                                 </div>
 
                                 <div class="col-12 md:col-4">
@@ -70,8 +75,6 @@
                                         </ng-container>
                                         <!-- <span class="text-color-secondary">{{deviceAttributeEntry.value.device.deviceType}}</span> -->
                                     </ng-template>
-                                    <span *ngIf="deviceAttributeEntry.value.zigbee2MqttState"
-                                        class="ml-2 text-color-secondary">({{deviceAttributeEntry.value.zigbee2MqttState}})</span>
                                 </div>
                             </div>
 

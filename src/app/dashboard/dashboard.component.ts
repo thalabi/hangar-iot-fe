@@ -13,11 +13,12 @@ import { ButtonModule } from 'primeng/button';
 import { TabsModule } from 'primeng/tabs';
 import { CardModule } from 'primeng/card';
 import { DeviceAttributes } from './DeviceAttributes';
+import { PopoverModule } from 'primeng/popover';
 
 @Component({
     standalone: true,
     selector: 'app-dashboard',
-    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule, TabsModule, CardModule],
+    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule, TabsModule, CardModule, PopoverModule],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
