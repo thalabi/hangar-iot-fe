@@ -3,6 +3,7 @@ import { SensorDataResponse } from "./SensorDataResponse";
 import { ConnectionStateResponse } from "./ConnectionStateResponse";
 import { BehaviorSubject } from "rxjs";
 import { Device } from "./Device";
+import { ZigbeeState } from "./ZigbeeState";
 
 export interface DeviceAttributes {
     device: Device
@@ -10,5 +11,5 @@ export interface DeviceAttributes {
     savedPowerState: PowerStateResponse
     sensorData: SensorDataResponse
     connectionStateBehaviorSubject: BehaviorSubject<ConnectionStateResponse>
-    zigbee2MqttState: string | null
+    zigbeeState: ZigbeeState | null
 }

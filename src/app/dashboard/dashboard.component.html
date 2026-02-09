@@ -39,12 +39,13 @@
                                     <label for="deviceState" class="font-bold flex align-items-start">
                                         {{deviceAttributeEntry.value.device.description}}
                                         <a (click)="stateInfo.toggle($event)">
-                                            <span *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT'"
+                                            <span
+                                                *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
                                                 class="pi pi-info-circle"
                                                 style="font-size: 0.6rem; vertical-align: super;"></span></a>
                                     </label>
                                     <p-popover [dismissable]="true" #stateInfo>
-                                        {{deviceAttributeEntry.value.zigbee2MqttState}}
+                                        {{deviceAttributeEntry.value.zigbeeState | json}}
                                     </p-popover>
                                 </div>
 
@@ -54,9 +55,17 @@
                                     </ng-container>
                                     <!-- active device template -->
                                     <ng-template #activeDeviceTemplate>
-                                        <p-selectButton id="deviceState" [options]="powerStateOptions"
-                                            optionLabel="label" optionValue="value"
+                                        <p-selectButton id="deviceState"
+                                            *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
+                                            [options]="powerStateOptions" optionLabel="label" optionValue="value"
                                             [(ngModel)]="deviceAttributeEntry.value.powerState.power"
+                                            (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
+                                            [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
+                                        </p-selectButton>
+                                        <p-selectButton id="deviceState"
+                                            *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
+                                            [options]="powerStateOptions" optionLabel="label" optionValue="value"
+                                            [ngModel]="deviceAttributeEntry.value.zigbeeState!.state?.toLowerCase()"
                                             (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
                                             [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
                                         </p-selectButton>
@@ -65,9 +74,9 @@
                                     <ng-template #passiveDeviceTemplate>
                                         <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
                                             <span *ngSwitchCase="'MOTION_SENSOR'">
-                                                {{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbee2MqttState)}}</span>
+                                                {{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)}}</span>
                                             <span
-                                                *ngSwitchCase="'BODY_SENSOR'">{{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbee2MqttState)}}</span>
+                                                *ngSwitchCase="'BODY_SENSOR'">{{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)}}</span>
                                             <span *ngSwitchDefault>unhandled device</span>
                                         </ng-container>
                                         <!-- <span class="text-color-secondary">{{deviceAttributeEntry.value.device.deviceType}}</span> -->

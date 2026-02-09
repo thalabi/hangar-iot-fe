@@ -14,6 +14,7 @@ import { TabsModule } from 'primeng/tabs';
 import { CardModule } from 'primeng/card';
 import { DeviceAttributes } from './DeviceAttributes';
 import { PopoverModule } from 'primeng/popover';
+import { ZigbeeState } from './ZigbeeState';
 
 @Component({
     standalone: true,
@@ -53,7 +54,13 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         }
     }
 
-    // toggleDevicePower(event: { originalEvent: PointerEvent, value: string }, deviceName: string) {
+    // getDevicePower(deviceName: string) {
+    //     console.log(`getDevicePower(${deviceName})`)
+    //     if (this.deviceAttributesMap[deviceName].device.bridge === 'TASMOTA') {
+    //         return this.deviceAttributesMap[deviceName].powerState.power
+    //     }
+    //     return this.extractStateFromJsonString(this.deviceAttributesMap[deviceName].zigbeeState)
+    // }
     toggleDevicePower(event: SelectButtonChangeEvent, deviceName: string) {
         console.log('toggleDevicePower')
         console.log('event', event)
@@ -108,40 +115,24 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         );
     }
 
-    extractFromJsonStringOld(jsonString: string | null, fieldName: string): any | null {
-        if (!jsonString) {
-            return null;
-        }
-        let jsonObject: any;
-
-        try {
-            // Parse the string into a JavaScript object
-            jsonObject = JSON.parse(jsonString);
-        } catch (error) {
-            console.error("Error parsing JSON string:", error);
-            return null;
-        }
-
-        // Check if the field exists and is not undefined
-        if (fieldName in jsonObject) {
-            return jsonObject[fieldName];
-        } else {
-            console.warn(`Field '${fieldName}' not found.`);
-            return null;
-        }
+    extractStateFromJsonString(jsonString: ZigbeeState | null): string {
+        const state = this.extractFromJsonString(jsonString, 'state')
+        if (state === '-') return '-'
+        console.log('state', state)
+        return String(state).toLowerCase()
     }
-    extractOccupancyFromJsonString(jsonString: string | null): string {
+    extractOccupancyFromJsonString(jsonString: ZigbeeState | null): string {
         const occupancy = this.extractFromJsonString(jsonString, 'occupancy')
         if (occupancy === '-') return '-'
         return (occupancy === true || occupancy === 'true') ? 'Detected' : 'Clear'
     }
-    extractFromJsonString(jsonString: string | null, key: string, fallback: string = '-'): any {
-        if (!jsonString) return fallback;
+    extractFromJsonString(zigbeeState: ZigbeeState | null, key: keyof ZigbeeState, fallback: string = '-'): any {
+        if (!zigbeeState) return fallback;
 
         try {
-            const jsonObject = JSON.parse(jsonString);
+            //const jsonObject = JSON.parse(jsonString);
             // Use optional chaining and nullish coalescing to find the key
-            return jsonObject?.[key] ?? fallback;
+            return zigbeeState?.[key] ?? fallback;
         } catch (error) {
             console.error('Error parsing JSON:', error);
             return fallback;

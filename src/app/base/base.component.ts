@@ -14,6 +14,7 @@ import { SensorDataResponse } from '../dashboard/SensorDataResponse';
 import { RestService } from '../service/rest.service';
 import { Zone } from '../dashboard/Zone';
 import { Area } from '../dashboard/Area';
+import { ZigbeeState } from '../dashboard/ZigbeeState';
 
 @Component({
     selector: 'app-base',
@@ -76,7 +77,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
     private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
-            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbee2MqttState: null } as DeviceAttributes;
+            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null } as DeviceAttributes;
             // ensure zone map exists
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
             // ensure area map exists within the zone
@@ -143,7 +144,10 @@ export class BaseComponent implements OnInit, OnDestroy {
                     .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
                     .subscribe((message: Message) => {
                         console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
-                        this.deviceAttributesMap[deviceName].zigbee2MqttState = message.body;
+                        // 1. Parse the string body into a JSON object
+                        // 2. Assert it matches your ZigbeeState interface
+                        const zigbeeState = JSON.parse(message.body) as ZigbeeState;
+                        this.deviceAttributesMap[deviceName].zigbeeState = zigbeeState;
                     });
             }
         })
