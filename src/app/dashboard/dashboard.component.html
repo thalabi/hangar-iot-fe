@@ -21,22 +21,22 @@
                         </ng-container>
                         <ng-template #card>
                             <p-card [header]="areaEntry.key" [style]="{ background: '#E6E6E6', width: '25rem'}">
-                                <ng-container *ngTemplateOutlet="cardContent; context: { $implicit: areaEntry.value}">
+                                <ng-container *ngTemplateOutlet="cardContent">
                                 </ng-container>
                             </p-card>
                         </ng-template>
                         <ng-template #noCard>
-                            <ng-container *ngTemplateOutlet="cardContent; context: { $implicit: areaEntry.value }">
+                            <ng-container *ngTemplateOutlet="cardContent">
                             </ng-container>
                         </ng-template>
 
                         <ng-template #cardContent>
 
                             <div *ngFor="let deviceAttributeEntry of areaEntry.value | keyvalue"
-                                class="grid align-items-center mb-3">
+                                class="grid align-items-center">
 
                                 <div class="col-12 md:col-8">
-                                    <label for="deviceState" class="font-bold col-fixed">
+                                    <label for="deviceState" class="font-bold flex align-items-start">
                                         {{deviceAttributeEntry.value.device.description}}
                                         <a (click)="stateInfo.toggle($event)">
                                             <span *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT'"
@@ -64,9 +64,6 @@
                                     <!-- active passive template -->
                                     <ng-template #passiveDeviceTemplate>
                                         <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
-                                            <!-- <span *ngSwitchCase="'MOTION_SENSOR'">
-                                                {{extractFromJsonString(deviceAttributeEntry.value.zigbee2MqttState,
-                                                'occupancy') ? 'Detected' : 'Clear'}}</span> -->
                                             <span *ngSwitchCase="'MOTION_SENSOR'">
                                                 {{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbee2MqttState)}}</span>
                                             <span
