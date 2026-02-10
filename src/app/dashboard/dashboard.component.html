@@ -20,14 +20,16 @@
                         <ng-container *ngIf="areaEntry.key !== '0'; then card; else noCard">
                         </ng-container>
                         <ng-template #card>
-                            <p-card [header]="areaEntry.key" [style]="{ background: '#E6E6E6', width: '25rem'}">
+                            <p-card [header]="areaEntry.key" [style]="{ background: '#E6E6E6', width: '22rem'}">
                                 <ng-container *ngTemplateOutlet="cardContent">
                                 </ng-container>
                             </p-card>
                         </ng-template>
                         <ng-template #noCard>
+                            <!-- <span> -->
                             <ng-container *ngTemplateOutlet="cardContent">
                             </ng-container>
+                            <!-- </span> -->
                         </ng-template>
 
                         <ng-template #cardContent>
