@@ -1,25 +1,42 @@
+<!-- <h2 class="text-3xl font-bold underline">
+    Test tailwind css!
+</h2>
+<p-button label="Test primeng" /> -->
+
+
 <!-- <ng-container *ngIf="!disableParentMessages"> -->
-<p-messages></p-messages>
-<app-backend-stacktrace-display></app-backend-stacktrace-display>
-<!-- </ng-container> -->
-<app-menu style="margin-top: 1rem;"></app-menu>
-<div style="margin-top: 1rem;"></div>
-<router-outlet></router-outlet>
+
+<div class="min-h-screen flex flex-col bg-gray-100">
+    <p-messages></p-messages>
+    <app-backend-stacktrace-display></app-backend-stacktrace-display>
+    <!-- </ng-container> -->
+    <app-menu></app-menu>
+
+    <!-- <div class="mt-4"></div> -->
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4">
+        <router-outlet></router-outlet>
+    </main>
 
 
-<!-- <div style="margin-top: 1rem; text-align: center">
-    <small style="color: darkgrey">&copy; Copyright 2024 Kernel Development &amp; Consulting
-        <span pTooltip="BE {{serverBuildTimestamp}}<br/>FE {{clientBuildTimestamp}}" [escape]="false"
-            tooltipPosition="top">(Version Info)</span>
+    <!-- <div class="mt-4 text-center">
+    <small class="text-gray-500">
+        &copy; Copyright 2026 Kernel Development &amp; Consulting Inc
+        <a (click)="buildInfo.toggle($event)" class="underline decoration-dotted cursor-pointer">
+            (Version Info)
+        </a>
     </small>
 </div> -->
+    <footer class="text-center text-sm text-gray-500 py-3">
+        © 2026 Kernel Development & Consulting Inc
+        <a (click)="buildInfo.toggle($event)" class="underline decoration-dotted cursor-pointer">
+            (Version Info)
+        </a>
+    </footer>
 
-<div style="margin-top: 1rem; text-align: center">
-    <small style="color: darkgrey">&copy; Copyright 2026 Kernel Development &amp; Consulting Inc
-        <a (click)="buildInfo.toggle($event)" class="underline-dotted">(Version Info)</a>
-    </small>
+    <p-popover [dismissable]="true" #buildInfo>
+        BE {{serverBuildInfo}}<br />FE {{clientBuildInfo}}
+    </p-popover>
+
 </div>
-
-<p-popover [dismissable]="true" #buildInfo>
-    BE {{serverBuildInfo}}<br />FE {{clientBuildInfo}}
-</p-popover>

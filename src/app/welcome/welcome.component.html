@@ -1,9 +1,27 @@
-<div>
+<!-- <div>
     <div class="p-5">
         <div *ngIf="logoutMessage" class="lead" style="color: blueviolet;">
             <h3>{{logoutMessage}}</h3>
         </div>
         <h1>Welcome {{userInfo.firstName}} to Hangar IOT application</h1>
         <div *ngIf="! authenticated">Login to see the protected pages</div>
+    </div>
+</div> -->
+
+<div>
+    <div class="p-5">
+        <div *ngIf="logoutMessage" class="text-violet-600">
+            <h3 class="text-xl font-semibold">
+                {{ logoutMessage }}
+            </h3>
+        </div>
+
+        <h1 class="text-3xl font-bold">
+            Welcome {{ userInfo.firstName }} to Hangar IOT application
+        </h1>
+
+        <div *ngIf="!authenticated" class="mt-2 text-gray-700">
+            Login to see the protected pages
+        </div>
     </div>
 </div>

@@ -1,173 +1,173 @@
-<h3 class="p-component" style="margin-left: 1rem; text-decoration: underline;">Dashboard</h3>
+<h3 class="mb-4 underline text-xl font-medium">Dashboard</h3>
+
 <ng-container *ngIf="groupedDeviceAttributesMap | keyvalue">
-
     <p-tabs value="0">
-
         <p-tablist>
-            <p-tab *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue ; let i = index"
+            <p-tab *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index"
                 [value]="i.toString()">
                 {{ zoneEntry.key }}
             </p-tab>
         </p-tablist>
 
         <p-tabpanels>
-            <p-tabpanel *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue ; let i = index"
+            <p-tabpanel *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index"
                 [value]="i.toString()">
+                <!-- DEVICE CARDS -->
+                <div class="flex flex-wrap gap-4">
+                    <div *ngFor="let areaEntry of zoneEntry.value | keyvalue">
+                        <ng-container *ngIf="areaEntry.key !== '0'; then card; else noCard"></ng-container>
 
-                <div class="formgroup-inline">
-                    <div class="field-radiobutton" *ngFor="let areaEntry of zoneEntry.value | keyvalue">
-
-                        <ng-container *ngIf="areaEntry.key !== '0'; then card; else noCard">
-                        </ng-container>
                         <ng-template #card>
-                            <p-card [header]="areaEntry.key" [style]="{ background: '#E6E6E6', width: '22rem'}">
-                                <ng-container *ngTemplateOutlet="cardContent">
-                                </ng-container>
+                            <p-card [header]="areaEntry.key" styleClass="w-[22rem] !bg-gray-200">
+                                <ng-container *ngTemplateOutlet="cardContent"></ng-container>
                             </p-card>
                         </ng-template>
+
                         <ng-template #noCard>
-                            <!-- <span> -->
-                            <ng-container *ngTemplateOutlet="cardContent">
-                            </ng-container>
-                            <!-- </span> -->
+                            <ng-container *ngTemplateOutlet="cardContent"></ng-container>
                         </ng-template>
 
                         <ng-template #cardContent>
-
                             <div *ngFor="let deviceAttributeEntry of areaEntry.value | keyvalue"
-                                class="grid align-items-center">
-
-                                <div class="col-12 md:col-8">
-                                    <label for="deviceState" class="font-bold flex align-items-start">
-                                        {{deviceAttributeEntry.value.device.description}}
+                                class="grid grid-cols-1 gap-4 md:grid-cols-12 items-center">
+                                <!-- DEVICE LABEL -->
+                                <div class="md:col-span-8">
+                                    <label class="flex items-start font-bold gap-1">
+                                        {{ deviceAttributeEntry.value.device.description }}
                                         <a (click)="stateInfo.toggle($event)">
-                                            <span
-                                                *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
-                                                class="pi pi-info-circle"
-                                                style="font-size: 0.6rem; vertical-align: super;"></span></a>
+                                            <span *ngIf="
+                          deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' &&
+                          deviceAttributeEntry.value.zigbeeState
+                        " class="pi pi-info-circle text-[0.6rem] align-super"></span>
+                                        </a>
                                     </label>
+
                                     <p-popover [dismissable]="true" #stateInfo>
-                                        {{deviceAttributeEntry.value.zigbeeState | json}}
+                                        {{ deviceAttributeEntry.value.zigbeeState | json }}
                                     </p-popover>
                                 </div>
 
-                                <div class="col-12 md:col-4">
-                                    <ng-container
-                                        *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate">
-                                    </ng-container>
-                                    <!-- active device template -->
+                                <!-- DEVICE CONTROL -->
+                                <div class="md:col-span-4">
+                                    <ng-container *ngIf="
+                      deviceAttributeEntry.value.device.passive;
+                      then passiveDeviceTemplate;
+                      else activeDeviceTemplate
+                    "></ng-container>
+
+                                    <!-- ACTIVE DEVICE -->
                                     <ng-template #activeDeviceTemplate>
-                                        <p-selectButton id="deviceState"
-                                            *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
+                                        <p-selectButton *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
                                             [options]="powerStateOptions" optionLabel="label" optionValue="value"
                                             [(ngModel)]="deviceAttributeEntry.value.powerState.power"
-                                            (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
-                                            [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
-                                        </p-selectButton>
-                                        <p-selectButton id="deviceState"
-                                            *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
-                                            [options]="powerStateOptions" optionLabel="label" optionValue="value"
-                                            [ngModel]="deviceAttributeEntry.value.zigbeeState!.state?.toLowerCase()"
-                                            (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
-                                            [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
-                                        </p-selectButton>
+                                            (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)" [disabled]="
+                        (deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'
+                      "></p-selectButton>
+
+                                        <p-selectButton *ngIf="
+                        deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' &&
+                        deviceAttributeEntry.value.zigbeeState
+                      " [options]="powerStateOptions" optionLabel="label" optionValue="value" [ngModel]="
+                        deviceAttributeEntry.value.zigbeeState!.state?.toLowerCase()
+                      " (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)" [disabled]="
+                        (deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'
+                      "></p-selectButton>
                                     </ng-template>
-                                    <!-- active passive template -->
+
+                                    <!-- PASSIVE DEVICE -->
                                     <ng-template #passiveDeviceTemplate>
                                         <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
                                             <span *ngSwitchCase="'MOTION_SENSOR'">
-                                                {{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)}}</span>
-                                            <span
-                                                *ngSwitchCase="'BODY_SENSOR'">{{extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)}}</span>
+                                                {{
+                                                extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
+                                                }}
+                                            </span>
+                                            <span *ngSwitchCase="'BODY_SENSOR'">
+                                                {{
+                                                extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
+                                                }}
+                                            </span>
                                             <span *ngSwitchDefault>unhandled device</span>
                                         </ng-container>
-                                        <!-- <span class="text-color-secondary">{{deviceAttributeEntry.value.device.deviceType}}</span> -->
                                     </ng-template>
                                 </div>
                             </div>
-
                         </ng-template>
-
                     </div>
                 </div>
 
-                <!-- sensor data section -->
+                <!-- SENSOR DATA -->
+                <div class="mt-6 flex items-center gap-4">
+                    <label class="font-bold w-32">Sensor data</label>
 
-                <div class="formgroup-inline">
-                    <div class="field-radiobutton">
-
-                        <label for="sensorDataSelection" class="font-bold col-fixed p-component"
-                            style="width: 8rem;">Sensor
-                            data</label>
-
-                        <p-select id="sensorDataSelection" [options]="deviceAttributesMap | keyvalue"
-                            [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.device.description"
-                            optionValue="key" placeholder=" Select device"
-                            (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true">
-                        </p-select>
-
-                    </div>
+                    <p-select [options]="deviceAttributesMap | keyvalue" [(ngModel)]="selectedDeviceNameForSensorData"
+                        optionLabel="value.device.description" optionValue="key" placeholder="Select device"
+                        (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true"></p-select>
                 </div>
 
-                <div class="form-grid" style="margin-left: 0.5rem;"
-                    *ngIf="selectedDeviceNameForSensorData && ! deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY">
-                    <div class="grid">
-                        <div class="col" style="font-style: italic;">Device does not provide telemetry or no data
-                            received.
-                        </div>
-                    </div>
+                <!-- NO DATA -->
+                <div *ngIf="
+            selectedDeviceNameForSensorData &&
+            !deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY
+          " class="ml-2 mt-2 italic">
+                    Device does not provide telemetry or no data received.
                 </div>
 
-                <div class="form-grid" style="margin-left: 1rem;"
-                    *ngIf="selectedDeviceNameForSensorData && deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY">
+                <!-- ENERGY DATA -->
+                <div *ngIf="
+            selectedDeviceNameForSensorData &&
+            deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY
+          " class="ml-4 mt-4 space-y-2">
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Time</div>
+                        <div>
+                            {{
+                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.Time
+                            | date : 'medium'
+                            }}
+                        </div>
+                    </div>
 
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Time</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.Time | date:'medium'}}
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Voltage</div>
+                        <div>
+                            {{
+                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Voltage
+                            }}
+                            V
                         </div>
                     </div>
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Voltage</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Voltage}} V
+
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Current</div>
+                        <div>
+                            {{
+                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Current
+                            }}
+                            A
                         </div>
                     </div>
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Current</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Current}} A</div>
-                    </div>
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Power</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Power}} W</div>
-                    </div>
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy today</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Today}} kWh</div>
-                    </div>
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy yesterday</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Yesterday}} kWh
-                        </div>
-                    </div>
-                    <div class="grid">
-                        <div class="col-fixed font-bold p-component" style="width:9.5rem;">Energy total</div>
-                        <div class="col">
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Total}} kWh (since
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.TotalStartTime |
-                            date:'medium'}})
+
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Power</div>
+                        <div>
+                            {{
+                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Power
+                            }}
+                            W
                         </div>
                     </div>
                 </div>
 
-                <div style="margin-left: 1rem; margin-top: 0.5rem;">
-                    <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)"
-                        [disabled]="! selectedDeviceNameForSensorData || ! deviceAttributesMap[selectedDeviceNameForSensorData].device.telemetry
-        || (deviceAttributesMap[selectedDeviceNameForSensorData].connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></button>
+                <!-- REFRESH -->
+                <div class="ml-4 mt-2">
+                    <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)" [disabled]="
+              !selectedDeviceNameForSensorData ||
+              !deviceAttributesMap[selectedDeviceNameForSensorData].device.telemetry ||
+              (deviceAttributesMap[selectedDeviceNameForSensorData]
+                .connectionStateBehaviorSubject
+                | async)?.state !== 'ONLINE'
+            "></button>
                 </div>
             </p-tabpanel>
         </p-tabpanels>

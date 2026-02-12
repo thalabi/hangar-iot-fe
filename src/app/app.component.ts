@@ -12,11 +12,12 @@ import { SessionService } from './service/session.service';
 import { environment } from '../environments/environment';
 import { DEFAULT_INTERRUPTSOURCES, Idle } from '@ng-idle/core';
 import { OverlayModule } from 'primeng/overlay';
+// import { ButtonModule } from 'primeng/button';
 
 @Component({
     standalone: true,
     selector: 'app-root',
-    imports: [MessagesModule, RouterOutlet, PopoverModule, SharedModule, OverlayModule, BackendStacktraceDisplayComponent, MenuComponent],
+    imports: [MessagesModule, RouterOutlet, PopoverModule, SharedModule, OverlayModule, BackendStacktraceDisplayComponent, MenuComponent /*, ButtonModule*/],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
