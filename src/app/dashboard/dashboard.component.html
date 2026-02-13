@@ -18,7 +18,7 @@
                         <ng-container *ngIf="areaEntry.key !== '0'; then card; else noCard"></ng-container>
 
                         <ng-template #card>
-                            <p-card [header]="areaEntry.key" styleClass="w-[22rem] !bg-gray-200">
+                            <p-card [header]="areaEntry.key" styleClass="w-88 bg-gray-100!">
                                 <ng-container *ngTemplateOutlet="cardContent"></ng-container>
                             </p-card>
                         </ng-template>
@@ -28,69 +28,63 @@
                         </ng-template>
 
                         <ng-template #cardContent>
-                            <div *ngFor="let deviceAttributeEntry of areaEntry.value | keyvalue"
-                                class="grid grid-cols-1 gap-4 md:grid-cols-12 items-center">
-                                <!-- DEVICE LABEL -->
-                                <div class="md:col-span-8">
-                                    <label class="flex items-start font-bold gap-1">
-                                        {{ deviceAttributeEntry.value.device.description }}
-                                        <a (click)="stateInfo.toggle($event)">
-                                            <span *ngIf="
-                          deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' &&
-                          deviceAttributeEntry.value.zigbeeState
-                        " class="pi pi-info-circle text-[0.6rem] align-super"></span>
-                                        </a>
-                                    </label>
+                            <div class="grid grid-cols-1 gap-y-3 md:grid-cols-12 items-center">
+                                <ng-container *ngFor="let deviceAttributeEntry of areaEntry.value | keyvalue">
+                                    <!-- DEVICE LABEL -->
+                                    <div class="md:col-span-8">
+                                        <label class="block font-bold">
+                                            {{ deviceAttributeEntry.value.device.description }}
+                                            <a *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
+                                                (click)="stateInfo.toggle($event)" class="inline-block ml-1">
+                                                <span class="pi pi-info-circle text-[0.6rem] align-super"></span>
+                                            </a>
+                                        </label>
 
-                                    <p-popover [dismissable]="true" #stateInfo>
-                                        {{ deviceAttributeEntry.value.zigbeeState | json }}
-                                    </p-popover>
-                                </div>
+                                        <p-popover [dismissable]="true" #stateInfo>
+                                            {{ deviceAttributeEntry.value.zigbeeState | json }}
+                                        </p-popover>
+                                    </div>
 
-                                <!-- DEVICE CONTROL -->
-                                <div class="md:col-span-4">
-                                    <ng-container *ngIf="
-                      deviceAttributeEntry.value.device.passive;
-                      then passiveDeviceTemplate;
-                      else activeDeviceTemplate
-                    "></ng-container>
+                                    <!-- DEVICE CONTROL -->
+                                    <div class="md:col-span-4">
+                                        <ng-container
+                                            *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container>
 
-                                    <!-- ACTIVE DEVICE -->
-                                    <ng-template #activeDeviceTemplate>
-                                        <p-selectButton *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
-                                            [options]="powerStateOptions" optionLabel="label" optionValue="value"
-                                            [(ngModel)]="deviceAttributeEntry.value.powerState.power"
-                                            (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)" [disabled]="
-                        (deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'
-                      "></p-selectButton>
+                                        <!-- ACTIVE DEVICE -->
+                                        <ng-template #activeDeviceTemplate>
+                                            <p-selectButton
+                                                *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
+                                                [options]="powerStateOptions" optionLabel="label" optionValue="value"
+                                                [(ngModel)]="deviceAttributeEntry.value.powerState.power"
+                                                (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
+                                                [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></p-selectButton>
 
-                                        <p-selectButton *ngIf="
-                        deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' &&
-                        deviceAttributeEntry.value.zigbeeState
-                      " [options]="powerStateOptions" optionLabel="label" optionValue="value" [ngModel]="
-                        deviceAttributeEntry.value.zigbeeState!.state?.toLowerCase()
-                      " (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)" [disabled]="
-                        (deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'
-                      "></p-selectButton>
-                                    </ng-template>
+                                            <p-selectButton
+                                                *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
+                                                [options]="powerStateOptions" optionLabel="label" optionValue="value"
+                                                [ngModel]="deviceAttributeEntry.value.zigbeeState!.state?.toLowerCase()"
+                                                (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
+                                                [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></p-selectButton>
+                                        </ng-template>
 
-                                    <!-- PASSIVE DEVICE -->
-                                    <ng-template #passiveDeviceTemplate>
-                                        <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
-                                            <span *ngSwitchCase="'MOTION_SENSOR'">
-                                                {{
-                                                extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
-                                                }}
-                                            </span>
-                                            <span *ngSwitchCase="'BODY_SENSOR'">
-                                                {{
-                                                extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
-                                                }}
-                                            </span>
-                                            <span *ngSwitchDefault>unhandled device</span>
-                                        </ng-container>
-                                    </ng-template>
-                                </div>
+                                        <!-- PASSIVE DEVICE -->
+                                        <ng-template #passiveDeviceTemplate>
+                                            <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
+                                                <span *ngSwitchCase="'MOTION_SENSOR'">
+                                                    {{
+                                                    extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
+                                                    }}
+                                                </span>
+                                                <span *ngSwitchCase="'BODY_SENSOR'">
+                                                    {{
+                                                    extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
+                                                    }}
+                                                </span>
+                                                <span *ngSwitchDefault>unhandled device</span>
+                                            </ng-container>
+                                        </ng-template>
+                                    </div>
+                                </ng-container>
                             </div>
                         </ng-template>
                     </div>

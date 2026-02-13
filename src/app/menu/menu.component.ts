@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomUserDetails } from '../login/CustomUserDetails';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { AuthService } from '../auth/auth.service';

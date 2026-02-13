@@ -1,6 +1,7 @@
+/* @layer theme, base, primeng; */
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
-
+/* @import "tailwindcss-primeui"; */
 
 /* html {
     font-family: Roboto, Helvetica, Arial, sans-serif;
@@ -8,9 +9,9 @@
 } */
 
 @layer base {
-    html {
+    /* html {
         font-size: 1rem;
-    }
+    } */
 
     body,
     .p-component {

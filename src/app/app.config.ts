@@ -27,6 +27,11 @@ export const appConfig: ApplicationConfig = {
                 preset: MyPreset,
                 options: {
                     darkModeSelector: '.my-app-dark'
+                    // ,
+                    // cssLayer: {
+                    //     name: 'primeng',
+                    //     order: 'theme, base, primeng',
+                    // }
                 }
             }
         }),
