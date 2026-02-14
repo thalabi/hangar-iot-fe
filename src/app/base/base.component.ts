@@ -35,11 +35,19 @@ export class BaseComponent implements OnInit, OnDestroy {
     /**
      * groupedDeviceAttributesMap[zoneId][areaId] = DeviceAttributes
      *
-     * - Outer key (number): zone.id
-     * - Inner key (number): area.id
+     * - Outer key: zone.name
+     * - Inner key: area.name
      * - string: device.name
      */
     public groupedDeviceAttributesMap: Record<string, Record<string, Record<string, DeviceAttributes>>> = {} as any;
+
+    /**
+     * zoneDeviceAttributesMap[zoneId] = DeviceAttributes
+     *
+     * - key: zone.name
+     * - string: device.name
+     */
+    public zoneDeviceAttributesMap: Record<string, Record<string, DeviceAttributes>> = {} as any;
 
     constructor(
         // protected destroyRef: DestroyRef,
@@ -70,11 +78,13 @@ export class BaseComponent implements OnInit, OnDestroy {
 
                         console.log('this.deviceAttributesMap', this.deviceAttributesMap);
                         console.log('this.groupedDeviceAttributesMap', this.groupedDeviceAttributesMap);
+                        console.log('this.zoneDeviceAttributesMap', this.zoneDeviceAttributesMap);
                     });
             });
 
     }
 
+    // populate deviceAttributesMap and groupedDeviceAttributesMap based on the device list response from the backend
     private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
             this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null } as DeviceAttributes;
@@ -84,19 +94,10 @@ export class BaseComponent implements OnInit, OnDestroy {
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0] || {};
             // assign device attributes by device name into the area map
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0][deviceResponse.name] = this.deviceAttributesMap[deviceResponse.name];
+
+            this.zoneDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.zoneDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
+            this.zoneDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.name] = this.deviceAttributesMap[deviceResponse.name];
         });
-    }
-    private populateZoneAndAreaMaps(deviceResponseList: Array<Device>) {
-        deviceResponseList.forEach(deviceResponse => {
-            if (deviceResponse.zone) {
-                this.zoneMap[deviceResponse.zone.name] = deviceResponse.zone;
-            }
-            if (deviceResponse.area) {
-                this.areaMap[deviceResponse.area.name] = deviceResponse.area;
-            }
-        });
-        console.log('this.zoneMap', this.zoneMap)
-        console.log('this.areaMap', this.areaMap)
     }
 
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7
