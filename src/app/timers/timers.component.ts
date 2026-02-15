@@ -5,7 +5,7 @@ import { BaseComponent } from '../base/base.component';
 import { Device } from '../dashboard/Device';
 import { RestService } from '../service/rest.service';
 import { Timer } from './Timer';
-import { TimersRequestResponse2 } from './TimersRequestResponse2';
+import { TimersRequestResponse } from './TimersRequestResponse';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { SelectModule } from 'primeng/select';
@@ -23,7 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class TimersComponent extends BaseComponent implements OnInit, OnDestroy {
 
     deviceResponseList: Array<Device> = {} as Array<Device>;
-    timersRequestResponse: TimersRequestResponse2 = {} as TimersRequestResponse2
+    timersRequestResponse: TimersRequestResponse = {} as TimersRequestResponse
     selectedDevice: string = ''
     timersEnable: boolean = false
     timerTable: Array<Timer> = []
@@ -178,14 +178,14 @@ export class TimersComponent extends BaseComponent implements OnInit, OnDestroy 
 
     private getTimers() {
         this.restService.getTimers(this.selectedDevice)
-            .subscribe((response: TimersRequestResponse2) => {
+            .subscribe((response: TimersRequestResponse) => {
                 this.timersRequestResponse = response
                 console.log('timersRequestResponse', this.timersRequestResponse)
                 this.transformTimersResponse(this.timersRequestResponse)
             });
 
     }
-    private transformTimersResponse(timersRequestResponse: TimersRequestResponse2) {
+    private transformTimersResponse(timersRequestResponse: TimersRequestResponse) {
         console.log('timersRequestResponse.timers', timersRequestResponse.timers)
         this.timersEnable = timersRequestResponse.timers === "ON"
         for (let i: number = 0; i < 16; i++) {
