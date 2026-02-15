@@ -19,9 +19,9 @@ import { ButtonModule } from 'primeng/button';
 })
 export class ExecuteCommandComponent implements OnInit {
 
-    deviceResponseList: Array<Device> = []//{} as Array<DeviceResponse>;
+    tasmotaDeviceList: Array<Device> = []//{} as Array<DeviceResponse>;
     commandResponseList: Array<CommandResponse> = []//{} as Array<CommandResponse>;
-    deviceList: string[] = []
+    // deviceList: string[] = []
     commandList: string[] = []
     selectedDevice: string = ''
     selectedCommand: string = ''
@@ -38,18 +38,16 @@ export class ExecuteCommandComponent implements OnInit {
     ngOnInit(): void {
         console.log('ngOnInit')
         this.messageService.clear()
-        console.log('this.deviceList', this.deviceList)
-        console.log('this.commandList', this.commandList)
-
-
 
         this.restService.getDeviceList()
             .subscribe((deviceResponseList: Array<Device>) => {
-                console.log('deviceResponseList', deviceResponseList)
-                this.deviceResponseList = deviceResponseList
-                this.deviceResponseList.forEach(deviceResponse => {
-                    this.deviceList.push(deviceResponse.name)
+                deviceResponseList.forEach(deviceResponse => {
+                    if (deviceResponse.bridge === 'TASMOTA') {
+                        this.tasmotaDeviceList.push(deviceResponse)
+                        // this.deviceList.push(deviceResponse.name)
+                    }
                 })
+                console.log('this.tasmotaDeviceList', this.tasmotaDeviceList)
             });
 
         this.restService.getCommandList()

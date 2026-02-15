@@ -1,12 +1,12 @@
-<h3 class="p-component" style="margin-left: 1rem; text-decoration: underline;">Command</h3>
+<h3 class="mb-4 underline text-xl font-medium">Command</h3>
+
 <div class="formgroup-inline">
     <div class="field-radiobutton">
 
         <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Device</label>
 
-        <p-select id="deviceSelection" [options]="deviceResponseList" [(ngModel)]="selectedDevice"
-            optionLabel="description" optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)"
-            [showClear]="true">
+        <p-select id="deviceSelection" [options]="tasmotaDeviceList" [(ngModel)]="selectedDevice" optionLabel="name"
+            optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)" [showClear]="true">
         </p-select>
 
     </div>
