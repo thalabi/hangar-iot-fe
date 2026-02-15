@@ -29,6 +29,8 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
 
     selectedDeviceNameForSensorData: string = ''
 
+    activeTab: number = 0
+
     constructor(
         protected override restService: RestService,
         protected override rxStompService: RxStompService,
@@ -137,6 +139,10 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
             console.error('Error parsing JSON:', error);
             return fallback;
         }
+    }
+
+    onTabChange(tabValue: string | number) {
+        this.selectedDeviceNameForSensorData = ''
     }
 
     override ngOnDestroy(): void {

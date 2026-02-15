@@ -1,17 +1,16 @@
 <h3 class="mb-4 underline text-xl font-medium">Dashboard</h3>
 
 <ng-container *ngIf="groupedDeviceAttributesMap | keyvalue">
-    <p-tabs value="0">
+    <p-tabs [(value)]="activeTab" (valueChange)="onTabChange($event)">
+
         <p-tablist>
-            <p-tab *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index"
-                [value]="i.toString()">
+            <p-tab *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index" [value]="i">
                 {{ zoneEntry.key }}
             </p-tab>
         </p-tablist>
 
         <p-tabpanels>
-            <p-tabpanel *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index"
-                [value]="i.toString()">
+            <p-tabpanel *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index" [value]="i">
                 <!-- DEVICE CARDS -->
                 <div class="flex flex-wrap gap-4">
                     <!-- Add w-full here to ensure the container spans the row -->
@@ -126,7 +125,7 @@
                 <div *ngIf="
             selectedDeviceNameForSensorData &&
             deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY
-          " class="ml-4 mt-4 space-y-2">
+          " class="mt-4 space-y-1">
                     <div class="grid grid-cols-[9.5rem_1fr]">
                         <div class="font-bold">Time</div>
                         <div>
@@ -166,6 +165,26 @@
                             W
                         </div>
                     </div>
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Enery today</div>
+                        <div>
+                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Today}} kWh</div>
+                    </div>
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Energy yesterday</div>
+                        <div>
+                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Yesterday}} kWh
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-[9.5rem_1fr]">
+                        <div class="font-bold">Energy total</div>
+                        <div>
+                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Total}} kWh (since
+                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.TotalStartTime |
+                            date:'medium'}})
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- REFRESH -->
