@@ -108,7 +108,7 @@
                 <div class="mt-6 flex items-center gap-4">
                     <label class="font-bold w-32">Sensor data</label>
                     <!-- {{(zoneDeviceAttributesMap[zoneEntry.key] | keyvalue)}} -->
-                    <p-select [options]="zoneDeviceAttributesMap[zoneEntry.key] | keyvalue"
+                    <p-select [options]="zoneSensorDeviceAttributesMap[zoneEntry.key] | keyvalue"
                         [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.device.description"
                         optionValue="value.device.name" placeholder="Select device"
                         (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true"></p-select>
@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- REFRESH -->
-                <div class="ml-4 mt-2">
+                <div class="mt-2">
                     <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)" [disabled]="
               !selectedDeviceNameForSensorData ||
               !deviceAttributesMap[selectedDeviceNameForSensorData].device.telemetry ||

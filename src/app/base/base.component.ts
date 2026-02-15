@@ -47,7 +47,7 @@ export class BaseComponent implements OnInit, OnDestroy {
      * - key: zone.name
      * - string: device.name
      */
-    public zoneDeviceAttributesMap: Record<string, Record<string, DeviceAttributes>> = {} as any;
+    public zoneSensorDeviceAttributesMap: Record<string, Record<string, DeviceAttributes>> = {} as any;
 
     constructor(
         // protected destroyRef: DestroyRef,
@@ -78,7 +78,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
                         console.log('this.deviceAttributesMap', this.deviceAttributesMap);
                         console.log('this.groupedDeviceAttributesMap', this.groupedDeviceAttributesMap);
-                        console.log('this.zoneDeviceAttributesMap', this.zoneDeviceAttributesMap);
+                        console.log('this.zoneDeviceAttributesMap', this.zoneSensorDeviceAttributesMap);
                     });
             });
 
@@ -95,8 +95,10 @@ export class BaseComponent implements OnInit, OnDestroy {
             // assign device attributes by device name into the area map
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.area?.name || 0][deviceResponse.name] = this.deviceAttributesMap[deviceResponse.name];
 
-            this.zoneDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.zoneDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
-            this.zoneDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.name] = this.deviceAttributesMap[deviceResponse.name];
+            if (this.deviceAttributesMap[deviceResponse.name].device.telemetry) {
+                this.zoneSensorDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.zoneSensorDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
+                this.zoneSensorDeviceAttributesMap[deviceResponse.zone?.name || 0][deviceResponse.name] = this.deviceAttributesMap[deviceResponse.name];
+            }
         });
     }
 
