@@ -1,51 +1,40 @@
-<h3 class="mb-4 underline text-xl font-medium">Command</h3>
+<h3 class="mb-4 text-xl font-medium underline">Command</h3>
 
-<div class="formgroup-inline">
-    <div class="field-radiobutton">
-
-        <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Device</label>
-
-        <p-select id="deviceSelection" [options]="tasmotaDeviceList" [(ngModel)]="selectedDevice" optionLabel="name"
-            optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)" [showClear]="true">
-        </p-select>
-
-    </div>
+<!-- Device Selection -->
+<div class="flex items-center gap-4 mb-4">
+    <label for="deviceSelection" class="w-[7rem] shrink-0 font-bold p-component">Device</label>
+    <p-select id="deviceSelection" [options]="tasmotaDeviceList" [(ngModel)]="selectedDevice" optionLabel="name"
+        optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)" [showClear]="true"
+        class="grow">
+    </p-select>
 </div>
 
 <ng-container *ngIf="selectedDevice">
-    <div class="formgroup-inline">
-        <div class="field-radiobutton">
-
-            <label for="commandSelection" class="font-bold col-fixed p-component" style="width: 7rem;">Command</label>
-
-            <p-select id="commandSelection" [options]="commandList" [(ngModel)]="selectedCommand"
-                placeholder="Select command" (onChange)="onSelectCommand($event)" [showClear]="true">
-            </p-select>
-
-        </div>
+    <!-- Command Selection -->
+    <div class="flex items-center gap-4 mb-4">
+        <label for="commandSelection" class="w-[7rem] shrink-0 font-bold p-component">Command</label>
+        <p-select id="commandSelection" [options]="commandList" [(ngModel)]="selectedCommand"
+            placeholder="Select command" (onChange)="onSelectCommand($event)" [showClear]="true" class="grow">
+        </p-select>
     </div>
 
     <ng-container *ngIf="selectedCommand">
-        <div class="formgroup-inline">
-            <div class="field-radiobutton">
-
-                <label for="commandArguments" class="font-bold col-fixed p-component"
-                    style="width: 7rem;">Arguments(s)</label>
-                <input id="commandArguments" type="text" pInputText name="commandArguments" [(ngModel)]="arguments">
-
-            </div>
+        <!-- Arguments Input -->
+        <div class="flex items-center gap-4 mb-4">
+            <label for="commandArguments" class="w-[7rem] shrink-0 font-bold p-component">Arguments(s)</label>
+            <input id="commandArguments" type="text" pInputText name="commandArguments" [(ngModel)]="arguments"
+                class="grow">
         </div>
 
-        <div style="margin-left: 0.5rem;">
+        <div class="ml-2">
             <button pButton type="button" label="Submit" (click)="onSubmit($event)"></button>
         </div>
     </ng-container>
 
+    <!-- Result Display -->
     <ng-container *ngIf="commandResult">
-        <p-fieldset legend="Result">
-            <pre>{{commandResult | json}}</pre>
+        <p-fieldset legend="Result" class="mt-6 block">
+            <pre class="overflow-x-auto whitespace-pre-wrap">{{commandResult | json}}</pre>
         </p-fieldset>
     </ng-container>
-
-
 </ng-container>
