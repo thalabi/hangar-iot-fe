@@ -1,6 +1,7 @@
 <h3 class="mb-4 underline text-xl font-medium">Dashboard</h3>
 
 <ng-container *ngIf="groupedDeviceAttributesMap | keyvalue">
+
     <p-tabs [(value)]="activeTab" (valueChange)="onTabChange($event)">
 
         <p-tablist>
