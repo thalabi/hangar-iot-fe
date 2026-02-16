@@ -1,44 +1,50 @@
-<h3 class="p-component" style="margin-left: 1rem; text-decoration: underline;">Devices</h3>
-<p-table [value]="deviceList" styleClass="p-datatable-striped" responsiveLayout="scroll" size="small">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Type</th>
-            <th>Telemetry</th>
-            <th>Make</th>
-            <th>Model</th>
-            <th>Data saver</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>TZ</th>
-            <th>Time DST</th>
-            <th>Time STD</th>
-            <th>Location</th>
-            <th>Bridge</th>
-            <th>Passive</th>
-            <th>Zone</th>
-            <th>Area</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-device>
-        <tr>
-            <td>{{device.name}}</td>
-            <td>{{device.description}}</td>
-            <td>{{device.deviceType}}</td>
-            <td>{{device.telemetry}}</td>
-            <td>{{device.make}}</td>
-            <td>{{device.model}}</td>
-            <td>{{device.enableDataSaver}}</td>
-            <td>{{device.zone?.latitudeDegrees}}</td>
-            <td>{{device.zone?.longitudeDegrees}}</td>
-            <td>{{device.zone?.timezoneOffset}}</td>
-            <td>{{device.zone?.timeDst}}</td>
-            <td>{{device.zone?.timeStd}}</td>
-            <td>{{device.location}}</td>
-            <td>{{device.bridge}}</td>
-            <td>{{device.passive}}</td>
-            <td>{{device.zone?.name}}</td>
-            <td>{{device.area?.name}}</td>
-    </ng-template>
-</p-table>
+<h3 class="ml-4 underline text-xl font-semibold">Devices</h3>
+
+<!-- Added overflow-x-auto to handle the 17 columns on smaller screens -->
+<div class="mt-4 overflow-x-auto">
+    <p-table [value]="deviceList" styleClass="p-datatable-striped p-datatable-sm" responsiveLayout="scroll"
+        size="small">
+        <ng-template pTemplate="header">
+            <tr class="whitespace-nowrap bg-gray-50">
+                <th class="px-4 py-2 text-left font-bold">Name</th>
+                <th class="px-4 py-2 text-left font-bold">Description</th>
+                <th class="px-4 py-2 text-left font-bold">Type</th>
+                <th class="px-4 py-2 text-left font-bold">Telemetry</th>
+                <th class="px-4 py-2 text-left font-bold">Make</th>
+                <th class="px-4 py-2 text-left font-bold">Model</th>
+                <th class="px-4 py-2 text-left font-bold">Data saver</th>
+                <th class="px-4 py-2 text-left font-bold">Latitude</th>
+                <th class="px-4 py-2 text-left font-bold">Longitude</th>
+                <th class="px-4 py-2 text-left font-bold">TZ</th>
+                <th class="px-4 py-2 text-left font-bold">Time DST</th>
+                <th class="px-4 py-2 text-left font-bold">Time STD</th>
+                <th class="px-4 py-2 text-left font-bold">Location</th>
+                <th class="px-4 py-2 text-left font-bold">Bridge</th>
+                <th class="px-4 py-2 text-left font-bold">Passive</th>
+                <th class="px-4 py-2 text-left font-bold">Zone</th>
+                <th class="px-4 py-2 text-left font-bold">Area</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-device>
+            <tr class="border-b border-gray-200 transition-colors hover:bg-gray-50/50">
+                <td class="px-4 py-2">{{device.name}}</td>
+                <td class="px-4 py-2">{{device.description}}</td>
+                <td class="px-4 py-2">{{device.deviceType}}</td>
+                <td class="px-4 py-2">{{device.telemetry}}</td>
+                <td class="px-4 py-2">{{device.make}}</td>
+                <td class="px-4 py-2">{{device.model}}</td>
+                <td class="px-4 py-2">{{device.enableDataSaver}}</td>
+                <td class="px-4 py-2">{{device.zone?.latitudeDegrees}}</td>
+                <td class="px-4 py-2">{{device.zone?.longitudeDegrees}}</td>
+                <td class="px-4 py-2">{{device.zone?.timezoneOffset}}</td>
+                <td class="px-4 py-2">{{device.zone?.timeDst}}</td>
+                <td class="px-4 py-2">{{device.zone?.timeStd}}</td>
+                <td class="px-4 py-2">{{device.location}}</td>
+                <td class="px-4 py-2">{{device.bridge}}</td>
+                <td class="px-4 py-2">{{device.passive}}</td>
+                <td class="px-4 py-2">{{device.zone?.name}}</td>
+                <td class="px-4 py-2">{{device.area?.name}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
