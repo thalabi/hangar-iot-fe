@@ -52,15 +52,20 @@
                                                     <span class="pi pi-info-circle text-[0.6rem] align-super"></span>
                                                 </a>
                                             </label>
-                                            <p-popover [dismissable]="true" #stateInfo>
+                                            <p-popover #stateInfo [dismissable]="true">
                                                 <ng-template #content>
-                                                    <div class="border border-gray-300">
-                                                        <div class="p-2">
-                                                            <div class="mb-1 font-semibold">Zigbee State</div>
-                                                            <div class=" bg-gray-100">{{
-                                                                deviceAttributeEntry.value.zigbeeState | json
-                                                                }}</div>
+                                                    <div class="min-w-72 p-4">
+                                                        <!-- Header -->
+                                                        <div
+                                                            class="mb-3 flex items-center gap-2 border-b border-gray-100 pb-2 text-xs font-bold uppercase tracking-widest text-gray-400">
+                                                            <i class="pi pi-code"></i>
+                                                            Zigbee State
                                                         </div>
+
+                                                        <!-- Highlighted JSON Block -->
+                                                        <pre class="max-h-80 overflow-auto rounded-md bg-gray-50 p-4 text-xs font-mono leading-relaxed shadow-inner border border-gray-200"
+                                                            [innerHTML]="deviceAttributeEntry.value.zigbeeState | jsonHighlight">
+            </pre>
                                                     </div>
                                                 </ng-template>
                                             </p-popover>

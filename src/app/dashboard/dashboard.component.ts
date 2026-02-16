@@ -15,11 +15,12 @@ import { CardModule } from 'primeng/card';
 import { DeviceAttributes } from './DeviceAttributes';
 import { PopoverModule } from 'primeng/popover';
 import { ZigbeeState } from './ZigbeeState';
+import { JsonHighlightPipe } from "../JsonHighlightPipe";
 
 @Component({
     standalone: true,
     selector: 'app-dashboard',
-    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule, TabsModule, CardModule, PopoverModule],
+    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule, TabsModule, CardModule, PopoverModule, JsonHighlightPipe],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
