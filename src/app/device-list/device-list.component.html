@@ -1,50 +1,62 @@
-<h3 class="ml-4 underline text-xl font-semibold">Devices</h3>
+<!-- 1. Header Toolbar for Search and Column Toggling -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ml-4 mb-4">
+    <h3 class="underline text-2xl font-bold text-gray-800 uppercase tracking-tight">Devices</h3>
 
-<!-- Added overflow-x-auto to handle the 17 columns on smaller screens -->
-<div class="mt-4 overflow-x-auto">
-    <p-table [value]="deviceList" styleClass="p-datatable-striped p-datatable-sm" responsiveLayout="scroll"
-        size="small">
-        <ng-template pTemplate="header">
-            <tr class="whitespace-nowrap bg-gray-50">
-                <th class="px-4 py-2 text-left font-bold">Name</th>
-                <th class="px-4 py-2 text-left font-bold">Description</th>
-                <th class="px-4 py-2 text-left font-bold">Type</th>
-                <th class="px-4 py-2 text-left font-bold">Telemetry</th>
-                <th class="px-4 py-2 text-left font-bold">Make</th>
-                <th class="px-4 py-2 text-left font-bold">Model</th>
-                <th class="px-4 py-2 text-left font-bold">Data saver</th>
-                <th class="px-4 py-2 text-left font-bold">Latitude</th>
-                <th class="px-4 py-2 text-left font-bold">Longitude</th>
-                <th class="px-4 py-2 text-left font-bold">TZ</th>
-                <th class="px-4 py-2 text-left font-bold">Time DST</th>
-                <th class="px-4 py-2 text-left font-bold">Time STD</th>
-                <th class="px-4 py-2 text-left font-bold">Location</th>
-                <th class="px-4 py-2 text-left font-bold">Bridge</th>
-                <th class="px-4 py-2 text-left font-bold">Passive</th>
-                <th class="px-4 py-2 text-left font-bold">Zone</th>
-                <th class="px-4 py-2 text-left font-bold">Area</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-device>
-            <tr class="border-b border-gray-200 transition-colors hover:bg-gray-50/50">
-                <td class="px-4 py-2">{{device.name}}</td>
-                <td class="px-4 py-2">{{device.description}}</td>
-                <td class="px-4 py-2">{{device.deviceType}}</td>
-                <td class="px-4 py-2">{{device.telemetry}}</td>
-                <td class="px-4 py-2">{{device.make}}</td>
-                <td class="px-4 py-2">{{device.model}}</td>
-                <td class="px-4 py-2">{{device.enableDataSaver}}</td>
-                <td class="px-4 py-2">{{device.zone?.latitudeDegrees}}</td>
-                <td class="px-4 py-2">{{device.zone?.longitudeDegrees}}</td>
-                <td class="px-4 py-2">{{device.zone?.timezoneOffset}}</td>
-                <td class="px-4 py-2">{{device.zone?.timeDst}}</td>
-                <td class="px-4 py-2">{{device.zone?.timeStd}}</td>
-                <td class="px-4 py-2">{{device.location}}</td>
-                <td class="px-4 py-2">{{device.bridge}}</td>
-                <td class="px-4 py-2">{{device.passive}}</td>
-                <td class="px-4 py-2">{{device.zone?.name}}</td>
-                <td class="px-4 py-2">{{device.area?.name}}</td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <div class="flex items-center gap-2">
+        <!-- Global Search -->
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Search devices..." class="p-inputtext-sm w-64 rounded-none border-gray-300" />
+        </span>
+
+        <!-- Column Toggle -->
+        <p-multiSelect [options]="allColumns" [(ngModel)]="selectedColumns" optionLabel="header"
+            selectedItemsLabel="{0} columns visible" [style]="{'min-width': '200px'}" placeholder="Choose Columns"
+            class="p-inputtext-sm">
+        </p-multiSelect>
+    </div>
+</div>
+
+<!-- 2. Scrollable Container - Borders and Rounding Removed -->
+<div class="ml-4 mt-2 bg-white">
+    <div class="overflow-x-auto">
+        <p-table #dt [value]="deviceList" [columns]="selectedColumns" styleClass="p-datatable-striped p-datatable-sm"
+            responsiveLayout="scroll" [globalFilterFields]="['name', 'description', 'make', 'model']" size="small">
+
+            <ng-template pTemplate="header" let-columns>
+                <!-- Keep the bottom border for the header to separate it from data -->
+                <tr class="whitespace-nowrap bg-gray-100/80 border-b border-gray-200">
+                    <th *ngFor="let col of columns" pSortableColumn="{{col.field}}"
+                        class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 transition-colors">
+                        {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-device let-columns="columns">
+                <tr class="border-b border-gray-100 transition-colors hover:bg-blue-50/30">
+                    <td *ngFor="let col of columns" class="px-4 py-2.5 text-sm text-gray-700">
+                        <ng-container [ngSwitch]="col.field">
+                            <span *ngSwitchCase="'name'"
+                                class="font-semibold text-blue-600">{{device[col.field]}}</span>
+                            <!-- <span *ngSwitchCase="'passive'"
+                                [class]="device.passive ? 'text-orange-500' : 'text-gray-400'">
+                                {{device.passive ? 'Yes' : 'No'}}
+                            </span> -->
+                            <span *ngSwitchDefault>{{device[col.field]}}</span>
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td [attr.colspan]="selectedColumns.length" class="text-center py-10 text-gray-500 italic">
+                        No devices found matching your criteria.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
 </div>
