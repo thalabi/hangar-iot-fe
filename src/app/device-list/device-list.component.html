@@ -22,7 +22,8 @@
 <div class="ml-4 mt-2 bg-white">
     <div class="overflow-x-auto">
         <p-table #dt [value]="deviceList" [columns]="selectedColumns" styleClass="p-datatable-striped p-datatable-sm"
-            responsiveLayout="scroll" [globalFilterFields]="['name', 'description', 'make', 'model']" size="small">
+            responsiveLayout="scroll"
+            [globalFilterFields]="['name', 'description', 'make', 'model', 'deviceType', 'bridge']" size="small">
 
             <ng-template pTemplate="header" let-columns>
                 <!-- Keep the bottom border for the header to separate it from data -->
@@ -38,8 +39,8 @@
                 <tr class="border-b border-gray-100 transition-colors hover:bg-blue-50/30">
                     <td *ngFor="let col of columns" class="px-4 py-2.5 text-sm text-gray-700">
                         <ng-container [ngSwitch]="col.field">
-                            <span *ngSwitchCase="'name'"
-                                class="font-semibold text-blue-600">{{device[col.field]}}</span>
+                            <!-- <span *ngSwitchCase="'name'"
+                                class="font-semibold text-blue-600">{{device[col.field]}}</span> -->
                             <!-- <span *ngSwitchCase="'passive'"
                                 [class]="device.passive ? 'text-orange-500' : 'text-gray-400'">
                                 {{device.passive ? 'Yes' : 'No'}}
