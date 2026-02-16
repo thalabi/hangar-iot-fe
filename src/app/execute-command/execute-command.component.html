@@ -2,7 +2,7 @@
 
 <!-- Device Selection -->
 <div class="flex items-center gap-4 mb-4">
-    <label for="deviceSelection" class="w-[7rem] shrink-0 font-bold p-component">Device</label>
+    <label for="deviceSelection" class="w-28 shrink-0 font-bold p-component">Device</label>
     <p-select id="deviceSelection" [options]="tasmotaDeviceList" [(ngModel)]="selectedDevice" optionLabel="name"
         optionValue="name" placeholder="Select device" (onChange)="onSelectDevice($event)" [showClear]="true"
         class="grow">
@@ -12,7 +12,7 @@
 <ng-container *ngIf="selectedDevice">
     <!-- Command Selection -->
     <div class="flex items-center gap-4 mb-4">
-        <label for="commandSelection" class="w-[7rem] shrink-0 font-bold p-component">Command</label>
+        <label for="commandSelection" class="w-28 shrink-0 font-bold p-component">Command</label>
         <p-select id="commandSelection" [options]="commandList" [(ngModel)]="selectedCommand"
             placeholder="Select command" (onChange)="onSelectCommand($event)" [showClear]="true" class="grow">
         </p-select>
@@ -21,7 +21,7 @@
     <ng-container *ngIf="selectedCommand">
         <!-- Arguments Input -->
         <div class="flex items-center gap-4 mb-4">
-            <label for="commandArguments" class="w-[7rem] shrink-0 font-bold p-component">Arguments(s)</label>
+            <label for="commandArguments" class="w-28 shrink-0 font-bold p-component">Arguments(s)</label>
             <input id="commandArguments" type="text" pInputText name="commandArguments" [(ngModel)]="arguments"
                 class="grow">
         </div>

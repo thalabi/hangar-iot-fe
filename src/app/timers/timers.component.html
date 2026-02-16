@@ -1,68 +1,67 @@
-<h3 class="p-component" style="margin-left: 1rem; text-decoration: underline;">Timers</h3>
-<div class="formgroup-inline">
-    <div class="field-radiobutton">
+<h3 class="mb-4 text-xl font-medium underline">Timers</h3>
 
-        <label for="deviceSelection" class="font-bold col-fixed p-component" style="width: 4rem;">Device</label>
+
+<div class="flex flex-wrap items-center gap-4 py-2">
+    <div class="flex items-center gap-2">
+        <!-- Using arbitrary width to match your 4rem requirement -->
+        <label for="deviceSelection" class="font-bold w-16">Device</label>
 
         <p-select id="deviceSelection" [options]="deviceAttributesMap | keyvalue" [(ngModel)]="selectedDevice"
             optionLabel="value.device.name" optionValue="key" placeholder="Select device"
             (onChange)="onSelectDevice($event)" [showClear]="true"
             optionDisabled="deviceAttributesMap[selectedDevice]?.online">
         </p-select>
-
     </div>
 </div>
 
 <ng-container
     *ngIf="selectedDevice && (deviceAttributesMap[selectedDevice]?.connectionStateBehaviorSubject | async)?.state === 'ONLINE'">
-    <div class="formgroup-inline">
-        <div class="field-radiobutton">
 
-            <label for="enableDisableTimers" class="font-bold col-fixed p-component" style="width: 4rem;">Timers</label>
-
+    <div class="flex flex-wrap items-center gap-4 py-2">
+        <div class="flex items-center gap-2">
+            <label for="enableDisableTimers" class="font-bold w-16">Timers</label>
             <p-toggleButton [(ngModel)]="timersEnable" onIcon='pi pi-check' offIcon='pi pi-times'></p-toggleButton>
-
         </div>
     </div>
 
     <ng-container *ngIf="timerTable.length > 0">
-        <div>
+        <div class="ml-4 overflow-x-auto">
             <p-table [value]="timerTable" dataKey="id" editMode="row" styleClass="p-datatable-sm p-datatable-striped"
-                responsiveLayout="scroll" [paginator]="true" [rows]="8" size="small" [style]="{'margin-left': '1rem'}">
+                responsiveLayout="scroll" [paginator]="true" [rows]="8" size="small">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="text-align:center"></th>
-                        <th style="text-align:center">Enabled</th>
-                        <th style="text-align:center">Time</th>
-                        <th style="text-align:center">Days</th>
-                        <th style="text-align:center">Power</th>
-                        <th style="width:4rem"></th>
+                        <th class="text-center"></th>
+                        <th class="text-center">Enabled</th>
+                        <th class="text-center">Time</th>
+                        <th class="text-center">Days</th>
+                        <th class="text-center">Power</th>
+                        <th class="w-16"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-timer let-editing="editing" let-ri="rowIndex">
                     <tr [pEditableRow]="timer">
-                        <td style="text-align:center">{{timer.id}}</td>
-                        <td style="text-align:center">
+                        <td class="text-center">{{timer.id}}</td>
+                        <td class="text-center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <p-select [options]="yesNo" [(ngModel)]="timer.enableUi">
-                                    </p-select>
+                                    <p-select [options]="yesNo" [(ngModel)]="timer.enableUi"></p-select>
                                 </ng-template>
                                 <ng-template pTemplate="output">{{timer.enableUi}}</ng-template>
                             </p-cellEditor>
                         </td>
-                        <td style="text-align:center">
+                        <td class="text-center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <p-select [options]="hours" [(ngModel)]="timer.timeHh">
-                                    </p-select>:<p-select [options]="minutes" [(ngModel)]="timer.timeMm">
-                                    </p-select>
+                                    <div class="flex items-center justify-center gap-1">
+                                        <p-select [options]="hours" [(ngModel)]="timer.timeHh"></p-select>
+                                        <span>:</span>
+                                        <p-select [options]="minutes" [(ngModel)]="timer.timeMm"></p-select>
+                                    </div>
                                 </ng-template>
-                                <ng-template pTemplate="output">{{timer.timeHh}}:{{timer.timeMm}}
-                                </ng-template>
+                                <ng-template pTemplate="output">{{timer.timeHh}}:{{timer.timeMm}}</ng-template>
                             </p-cellEditor>
                         </td>
-                        <td style="text-align:center">
+                        <td class="text-center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <p-multiSelect [options]="daysOfWeek" [(ngModel)]="timer.daysUi"
@@ -72,44 +71,41 @@
                                 <ng-template pTemplate="output">{{timer.daysUi}}</ng-template>
                             </p-cellEditor>
                         </td>
-                        <td style="text-align:center">
+                        <td class="text-center">
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <p-select [options]="onOff" [(ngModel)]="timer.actionUi">
-                                    </p-select>
-
+                                    <p-select [options]="onOff" [(ngModel)]="timer.actionUi"></p-select>
                                 </ng-template>
                                 <ng-template pTemplate="output">{{timer.actionUi}}</ng-template>
                             </p-cellEditor>
                         </td>
-                        <td style="text-align:center">
-                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
-                                (click)="onRowEditInit(timer)" class="p-button-rounded p-button-text"></button>
-                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
-                                (click)="onRowEditSave(timer)"
-                                class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
-                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
-                                (click)="onRowEditCancel(timer, ri)"
-                                class="p-button-rounded p-button-text p-button-danger"></button>
+                        <td class="text-center">
+                            <div class="flex justify-center gap-2">
+                                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
+                                    icon="pi pi-pencil" (click)="onRowEditInit(timer)"
+                                    class="p-button-rounded p-button-text"></button>
+                                <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                    icon="pi pi-check" (click)="onRowEditSave(timer)"
+                                    class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                                <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                    icon="pi pi-times" (click)="onRowEditCancel(timer, ri)"
+                                    class="p-button-rounded p-button-text p-button-danger"></button>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
 
-        <div style="margin-left: 1rem; margin-top: 0.5rem;">
+        <div class="ml-4 mt-2">
             <button pButton type="button" label="Save" (click)="onSave($event)" [disabled]="editingFlag"></button>
         </div>
-
     </ng-container>
 </ng-container>
+
 <ng-container
     *ngIf="selectedDevice && (deviceAttributesMap[selectedDevice]?.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
-    <div class="form-grid" style="margin-left: 0.5rem;">
-        <div class="grid">
-            <div class="col" style="font-style: italic;">Device is offline or no data received.
-            </div>
-        </div>
+    <div class="ml-2 mt-4 italic text-gray-500">
+        Device is offline or no data received.
     </div>
-
 </ng-container>
