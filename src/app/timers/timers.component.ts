@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { MessageService } from 'primeng/api';
 import { BaseComponent } from '../base/base.component';
@@ -12,6 +12,14 @@ import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DeviceAttributes } from '../dashboard/DeviceAttributes';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject } from 'rxjs';
+import { ConnectionStateResponse } from '../dashboard/ConnectionStateResponse';
+import { PowerStateResponse } from '../dashboard/PowerStateResponse';
+import { SensorDataResponse } from '../dashboard/SensorDataResponse';
+import { Message } from '@stomp/stompjs';
+import { DeviceNameRequest } from '../dashboard/DeviceNameRequest';
 
 @Component({
     standalone: true,
@@ -20,9 +28,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     templateUrl: './timers.component.html',
     styleUrls: ['./timers.component.css']
 })
-export class TimersComponent extends BaseComponent implements OnInit, OnDestroy {
+export class TimersComponent /*extends BaseComponent*/ implements OnInit /*, OnDestroy*/ {
+
+    destroyRef = inject(DestroyRef);
 
     deviceResponseList: Array<Device> = {} as Array<Device>;
+    deviceAttributesMap: Record<string, DeviceAttributes> = {} as any;
+
     timersRequestResponse: TimersRequestResponse = {} as TimersRequestResponse
     selectedDevice: string = ''
     timersEnable: boolean = false
@@ -65,18 +77,116 @@ export class TimersComponent extends BaseComponent implements OnInit, OnDestroy 
     ];
 
     constructor(
-        protected override restService: RestService,
-        protected override rxStompService: RxStompService,
+        // protected override restService: RestService,
+        // protected override rxStompService: RxStompService,
+        private restService: RestService,
+        private rxStompService: RxStompService,
         private messageService: MessageService
     ) {
-        super(restService, rxStompService);
+        // super(restService, rxStompService);
     }
 
-    override ngOnInit(): void {
+    // override ngOnInit(): void {
+    ngOnInit(): void {
         console.log('ngOnInit')
         this.messageService.clear()
 
-        super.ngOnInit()
+        // super.ngOnInit()
+        this.restService.getDeviceList()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((deviceResponseList: Array<Device>) => {
+                console.log('deviceResponseList', deviceResponseList)
+                //this.deviceResponseList = deviceResponseList
+                this.populateTasmotaDeviceAttributesMap(deviceResponseList);
+                // this.populateZoneAndAreaMaps(deviceResponseList);
+
+                this.rxStompService.activate();
+
+                // wait for connection to be established before subscribing to topics
+                this.rxStompService.connected$
+                    .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
+                    .subscribe(rsStompState => {
+                        this.webSocketConnectAndSubscribe();
+                        this.publishConnectionState();
+                        // this.triggerPublishState();
+
+                        console.log('this.deviceAttributesMap', this.deviceAttributesMap);
+                        // console.log('this.groupedDeviceAttributesMap', this.groupedDeviceAttributesMap);
+                        // console.log('this.zoneDeviceAttributesMap', this.zoneSensorDeviceAttributesMap);
+                    });
+            });
+
+    }
+    private populateTasmotaDeviceAttributesMap(deviceResponseList: Array<Device>) {
+        deviceResponseList.forEach(deviceResponse => {
+            if (deviceResponse.bridge === 'TASMOTA') {
+                this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null } as DeviceAttributes;
+            }
+
+        });
+    }
+    private webSocketConnectAndSubscribe(): void {
+        console.log('webSocketConnectAndSubscribe()')
+        Object.keys(this.deviceAttributesMap).forEach(deviceName => {
+
+            // subscribe to POWER topic
+            console.log(`subscribing to topic: /topic/${deviceName}/power`)
+            this.rxStompService.watch(`/topic/${deviceName}/power`)
+                .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
+                .subscribe((message: Message) => {
+                    console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+
+                    this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
+                    this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
+                });
+
+            // subscribe to SENSOR telemetry topic if device is capable of sending telemetry data
+            if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
+
+                console.log(`subscribing to topic: /topic/state-and-telemetry/stat/${deviceName}/SENSOR`)
+                this.rxStompService.watch(`/topic/state-and-telemetry/tele/${deviceName}/SENSOR`)
+                    .pipe(takeUntilDestroyed(this.destroyRef)) // automatically unsubscribe on destroy
+                    .subscribe((message: Message) => {
+                        console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+                        this.deviceAttributesMap[deviceName].sensorData = JSON.parse(message.body);
+                    });
+            }
+
+            // subscribe to state topic
+            console.log(`subscribing to topic: /topic/${deviceName}/state`)
+            this.rxStompService.watch(`/topic/${deviceName}/state`)
+                .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
+                .subscribe((message: Message) => {
+                    console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+
+                    this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject.next(JSON.parse(message.body));
+                });
+
+            // // subscribe to zigbee2mqtt state topic
+            // if (this.deviceAttributesMap[deviceName]?.device.bridge === 'ZIGBEE2MQTT') {
+            //     console.log(`subscribing to topic: /topic/zigbee2mqtt/${deviceName}`)
+            //     this.rxStompService.watch(`/topic/zigbee2mqtt/${deviceName}`)
+            //         .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
+            //         .subscribe((message: Message) => {
+            //             console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+            //             // 1. Parse the string body into a JSON object
+            //             // 2. Assert it matches your ZigbeeState interface
+            //             const zigbeeState = JSON.parse(message.body) as ZigbeeState;
+            //             this.deviceAttributesMap[deviceName].zigbeeState = zigbeeState;
+            //         });
+            // }
+        })
+
+    }
+    private publishConnectionState() {
+        console.log('publishConnectionState()')
+
+        Object.keys(this.deviceAttributesMap).forEach(deviceName => {
+            const deviceNameRequest: DeviceNameRequest = {} as DeviceNameRequest;
+            deviceNameRequest.deviceName = deviceName
+
+            this.restService.publishConnectionState(deviceNameRequest).subscribe()
+        })
     }
 
     onSelectDevice(event: any) {
@@ -172,9 +282,15 @@ export class TimersComponent extends BaseComponent implements OnInit, OnDestroy 
 
     }
 
-    override ngOnDestroy(): void {
-        super.ngOnDestroy()
+    // override ngOnDestroy(): void {
+    ngOnDestroy(): void {
+        // super.ngOnDestroy()
+        console.log('webSocketCleanup()')
+        console.log('this.rxStompService.deactivate()')
+        this.rxStompService.deactivate()
+        console.log('connected?', this.rxStompService.connected())
     }
+    // }
 
     private getTimers() {
         this.restService.getTimers(this.selectedDevice)

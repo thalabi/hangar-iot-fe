@@ -44,7 +44,6 @@ export class ExecuteCommandComponent implements OnInit {
                 deviceResponseList.forEach(deviceResponse => {
                     if (deviceResponse.bridge === 'TASMOTA') {
                         this.tasmotaDeviceList.push(deviceResponse)
-                        // this.deviceList.push(deviceResponse.name)
                     }
                 })
                 console.log('this.tasmotaDeviceList', this.tasmotaDeviceList)
