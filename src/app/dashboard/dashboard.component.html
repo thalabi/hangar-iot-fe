@@ -53,7 +53,16 @@
                                                 </a>
                                             </label>
                                             <p-popover [dismissable]="true" #stateInfo>
-                                                {{ deviceAttributeEntry.value.zigbeeState | json }}
+                                                <ng-template #content>
+                                                    <div class="border border-gray-300">
+                                                        <div class="p-2">
+                                                            <div class="mb-1 font-semibold">Zigbee State</div>
+                                                            <div class=" bg-gray-100">{{
+                                                                deviceAttributeEntry.value.zigbeeState | json
+                                                                }}</div>
+                                                        </div>
+                                                    </div>
+                                                </ng-template>
                                             </p-popover>
                                         </div>
 
