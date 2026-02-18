@@ -19,7 +19,7 @@
                         <ng-container *ngIf="areaEntry.key !== '0'; then card; else noCard"></ng-container>
 
                         <ng-template #card>
-                            <p-card [header]="areaEntry.key" styleClass="w-88 bg-gray-100!">
+                            <p-card [header]="areaEntry.key" styleClass="w-80 bg-gray-100!">
                                 <ng-container *ngTemplateOutlet="cardContent"></ng-container>
                             </p-card>
                         </ng-template>
@@ -120,12 +120,13 @@
 
                 <!-- SENSOR DATA -->
                 <div class="mt-6 flex items-center gap-4">
-                    <label class="font-bold w-32">Sensor data</label>
+                    <label class="font-bold w-26">Sensor data</label>
                     <!-- {{(zoneDeviceAttributesMap[zoneEntry.key] | keyvalue)}} -->
                     <p-select [options]="zoneSensorDeviceAttributesMap[zoneEntry.key] | keyvalue"
                         [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.device.description"
                         optionValue="value.device.name" placeholder="Select device"
-                        (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true"></p-select>
+                        (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true"
+                        styleClass="w-50"></p-select>
                 </div>
 
                 <!-- NO DATA -->
@@ -181,12 +182,12 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-[9.5rem_1fr]">
-                        <div class="font-bold">Enery today</div>
+                        <div class="font-bold">Energy today</div>
                         <div>
                             {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Today}} kWh</div>
                     </div>
                     <div class="grid grid-cols-[9.5rem_1fr]">
-                        <div class="font-bold">Energy yesterday</div>
+                        <div class="font-bold">Energy yday</div>
                         <div>
                             {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Yesterday}} kWh
                         </div>
