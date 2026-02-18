@@ -156,7 +156,7 @@
                         *ngIf="selectedDeviceNameForSensorData && deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY">
 
                         <div class="font-bold">Time</div>
-                        <div class="truncate text-xs">{{
+                        <div class="truncate text-xs font-semibold">{{
                             deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.Time | date : 'medium' }}
                         </div>
 
@@ -181,7 +181,7 @@
 
                         <div class="font-bold">E. Total</div>
                         <div>
-                            <div class="font-semibold">{{
+                            <div>{{
                                 deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Total }} kWh
                             </div>
                             <div class="text-[10px] uppercase text-gray-500 leading-tight">
