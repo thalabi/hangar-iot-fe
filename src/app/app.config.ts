@@ -15,6 +15,7 @@ import { httpErrorInterceptor } from './http-error-interceptor';
 import { MessageService } from 'primeng/api';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { rxStompServiceFactory } from './rx-stomp.service.factory'
+import { DatePipe } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -59,6 +60,8 @@ export const appConfig: ApplicationConfig = {
         // for ng idle
         provideNgIdle(),
         //
+
+        DatePipe,
 
         [MessageService],
 

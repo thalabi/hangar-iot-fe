@@ -150,6 +150,7 @@ export class BaseComponent implements OnInit, OnDestroy {
                         // 1. Parse the string body into a JSON object
                         // 2. Assert it matches your ZigbeeState interface
                         const zigbeeState = JSON.parse(message.body) as ZigbeeState;
+                        zigbeeState.timestamp = new Date(zigbeeState.timestamp);
                         this.deviceAttributesMap[deviceName].zigbeeState = zigbeeState;
                     });
             }

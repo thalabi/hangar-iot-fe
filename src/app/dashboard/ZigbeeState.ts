@@ -4,4 +4,5 @@ export interface ZigbeeState {
     occupancy?: boolean;
     battery?: number;
     batteryLow?: boolean;
+    timestamp: Date;
 }
