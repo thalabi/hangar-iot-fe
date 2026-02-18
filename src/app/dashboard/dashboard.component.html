@@ -118,100 +118,88 @@
                     </div>
                 </div>
 
-                <!-- SENSOR DATA -->
-                <div class="mt-6 flex items-center gap-4">
-                    <label class="font-bold w-26">Sensor data</label>
-                    <!-- {{(zoneDeviceAttributesMap[zoneEntry.key] | keyvalue)}} -->
-                    <p-select [options]="zoneSensorDeviceAttributesMap[zoneEntry.key] | keyvalue"
-                        [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.device.description"
-                        optionValue="value.device.name" placeholder="Select device"
-                        (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true"
-                        styleClass="w-50"></p-select>
-                </div>
+                <!-- Main container with a fixed w-80 (320px) and hidden overflow to be safe -->
+                <div class="mt-6 grid grid-cols-[5rem_1fr] items-center gap-x-3 gap-y-3 text-sm w-80 overflow-hidden">
 
-                <!-- NO DATA -->
-                <div *ngIf="
-            selectedDeviceNameForSensorData &&
-            !deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY
-          " class="ml-2 mt-2 italic">
-                    Retrieving telemetry data.
-                </div>
+                    <!-- ROW 1: SELECTOR -->
+                    <label class="font-bold">Sensor</label>
+                    <!-- Use min-w-0 on the container to allow truncation to work inside a grid -->
+                    <div class="min-w-0">
+                        <p-select [options]="zoneSensorDeviceAttributesMap[zoneEntry.key] | keyvalue"
+                            [(ngModel)]="selectedDeviceNameForSensorData" optionLabel="value.device.description"
+                            optionValue="value.device.name" placeholder="Select device"
+                            (onChange)="onSelectSensorDataForDeviceName($event)" [showClear]="true" styleClass="w-full">
+                            <!-- styleClass w-full is critical here -->
 
-                <!-- ENERGY DATA -->
-                <div *ngIf="
-            selectedDeviceNameForSensorData &&
-            deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY
-          " class="mt-4 space-y-1">
-                    <div class="grid grid-cols-[9.5rem_1fr]">
+                            <ng-template pTemplate="selectedItem" let-selectedOption>
+                                <!-- Truncate relative to the remaining space (~14rem) -->
+                                <div class="truncate w-full" [title]="selectedOption.value.device.description">
+                                    {{ selectedOption.value.device.description }}
+                                </div>
+                            </ng-template>
+
+                            <ng-template pTemplate="item" let-item>
+                                <div class="truncate max-w-[14rem]" [title]="item.value.device.description">
+                                    {{ item.value.device.description }}
+                                </div>
+                            </ng-template>
+                        </p-select>
+                    </div>
+                    <!-- ROW 2: NO DATA (Full Width) -->
+                    <div *ngIf="selectedDeviceNameForSensorData && !deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY"
+                        class="col-span-2 italic text-gray-500 py-1">
+                        Retrieving telemetry data...
+                    </div>
+
+                    <!-- ENERGY DATA ROWS -->
+                    <ng-container
+                        *ngIf="selectedDeviceNameForSensorData && deviceAttributesMap[selectedDeviceNameForSensorData]?.sensorData?.ENERGY">
+
                         <div class="font-bold">Time</div>
-                        <div>
-                            {{
-                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.Time
-                            | date : 'medium'
-                            }}
+                        <div class="truncate text-xs">{{
+                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.Time | date : 'medium' }}
                         </div>
-                    </div>
 
-                    <div class="grid grid-cols-[9.5rem_1fr]">
                         <div class="font-bold">Voltage</div>
-                        <div>
-                            {{
-                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Voltage
-                            }}
-                            V
+                        <div>{{ deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Voltage }} V
                         </div>
-                    </div>
 
-                    <div class="grid grid-cols-[9.5rem_1fr]">
                         <div class="font-bold">Current</div>
-                        <div>
-                            {{
-                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Current
-                            }}
-                            A
+                        <div>{{ deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Current }} A
                         </div>
-                    </div>
 
-                    <div class="grid grid-cols-[9.5rem_1fr]">
                         <div class="font-bold">Power</div>
-                        <div>
-                            {{
-                            deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Power
-                            }}
-                            W
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-[9.5rem_1fr]">
-                        <div class="font-bold">Energy today</div>
-                        <div>
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Today}} kWh</div>
-                    </div>
-                    <div class="grid grid-cols-[9.5rem_1fr]">
-                        <div class="font-bold">Energy yday</div>
-                        <div>
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Yesterday}} kWh
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-[9.5rem_1fr]">
-                        <div class="font-bold">Energy total</div>
-                        <div>
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Total}} kWh (since
-                            {{deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.TotalStartTime |
-                            date:'medium'}})
-                        </div>
-                    </div>
+                        <div>{{ deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Power }} W</div>
 
-                </div>
+                        <div class="font-bold">E. Today</div>
+                        <div>{{ deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Today }} kWh
+                        </div>
 
-                <!-- REFRESH -->
-                <div class="mt-2">
-                    <button pButton type="button" label="Refresh" (click)="onRefreshSensorData($event)" [disabled]="
-              !selectedDeviceNameForSensorData ||
-              !deviceAttributesMap[selectedDeviceNameForSensorData].device.telemetry ||
-              (deviceAttributesMap[selectedDeviceNameForSensorData]
-                .connectionStateBehaviorSubject
-                | async)?.state !== 'ONLINE'
-            "></button>
+                        <div class="font-bold">E. Yday</div>
+                        <div>{{ deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Yesterday }} kWh
+                        </div>
+
+                        <div class="font-bold">E. Total</div>
+                        <div>
+                            <div class="font-semibold">{{
+                                deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.Total }} kWh
+                            </div>
+                            <div class="text-[10px] uppercase text-gray-500 leading-tight">
+                                Since {{
+                                deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.TotalStartTime |
+                                date:'short' }}
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- REFRESH BUTTON (Full Width) -->
+                    <div class="col-span-2 mt-2">
+                        <!-- Using styleClass="w-full" ensures the PrimeNG internal button wrapper expands -->
+                        <button pButton type="button" label="Refresh" styleClass="w-full" class="w-full"
+                            (click)="onRefreshSensorData($event)"
+                            [disabled]="!selectedDeviceNameForSensorData || !deviceAttributesMap[selectedDeviceNameForSensorData].device.telemetry || (deviceAttributesMap[selectedDeviceNameForSensorData].connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
+                        </button>
+                    </div>
                 </div>
             </p-tabpanel>
         </p-tabpanels>
