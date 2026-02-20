@@ -49,7 +49,8 @@
                                                 <a class="inline-block ml-1"
                                                     *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
                                                     (click)="stateInfo.toggle($event)">
-                                                    <span class="pi pi-info-circle text-[0.6rem] align-super"></span>
+                                                    <span
+                                                        [ngClass]="(deviceAttributeEntry.value.zigbeeState.linkquality ?? 100 ) < 50 ? 'pi pi-info-circle text-[0.6rem] align-super bg-yellow-200' : 'pi pi-info-circle text-[0.6rem] align-super'"></span>
                                                 </a>
                                             </label>
                                             <p-popover #stateInfo [dismissable]="true">

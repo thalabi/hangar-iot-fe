@@ -15,7 +15,7 @@ import { CardModule } from 'primeng/card';
 import { DeviceAttributes } from './DeviceAttributes';
 import { PopoverModule } from 'primeng/popover';
 import { ZigbeeState } from './ZigbeeState';
-import { JsonHighlightPipe } from "../JsonHighlightPipe";
+import { JsonHighlightPipe } from "./JsonHighlightPipe";
 
 @Component({
     standalone: true,
