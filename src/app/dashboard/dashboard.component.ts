@@ -16,11 +16,13 @@ import { DeviceAttributes } from './DeviceAttributes';
 import { PopoverModule } from 'primeng/popover';
 import { ZigbeeState } from './ZigbeeState';
 import { JsonHighlightPipe } from "./JsonHighlightPipe";
+import { ToggleSwitchChangeEvent, ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ToggleAreaPowerRequest } from './ToggleAreaPowerRequest';
 
 @Component({
     standalone: true,
     selector: 'app-dashboard',
-    imports: [CommonModule, FormsModule, SelectModule, SelectButtonModule, ButtonModule, TabsModule, CardModule, PopoverModule, JsonHighlightPipe],
+    imports: [CommonModule, FormsModule, SelectModule, /*SelectButtonModule,*/ ButtonModule, TabsModule, CardModule, PopoverModule, JsonHighlightPipe, ToggleSwitchModule],
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css']
 })
@@ -64,17 +66,42 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
     //     }
     //     return this.extractStateFromJsonString(this.deviceAttributesMap[deviceName].zigbeeState)
     // }
-    toggleDevicePower(event: SelectButtonChangeEvent, deviceName: string) {
+
+    // toggleDevicePower(event: SelectButtonChangeEvent, deviceName: string) {
+    //     console.log('toggleDevicePower')
+    //     console.log('event', event)
+    //     console.log('changedValue', event.value)
+    //     console.log('domEvent', event.originalEvent)
+    //     const powerStateRequested = event.value
+    //     const togglePowerRequest: TogglePowerRequest = { deviceName, powerStateRequested }
+
+    //     if (powerStateRequested === this.deviceAttributesMap[deviceName].savedPowerState.power) {
+    //         return
+    //     }
+
+    //     this.restService.togglePower(togglePowerRequest)
+    //         .subscribe(
+    //             {
+    //                 complete: () => {
+    //                     // trigger sensor data only if device supports telemetry
+    //                     if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
+    //                         this.restService.triggerPublishSensorData(togglePowerRequest).subscribe()
+    //                     }
+
+    //                 },
+    //             });
+    // }
+    toggleDevicePower2(event: ToggleSwitchChangeEvent, deviceName: string) {
         console.log('toggleDevicePower')
         console.log('event', event)
-        console.log('changedValue', event.value)
+        console.log('event.checked', event.checked)
         console.log('domEvent', event.originalEvent)
-        const powerStateRequested = event.value
+        const powerStateRequested = event.checked ? 'ON' : 'OFF'
         const togglePowerRequest: TogglePowerRequest = { deviceName, powerStateRequested }
 
-        if (powerStateRequested === this.deviceAttributesMap[deviceName].savedPowerState.power) {
-            return
-        }
+        // if (powerStateRequested === this.deviceAttributesMap[deviceName].savedPowerState.power) {
+        //     return
+        // }
 
         this.restService.togglePower(togglePowerRequest)
             .subscribe(
@@ -88,6 +115,53 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
                     },
                 });
     }
+
+    // areaPowerState(zone: string, area: string): boolean {
+    //     console.log('areaPowerState', zone, area)
+    //     this.groupedDeviceAttributesMap[zone]?.[area] && console.log('groupedDeviceAttributesMap[zone][area]', this.groupedDeviceAttributesMap[zone][area])
+    //     if (this.groupedDeviceAttributesMap[zone]?.[area]) {
+
+    //         const deviceAttributesList = Object.values(this.groupedDeviceAttributesMap[zone][area])
+    //         if (deviceAttributesList.length > 0) {
+    //             const someOn = deviceAttributesList.some(deviceAttribute => {
+    //                 return deviceAttribute.device.bridge === 'TASMOTA' && deviceAttribute.powerState.power === 'on' ||
+    //                     deviceAttribute.device.bridge === 'ZIGBEE2MQTT' && deviceAttribute.zigbeeState?.state === 'ON'
+    //             })
+    //             console.log('someOn', someOn)
+    //             return someOn
+    //         }
+    //         return false
+    //     }
+    //     return false
+    // }
+
+    toggleAreaPower(event: ToggleSwitchChangeEvent, zoneName: string, areaName: string) {
+        console.log('toggleAreaPower')
+        console.log('event', event)
+        console.log('event.checked', event.checked)
+        console.log('zone', zoneName)
+        console.log('area', areaName)
+        const toggleAreaPowerRequest: ToggleAreaPowerRequest = { zoneName: zoneName, areaName: areaName, powerStateRequested: event.checked }
+
+        this.restService.toggleAreaPower(toggleAreaPowerRequest)
+            .subscribe(
+                {
+                    complete: () => {
+
+                        console.log('toggled area power, now triggering publish state for all devices in the area to update their state in the UI')
+                        const devicesInArea = this.filterOnZoneAndArea(zoneName, areaName)
+                        console.log('devicesInArea', devicesInArea)
+
+                        // trigger sensor data only if device supports telemetry
+                        // if (this.deviceAttributesMap[deviceName]?.device.telemetry) {
+                        //     this.restService.triggerPublishSensorData(togglePowerRequest).subscribe()
+                        // }
+
+                    },
+                });
+
+    }
+
 
     onSelectSensorDataForDeviceName(event: any) {
         console.log('onSensorDataForDeviceName, selectedDeviceNameForSensorData', this.selectedDeviceNameForSensorData)

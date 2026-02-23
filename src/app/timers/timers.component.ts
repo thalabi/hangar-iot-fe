@@ -137,7 +137,7 @@ export class TimersComponent /*extends BaseComponent*/ implements OnInit /*, OnD
                     console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
                     this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
-                    this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
+                    // this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
                 });
 
             // subscribe to SENSOR telemetry topic if device is capable of sending telemetry data

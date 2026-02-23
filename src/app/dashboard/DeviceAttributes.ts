@@ -8,7 +8,7 @@ import { ZigbeeState } from "./ZigbeeState";
 export interface DeviceAttributes {
     device: Device
     powerState: PowerStateResponse
-    savedPowerState: PowerStateResponse
+    // savedPowerState: PowerStateResponse
     sensorData: SensorDataResponse
     connectionStateBehaviorSubject: BehaviorSubject<ConnectionStateResponse>
     zigbeeState: ZigbeeState | null

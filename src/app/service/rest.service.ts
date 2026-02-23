@@ -8,6 +8,7 @@ import { CommandResponse } from '../execute-command/CommandResponse';
 import { FreeFormatCommandRequest } from '../execute-command/FreeFormatCommandRequest';
 import { TogglePowerRequest } from '../dashboard/TogglePowerRequest';
 import { TimersRequestResponse } from '../timers/TimersRequestResponse';
+import { ToggleAreaPowerRequest } from '../dashboard/ToggleAreaPowerRequest';
 
 @Injectable({
     providedIn: 'root'
@@ -34,6 +35,10 @@ export class RestService {
     togglePower(deviceNameRequest: TogglePowerRequest): Observable<void> {
         console.log('RestService.togglePower')
         return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/togglePower`, deviceNameRequest)
+    }
+    toggleAreaPower(toggleAreaPowerRequest: ToggleAreaPowerRequest): Observable<void> {
+        console.log('RestService.toggleAreaPower')
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/toggleAreaPower`, toggleAreaPowerRequest)
     }
 
     publishConnectionState(deviceNameRequest: DeviceNameRequest): Observable<void> {

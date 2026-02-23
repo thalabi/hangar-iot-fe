@@ -33,7 +33,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     public zoneMap: Record<string, Zone> = {} as any;
     public areaMap: Record<string, Area> = {} as any;
     /**
-     * groupedDeviceAttributesMap[zoneId][areaId] = DeviceAttributes
+     * groupedDeviceAttributesMap[zone.name][area.name] = DeviceAttributes
      *
      * - Outer key: zone.name
      * - Inner key: area.name
@@ -42,10 +42,17 @@ export class BaseComponent implements OnInit, OnDestroy {
     public groupedDeviceAttributesMap: Record<string, Record<string, Record<string, DeviceAttributes>>> = {} as any;
 
     /**
-     * zoneDeviceAttributesMap[zoneId] = DeviceAttributes
+     * areaPowerMap[zone.name + '_' + area.name] = boolean representing whether any device in the area is on
+     * 
+     * - key: zone.name + '_' + area.name
+     */
+    public areaPowerMap: Record<string, boolean> = {};
+
+    /**
+     * zoneSensorDeviceAttributesMap[zone.name][device.name] = DeviceAttributes for devices that have telemetry enabled
      *
-     * - key: zone.name
-     * - string: device.name
+     * - Outer key: zone.name
+     * - Inner key: device.name
      */
     public zoneSensorDeviceAttributesMap: Record<string, Record<string, DeviceAttributes>> = {} as any;
 
@@ -102,6 +109,33 @@ export class BaseComponent implements OnInit, OnDestroy {
         });
     }
 
+    private updatePowerMap() {
+        this.areaPowerMap = {}; // reset
+        for (const zone of Object.keys(this.groupedDeviceAttributesMap)) {
+            for (const area of Object.keys(this.groupedDeviceAttributesMap[zone])) {
+                const key = this.buildKey(zone, area);
+                console.log(`Computing power state for area: ${key}`)
+                this.areaPowerMap[key] = this.computeAreaPowerState(zone, area);
+                console.log(`Power state for area ${key}: ${this.areaPowerMap[key]}`);
+            }
+        }
+    }
+    private buildKey(zone: string, area: string) {
+        return `${zone}_${area}`;
+    }
+
+    private computeAreaPowerState(zone: string, area: string): boolean {
+        const areaMap = this.groupedDeviceAttributesMap[zone]?.[area];
+        if (!areaMap) return false;
+
+        const deviceAttributesList = Object.values(areaMap);
+        if (deviceAttributesList.length === 0) return false;
+
+        return deviceAttributesList.some(attr =>
+            (attr.device.bridge === 'TASMOTA' && attr.powerState.power === 'on') ||
+            (attr.device.bridge === 'ZIGBEE2MQTT' && attr.zigbeeState?.state === 'ON')
+        );
+    }
     // code is based on https://github.com/stomp-js/ng2-stompjs-angular7
     private webSocketConnectAndSubscribe(): void {
         console.log('webSocketConnectAndSubscribe()')
@@ -115,7 +149,9 @@ export class BaseComponent implements OnInit, OnDestroy {
                     console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
 
                     this.deviceAttributesMap[deviceName].powerState = JSON.parse(message.body);
-                    this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
+                    // this.deviceAttributesMap[deviceName].savedPowerState = JSON.parse(message.body);
+
+                    this.updatePowerMap()
                 });
 
             // subscribe to SENSOR telemetry topic if device is capable of sending telemetry data
@@ -152,6 +188,9 @@ export class BaseComponent implements OnInit, OnDestroy {
                         const zigbeeState = JSON.parse(message.body) as ZigbeeState;
                         zigbeeState.timestamp = new Date(zigbeeState.timestamp);
                         this.deviceAttributesMap[deviceName].zigbeeState = zigbeeState;
+
+                        // 
+                        this.updatePowerMap();
                     });
             }
         })
