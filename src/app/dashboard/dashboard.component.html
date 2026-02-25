@@ -120,19 +120,28 @@
                                             </ng-template>
 
                                             <ng-template #passiveDeviceTemplate>
-                                                <ng-container [ngSwitch]="deviceAttributeEntry.value.device.deviceType">
-                                                    <span *ngSwitchCase="'MOTION_SENSOR'">
-                                                        {{
-                                                        extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
-                                                        }}
-                                                    </span>
-                                                    <span *ngSwitchCase="'BODY_SENSOR'">
-                                                        {{
-                                                        extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState)
-                                                        }}
-                                                    </span>
-                                                    <span *ngSwitchDefault>unhandled</span>
-                                                </ng-container>
+                                                <!-- 1. Define the variable once at the top -->
+                                                @let status =
+                                                extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState);
+
+                                                <!-- 2. Use it freely inside the switch -->
+                                                @switch (deviceAttributeEntry.value.device.deviceType) {
+                                                @case ('MOTION_SENSOR') {
+                                                <span [class.text-primary]="status !== 'Clear'"
+                                                    [class.font-bold]="status !== 'Clear'">
+                                                    {{ status }}
+                                                </span>
+                                                }
+                                                @case ('BODY_SENSOR') {
+                                                <span [class.text-primary]="status !== 'Clear'"
+                                                    [class.font-bold]="status !== 'Clear'">
+                                                    {{ status }}
+                                                </span>
+                                                }
+                                                @default {
+                                                <span>unhandled</span>
+                                                }
+                                                }
                                             </ng-template>
                                         </div>
                                     </div>
