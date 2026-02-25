@@ -85,7 +85,7 @@
                                         </div>
 
                                         <!-- DEVICE CONTROL -->
-                                        <div [ngClass]="isRow ? '' : 'col-span-1 md:col-span-4 flex md:justify-end'">
+                                        <div [ngClass]="isRow ? '' : 'col-span-1 md:col-span-4 flex justify-end'">
                                             <ng-container
                                                 *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container>
 
