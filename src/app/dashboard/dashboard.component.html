@@ -22,9 +22,9 @@
                             <!-- <p-card [header]="areaEntry.key" styleClass="w-80 bg-gray-100!"> -->
                             <p-card styleClass="w-80 bg-gray-100!">
                                 <ng-template #title>
-                                    <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-y-4 w-full">
-                                        <div class="col-span-1 md:col-span-8">{{areaEntry.key}}</div>
-                                        <div class="col-span-1 md:col-span-4 flex justify-end">
+                                    <div class="grid grid-cols-12 items-center gap-y-4 w-full">
+                                        <div class="col-span-8">{{areaEntry.key}}</div>
+                                        <div class="col-span-4 flex justify-end">
                                             <p-toggleswitch
                                                 [ngModel]="areaPowerMap[zoneEntry.key + '_' + areaEntry.key]"
                                                 (onChange)="toggleAreaPower($event, zoneEntry.key, areaEntry.key)"
@@ -55,7 +55,7 @@
                                     <div [ngClass]="isRow ? 'flex items-center gap-3' : 'contents'">
 
                                         <!-- DEVICE LABEL -->
-                                        <div [ngClass]="isRow ? '' : 'col-span-1 md:col-span-8'">
+                                        <div [ngClass]="isRow ? '' : 'col-span-8'">
                                             <label class="block font-bold">
                                                 {{ deviceAttributeEntry.value.device.description }}
                                                 <a class="inline-block ml-1"
@@ -85,7 +85,7 @@
                                         </div>
 
                                         <!-- DEVICE CONTROL -->
-                                        <div [ngClass]="isRow ? '' : 'col-span-1 md:col-span-4 flex justify-end'">
+                                        <div [ngClass]="isRow ? '' : 'col-span-4 flex justify-end'">
                                             <ng-container
                                                 *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container>
 
