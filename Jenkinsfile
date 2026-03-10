@@ -5,10 +5,6 @@ pipeline {
         jdk 'jdk-25' 
     }
 
-    // environment {
-    //     HANGAR_IOT_TARGET_HOSTNAME = credentials('HANGAR_IOT_TARGET_HOSTNAME')
-    // }
-
     stages {
 
         stage ('Initialize') {
@@ -55,7 +51,7 @@ pipeline {
 			}
             steps {
                 sh '''
-                jar -cvf hangar-iot-fe-${BRANCH_NAME}.jar dist
+                jar -cvf iot-fe-${BRANCH_NAME}.jar dist
                 '''
             }
 		}
@@ -74,7 +70,7 @@ pipeline {
                 fi
                 echo "REPOSITORY = ${REPOSITORY}"
 
-                mvn deploy:deploy-file -DgroupId=com.kerneldc -DartifactId=hangar-iot-fe -Dversion=${BRANCH_NAME} -DgeneratePom=true -Dpackaging=jar -DrepositoryId=kerneldc-nexus -Durl=http://localhost:8081/repository/${REPOSITORY} -Dfile=hangar-iot-fe-${BRANCH_NAME}.jar
+                mvn deploy:deploy-file -DgroupId=com.kerneldc -DartifactId=iot-fe -Dversion=${BRANCH_NAME} -DgeneratePom=true -Dpackaging=jar -DrepositoryId=kerneldc-nexus -Durl=http://localhost:8081/repository/${REPOSITORY} -Dfile=iot-fe-${BRANCH_NAME}.jar
                 '''
             }
         }
