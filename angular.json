@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "hangar-iot-fe": {
+        "iot-fe": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:class": {
@@ -38,7 +38,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/hangar-iot-fe",
+                        "outputPath": "dist/iot-fe",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": [
@@ -112,10 +112,10 @@
                     },
                     "configurations": {
                         "production": {
-                            "buildTarget": "hangar-iot-fe:build:production"
+                            "buildTarget": "iot-fe:build:production"
                         },
                         "development": {
-                            "buildTarget": "hangar-iot-fe:build:development"
+                            "buildTarget": "iot-fe:build:development"
                         }
                     },
                     "defaultConfiguration": "development"

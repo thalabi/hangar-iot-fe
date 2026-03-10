@@ -22,7 +22,7 @@ import { OverlayModule } from 'primeng/overlay';
     styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-    title = 'hangar-iot-fe';
+    title = 'iot-fe';
     clientBuildInfo: string = ''
     serverBuildInfo: string = ''
 
