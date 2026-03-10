@@ -5,7 +5,7 @@ export const environment = {
     buildTimestamp: "@buildTimestamp@",
     beRestServiceUrl: "https://localhost:8444",
 
-    websocketUrl: "wss://localhost:8444/protected/hangar-iot-websocket",
+    websocketUrl: "wss://localhost:8444/protected/iot-websocket",
 
     // when adding or changing keycloak json, update auth-config.ts and auth-module-config.ts as well
     keycloak: {
