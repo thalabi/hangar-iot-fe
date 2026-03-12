@@ -29,46 +29,46 @@ export class RestService {
     }
 
     getDeviceList(): Observable<Array<Device>> {
-        return this.http.get<Array<Device>>(`${this.beRestServiceUrl}/protected/hangarIotController/getDeviceList`)
+        return this.http.get<Array<Device>>(`${this.beRestServiceUrl}/protected/IotController/getDeviceList`)
     }
 
     togglePower(deviceNameRequest: TogglePowerRequest): Observable<void> {
         console.log('RestService.togglePower')
-        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/togglePower`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/IotController/togglePower`, deviceNameRequest)
     }
     toggleAreaPower(toggleAreaPowerRequest: ToggleAreaPowerRequest): Observable<void> {
         console.log('RestService.toggleAreaPower')
-        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/toggleAreaPower`, toggleAreaPowerRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/IotController/toggleAreaPower`, toggleAreaPowerRequest)
     }
 
     publishConnectionState(deviceNameRequest: DeviceNameRequest): Observable<void> {
         console.log('RestService.triggerPublishConnectionState')
-        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/publishConnectionState`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/IotController/publishConnectionState`, deviceNameRequest)
     }
 
     triggerPublishState(deviceNameRequest: DeviceNameRequest): Observable<void> {
         console.log('RestService.triggerPublishState')
-        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/triggerPublishState`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/IotController/triggerPublishState`, deviceNameRequest)
     }
 
     triggerPublishSensorData(deviceNameRequest: DeviceNameRequest): Observable<void> {
         console.log('RestService.triggerPublishSensorData')
-        return this.http.post<void>(`${this.beRestServiceUrl}/protected/hangarIotController/triggerPublishSensorData`, deviceNameRequest)
+        return this.http.post<void>(`${this.beRestServiceUrl}/protected/IotController/triggerPublishSensorData`, deviceNameRequest)
     }
 
     getCommandList(): Observable<Array<CommandResponse>> {
-        return this.http.get<Array<CommandResponse>>(`${this.beRestServiceUrl}/protected/hangarIotController/getCommandList`)
+        return this.http.get<Array<CommandResponse>>(`${this.beRestServiceUrl}/protected/IotController/getCommandList`)
     }
 
     executeFreeFormatCommand(freeFormatCommandRequest: FreeFormatCommandRequest): Observable<string> {
         console.log('RestService.triggerSensorData')
-        return this.http.post<string>(`${this.beRestServiceUrl}/protected/hangarIotController/executeFreeFormatCommand`, freeFormatCommandRequest)
+        return this.http.post<string>(`${this.beRestServiceUrl}/protected/IotController/executeFreeFormatCommand`, freeFormatCommandRequest)
     }
 
     getTimers(deviceName: string): Observable<TimersRequestResponse> {
-        return this.http.get<TimersRequestResponse>(`${this.beRestServiceUrl}/protected/hangarIotController/getTimers?deviceName=${deviceName}`)
+        return this.http.get<TimersRequestResponse>(`${this.beRestServiceUrl}/protected/IotController/getTimers?deviceName=${deviceName}`)
     }
     setTimers(timersRequestResponse: TimersRequestResponse): Observable<string> {
-        return this.http.post<string>(`${this.beRestServiceUrl}/protected/hangarIotController/setTimers`, timersRequestResponse)
+        return this.http.post<string>(`${this.beRestServiceUrl}/protected/IotController/setTimers`, timersRequestResponse)
     }
 }
