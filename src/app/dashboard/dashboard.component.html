@@ -79,6 +79,49 @@
                                                         <pre class="max-h-80 overflow-auto rounded-md bg-gray-50 p-4 text-xs font-mono leading-relaxed shadow-inner border border-gray-200"
                                                             [innerHTML]="deviceAttributeEntry.value.zigbeeState | jsonHighlight">
             </pre>
+
+
+                                                        <div
+                                                            class="mb-3 flex items-center gap-2 border-b border-gray-100 pb-2 pt-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+                                                            <i class="pi pi-code"></i>
+                                                            Activity
+                                                        </div>
+
+                                                        <div
+                                                            class="max-h-80 overflow-y-auto rounded-md bg-gray-50 p-4 text-xs font-mono shadow-inner border border-gray-200">
+                                                            @for (group of deviceAttributeEntry.value.attributeChanges;
+                                                            track group.timestamp) {
+                                                            <!-- Each time entry is a single flex row -->
+                                                            <div class="flex gap-x-2 whitespace-nowrap leading-tight">
+
+                                                                <!-- Timestamp -->
+                                                                <span class="text-gray-500 shrink-0">
+                                                                    {{ group.timestamp | date: 'short'}}
+                                                                </span>
+
+                                                                <!-- Container for all property changes at this time -->
+                                                                <div class="flex gap-x-2">
+                                                                    @for (item of group.changes; track $index) {
+                                                                    <span class="flex gap-x-1">
+                                                                        <span
+                                                                            class="text-blue-700 font-medium">{{item.path
+                                                                            }}:</span>
+                                                                        <span
+                                                                            class="text-red-600">{{item.oldValue}}</span>
+                                                                        <span class="text-gray-400">-></span>
+                                                                        <span class="text-green-700">{{
+                                                                            item.newValue}}</span>
+                                                                    </span>
+                                                                    }
+                                                                </div>
+
+                                                            </div>
+                                                            } @empty {
+                                                            <span class="text-gray-400 italic text-[10px]">No history
+                                                                available</span>
+                                                            }
+                                                        </div>
+
                                                     </div>
                                                 </ng-template>
                                             </p-popover>

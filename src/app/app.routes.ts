@@ -17,6 +17,6 @@ export const routes: Routes = [
     { path: 'deviceList', component: DeviceListComponent, canActivate: [AuthGuard] },
     { path: 'executeCommand', component: ExecuteCommandComponent, canActivate: [AuthGuard] },
     { path: 'timers', component: TimersComponent, canActivate: [AuthGuard] },
-    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: '**', component: Httpstatus404Component },
 ];

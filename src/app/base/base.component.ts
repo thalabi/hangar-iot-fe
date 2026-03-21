@@ -15,6 +15,7 @@ import { RestService } from '../service/rest.service';
 import { Zone } from '../dashboard/Zone';
 import { Area } from '../dashboard/Area';
 import { ZigbeeState } from '../dashboard/ZigbeeState';
+import { AttributeChange } from '../dashboard/AttributeChange';
 
 @Component({
     selector: 'app-base',
@@ -94,7 +95,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     // populate deviceAttributesMap and groupedDeviceAttributesMap based on the device list response from the backend
     private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
-            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null } as DeviceAttributes;
+            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null, attributeChanges: null } as DeviceAttributes;
             // ensure zone map exists
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
             // ensure area map exists within the zone
@@ -176,15 +177,15 @@ export class BaseComponent implements OnInit, OnDestroy {
                     this.deviceAttributesMap[deviceName].connectionStateBehaviorSubject.next(JSON.parse(message.body));
                 });
 
-            // subscribe to zigbee2mqtt state topic
             if (this.deviceAttributesMap[deviceName]?.device.bridge === 'ZIGBEE2MQTT') {
+                // subscribe to zigbee2mqtt state topic
                 console.log(`subscribing to topic: /topic/zigbee2mqtt/${deviceName}`)
                 this.rxStompService.watch(`/topic/zigbee2mqtt/${deviceName}`)
                     .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
                     .subscribe((message: Message) => {
                         console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
                         // 1. Parse the string body into a JSON object
-                        // 2. Assert it matches your ZigbeeState interface
+                        // 2. Assert it matches ZigbeeState interface
                         const zigbeeState = JSON.parse(message.body) as ZigbeeState;
                         zigbeeState.timestamp = new Date(zigbeeState.timestamp);
                         this.deviceAttributesMap[deviceName].zigbeeState = zigbeeState;
@@ -192,6 +193,21 @@ export class BaseComponent implements OnInit, OnDestroy {
                         // 
                         this.updatePowerMap();
                     });
+
+                // subscribe to zigbee2mqtt attributeChanges topic
+                console.log(`subscribing to topic: /topic/${deviceName}/attributeChanges`)
+                this.rxStompService.watch(`/topic/${deviceName}/attributeChanges`)
+                    .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
+                    .subscribe((message: Message) => {
+                        console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+                        // 1. Parse the string body into a JSON object
+                        // 2. Assert it matches AttributeChange[] interface
+                        const attributeChanges: AttributeChange[] = JSON.parse(message.body) as AttributeChange[];
+                        attributeChanges.forEach(change => change.timestamp = new Date(change.timestamp));
+                        this.deviceAttributesMap[deviceName].attributeChanges = attributeChanges;
+
+                    });
+
             }
         })
 

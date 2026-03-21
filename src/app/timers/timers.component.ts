@@ -120,7 +120,7 @@ export class TimersComponent /*extends BaseComponent*/ implements OnInit /*, OnD
     private populateTasmotaDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
             if (deviceResponse.bridge === 'TASMOTA') {
-                this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null } as DeviceAttributes;
+                this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null, attributeChanges: null } as DeviceAttributes;
             }
 
         });

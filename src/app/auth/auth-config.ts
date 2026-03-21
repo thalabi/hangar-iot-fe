@@ -8,6 +8,9 @@ export const authCodeFlowConfig: AuthConfig = {
     // URL of the SPA to redirect the user to after login
     redirectUri: window.location.origin,
 
+    // URL of the SPA to redirect the user to after logsout
+    postLogoutRedirectUri: window.location.origin + '/welcome',
+
     // The SPA's id. The SPA is registerd with this id at the auth-server
     // clientId: 'server.code',
     clientId: environment.keycloak.clientId,

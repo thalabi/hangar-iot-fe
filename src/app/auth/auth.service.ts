@@ -168,7 +168,7 @@ export class AuthService {
             this.oauthService.revokeTokenAndLogout(
                 {
                     client_id: this.oauthService.clientId,
-                    post_logout_redirect_uri: this.oauthService.redirectUri + '?logoutMessage=' + logoutMessage
+                    post_logout_redirect_uri: this.oauthService.postLogoutRedirectUri + '?logoutMessage=' + logoutMessage
                 }
             )
         } else {
