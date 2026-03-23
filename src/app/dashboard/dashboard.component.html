@@ -6,11 +6,11 @@
 
         <p-tablist>
             <p-tab *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index" [value]="i">
-                {{ zoneEntry.key }}
+                <span class="uppercase">{{ zoneEntry.key }}</span>
             </p-tab>
         </p-tablist>
 
-        <p-tabpanels>
+        <p-tabpanels class="px-0!">
             <p-tabpanel *ngFor="let zoneEntry of groupedDeviceAttributesMap | keyvalue; let i = index" [value]="i">
                 <!-- DEVICE CARDS -->
                 <div class="flex flex-wrap gap-4">
@@ -23,7 +23,7 @@
                             <p-card styleClass="w-80 bg-gray-100!">
                                 <ng-template #title>
                                     <div class="grid grid-cols-12 items-center gap-y-4 w-full">
-                                        <div class="col-span-8">{{areaEntry.key}}</div>
+                                        <div class="col-span-8 uppercase">{{areaEntry.key}}</div>
                                         <div class="col-span-4 flex justify-end">
                                             <p-toggleswitch
                                                 [ngModel]="areaPowerMap[zoneEntry.key + '_' + areaEntry.key]"
@@ -67,61 +67,88 @@
                                             </label>
                                             <p-popover #stateInfo [dismissable]="true">
                                                 <ng-template #content>
-                                                    <div class="min-w-72 p-4">
-                                                        <!-- Header -->
-                                                        <div
-                                                            class="mb-3 flex items-center gap-2 border-b border-gray-100 pb-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-                                                            <i class="pi pi-code"></i>
-                                                            Zigbee State
-                                                        </div>
+                                                    <div class="min-w-72 ">
 
-                                                        <!-- Highlighted JSON Block -->
-                                                        <pre class="max-h-80 overflow-auto rounded-md bg-gray-50 p-4 text-xs font-mono leading-relaxed shadow-inner border border-gray-200"
-                                                            [innerHTML]="deviceAttributeEntry.value.zigbeeState | jsonHighlight">
-            </pre>
+                                                        <p-tabs value="0">
+
+                                                            <p-tablist>
+                                                                <p-tab value="0">
+                                                                    <div
+                                                                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
+                                                                        <i class="pi pi-code"></i>
+                                                                        Zigbee State
+                                                                    </div>
+
+                                                                </p-tab>
+                                                                <p-tab value="1">
+                                                                    <div
+                                                                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
+                                                                        <i class="pi pi-history"></i>
+                                                                        Activity
+                                                                    </div>
+
+                                                                </p-tab>
+                                                            </p-tablist>
+
+                                                            <p-tabpanels class="p-0!">
+
+                                                                <p-tabpanel value="0">
+
+                                                                    <!-- State JSON block -->
+                                                                    <pre class="max-h-80 overflow-auto rounded-md bg-gray-50 p-4 text-xs font-mono leading-relaxed shadow-inner border border-gray-200"
+                                                                        [innerHTML]="deviceAttributeEntry.value.zigbeeState | jsonHighlight">
+                                                        </pre>
+                                                                </p-tabpanel>
 
 
-                                                        <div
-                                                            class="mb-3 flex items-center gap-2 border-b border-gray-100 pb-2 pt-4 text-xs font-bold uppercase tracking-widest text-gray-400">
-                                                            <i class="pi pi-code"></i>
-                                                            Activity
-                                                        </div>
+                                                                <p-tabpanel value="1">
+                                                                    <!-- Header -->
 
-                                                        <div
-                                                            class="max-h-80 overflow-y-auto rounded-md bg-gray-50 p-4 text-xs font-mono shadow-inner border border-gray-200">
-                                                            @for (group of deviceAttributeEntry.value.attributeChanges;
-                                                            track group.timestamp) {
-                                                            <!-- Each time entry is a single flex row -->
-                                                            <div class="flex gap-x-2 whitespace-nowrap leading-tight">
+                                                                    <!-- Attributes changed Block -->
+                                                                    <div
+                                                                        class="max-h-80 overflow-y-auto rounded-md bg-gray-50 p-4 text-xs font-mono shadow-inner border border-gray-200">
+                                                                        @for (group of
+                                                                        deviceAttributeEntry.value.attributeChanges;
+                                                                        track group.timestamp) {
+                                                                        <!-- Each time entry is a single flex row -->
+                                                                        <div
+                                                                            class="flex gap-x-2 whitespace-nowrap leading-tight">
 
-                                                                <!-- Timestamp -->
-                                                                <span class="text-gray-500 shrink-0">
-                                                                    {{ group.timestamp | date: 'short'}}
-                                                                </span>
+                                                                            <!-- Timestamp -->
+                                                                            <span class="text-gray-500 shrink-0">
+                                                                                {{ group.timestamp | date: 'yy/MM/dd,
+                                                                                h:mm a'}}
+                                                                            </span>
 
-                                                                <!-- Container for all property changes at this time -->
-                                                                <div class="flex gap-x-2">
-                                                                    @for (item of group.changes; track $index) {
-                                                                    <span class="flex gap-x-1">
+                                                                            <!-- Container for all property changes at this time -->
+                                                                            <div class="flex gap-x-2">
+                                                                                @for (item of group.changes; track
+                                                                                $index) {
+                                                                                <span class="flex gap-x-1">
+                                                                                    <span
+                                                                                        class="text-blue-700 font-medium">{{item.path
+                                                                                        }}:</span>
+                                                                                    <span
+                                                                                        class="text-red-600">{{item.oldValue}}</span>
+                                                                                    <span
+                                                                                        class="text-gray-400">-></span>
+                                                                                    <span class="text-green-700">{{
+                                                                                        item.newValue}}</span>
+                                                                                </span>
+                                                                                }
+                                                                            </div>
+
+                                                                        </div>
+                                                                        } @empty {
                                                                         <span
-                                                                            class="text-blue-700 font-medium">{{item.path
-                                                                            }}:</span>
-                                                                        <span
-                                                                            class="text-red-600">{{item.oldValue}}</span>
-                                                                        <span class="text-gray-400">-></span>
-                                                                        <span class="text-green-700">{{
-                                                                            item.newValue}}</span>
-                                                                    </span>
-                                                                    }
-                                                                </div>
-
-                                                            </div>
-                                                            } @empty {
-                                                            <span class="text-gray-400 italic text-[10px]">No history
-                                                                available</span>
-                                                            }
-                                                        </div>
-
+                                                                            class="text-gray-400 italic text-[10px]">No
+                                                                            history
+                                                                            available</span>
+                                                                        }
+                                                                    </div>
+                                                                </p-tabpanel>
+                                                            </p-tabpanels>
+                                                        </p-tabs>
                                                     </div>
                                                 </ng-template>
                                             </p-popover>
@@ -133,13 +160,6 @@
                                                 *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container>
 
                                             <ng-template #activeDeviceTemplate>
-                                                <!-- <p-selectButton
-                                                    *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
-                                                    [options]="powerStateOptions" optionLabel="label"
-                                                    optionValue="value"
-                                                    [(ngModel)]="deviceAttributeEntry.value.powerState.power"
-                                                    (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
-                                                    [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></p-selectButton> -->
                                                 <p-toggleswitch
                                                     *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
                                                     [ngModel]="deviceAttributeEntry.value.powerState.power === 'on' ? true : false"
@@ -147,13 +167,6 @@
                                                     [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'">
                                                 </p-toggleswitch>
 
-                                                <!-- <p-selectButton
-                                                    *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
-                                                    [options]="powerStateOptions" optionLabel="label"
-                                                    optionValue="value"
-                                                    [ngModel]="deviceAttributeEntry.value.zigbeeState!.state?.toLowerCase()"
-                                                    (onChange)="toggleDevicePower($event, deviceAttributeEntry.key)"
-                                                    [disabled]="(deviceAttributeEntry.value.connectionStateBehaviorSubject | async)?.state !== 'ONLINE'"></p-selectButton> -->
                                                 <p-toggleswitch
                                                     *ngIf="deviceAttributeEntry.value.device.bridge === 'ZIGBEE2MQTT' && deviceAttributeEntry.value.zigbeeState"
                                                     [ngModel]="deviceAttributeEntry.value.zigbeeState!.state === 'ON' ? true : false"
@@ -264,7 +277,7 @@
                             <div class="text-[10px] uppercase text-gray-500 leading-tight">
                                 Since {{
                                 deviceAttributesMap[selectedDeviceNameForSensorData].sensorData.ENERGY.TotalStartTime |
-                                date:'short' }}
+                                date:'yy/MM/dd, h:mm a' }}
                             </div>
                         </div>
                     </ng-container>
