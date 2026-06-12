@@ -7,7 +7,6 @@ import { routes } from './app.routes';
 import MyPreset from './mypreset';
 import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
 import { provideOAuthClient } from 'angular-oauth2-oidc';
-import { provideNgIdle } from '@ng-idle/core';
 import { authAppInitializerFactory } from './auth/auth-app-initializer.factory';
 import { AuthService } from './auth/auth.service';
 import { environment } from '../environments/environment';
@@ -56,10 +55,6 @@ export const appConfig: ApplicationConfig = {
             return authAppInitializerFactory(authService)();
         }),
 
-
-        // for ng idle
-        provideNgIdle(),
-        //
 
         DatePipe,
 

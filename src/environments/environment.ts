@@ -16,11 +16,6 @@ export const environment = {
         // prefixes of urls to send with Bearer token
         // prefixes have to be in lowerr case
         urlPrefixesWithBearerToken: ['']
-    },
-    idle: {
-        // times are in seconds
-        inactivityTimer: '',
-        timeoutTimer: ''
     }
 };
 

@@ -16,11 +16,6 @@ export const environment = {
         // prefixes of urls to send with Bearer token
         // prefixes have to be in lowerr case
         urlPrefixesWithBearerToken: ['https://localhost:8444/protected']
-    },
-    idle: {
-        // times are in seconds
-        inactivityTimer: '299', // 5 minutes minus 1 second
-        timeoutTimer: '1'
     }
 };
 
