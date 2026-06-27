@@ -18,6 +18,7 @@ import { ZigbeeState } from './ZigbeeState';
 import { JsonHighlightPipe } from "./JsonHighlightPipe";
 import { ToggleSwitchChangeEvent, ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ToggleAreaPowerRequest } from './ToggleAreaPowerRequest';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     standalone: true,
@@ -202,6 +203,10 @@ export class DashboardComponent extends BaseComponent implements OnInit, OnDestr
         const occupancy = this.extractFromJsonString(jsonString, 'occupancy')
         if (occupancy === '-') return '-'
         return (occupancy === true || occupancy === 'true') ? 'Detected' : 'Clear'
+    }
+    getPresenceStatus(connectionSubject: BehaviorSubject<any>): string {
+        const connection = connectionSubject?.value;
+        return connection?.state === 'ONLINE' ? 'Present' : 'Not present';
     }
     extractFromJsonString(zigbeeState: ZigbeeState | null, key: keyof ZigbeeState, fallback: string = '-'): any {
         if (!zigbeeState) return fallback;

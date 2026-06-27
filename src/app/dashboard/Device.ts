@@ -3,6 +3,7 @@ import { Area } from "./Area"
 
 export interface Device {
     name: string
+    address: string
     description: string
     deviceType: string
     telemetry: boolean

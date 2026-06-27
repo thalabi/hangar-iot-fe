@@ -156,8 +156,17 @@
 
                                         <!-- DEVICE CONTROL -->
                                         <div [ngClass]="isRow ? '' : 'col-span-4 flex justify-end'">
-                                            <ng-container
-                                                *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container>
+
+                                            <!-- <ng-container
+                                                *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container> -->
+
+                                            @if (deviceAttributeEntry.value.device.bridge === 'ESPRESENSE') {
+                                            <ng-container *ngTemplateOutlet="espresenseTemplate"></ng-container>
+                                            } @else if (deviceAttributeEntry.value.device.passive) {
+                                            <ng-container *ngTemplateOutlet="passiveDeviceTemplate"></ng-container>
+                                            } @else {
+                                            <ng-container *ngTemplateOutlet="activeDeviceTemplate"></ng-container>
+                                            }
 
                                             <ng-template #activeDeviceTemplate>
                                                 <p-toggleswitch
@@ -198,6 +207,15 @@
                                                 <span>unhandled</span>
                                                 }
                                                 }
+                                            </ng-template>
+
+                                            <ng-template #espresenseTemplate>
+                                                @let status =
+                                                getPresenceStatus(deviceAttributeEntry.value.connectionStateBehaviorSubject);
+                                                <span [class.text-primary]="status === 'Present'"
+                                                    [class.font-bold]="status === 'Present'">
+                                                    {{ status }}
+                                                </span>
                                             </ng-template>
                                         </div>
                                     </div>

@@ -5,6 +5,7 @@ import { BehaviorSubject } from "rxjs";
 import { Device } from "./Device";
 import { ZigbeeState } from "./ZigbeeState";
 import { AttributeChange } from "./AttributeChange";
+import { EspresenseState } from "./EspresenseState";
 
 export interface DeviceAttributes {
     device: Device
@@ -13,5 +14,6 @@ export interface DeviceAttributes {
     sensorData: SensorDataResponse
     connectionStateBehaviorSubject: BehaviorSubject<ConnectionStateResponse>
     zigbeeState: ZigbeeState | null
+    espresenseState: EspresenseState | null
     attributeChanges: AttributeChange[] | null
 }

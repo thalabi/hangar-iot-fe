@@ -16,6 +16,7 @@ import { Zone } from '../dashboard/Zone';
 import { Area } from '../dashboard/Area';
 import { ZigbeeState } from '../dashboard/ZigbeeState';
 import { AttributeChange } from '../dashboard/AttributeChange';
+import { EspresenseState } from '../dashboard/EspresenseState';
 
 @Component({
     selector: 'app-base',
@@ -95,7 +96,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     // populate deviceAttributesMap and groupedDeviceAttributesMap based on the device list response from the backend
     private populateDeviceAttributesMap(deviceResponseList: Array<Device>) {
         deviceResponseList.forEach(deviceResponse => {
-            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null, attributeChanges: null } as DeviceAttributes;
+            this.deviceAttributesMap[deviceResponse.name] = { device: deviceResponse, powerState: {} as PowerStateResponse, savedPowerState: {} as PowerStateResponse, sensorData: {} as SensorDataResponse, connectionStateBehaviorSubject: new BehaviorSubject<ConnectionStateResponse>({} as ConnectionStateResponse), zigbeeState: null, espresenseState: null, attributeChanges: null } as DeviceAttributes;
             // ensure zone map exists
             this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] = this.groupedDeviceAttributesMap[deviceResponse.zone?.name || 0] || {};
             // ensure area map exists within the zone
@@ -207,7 +208,26 @@ export class BaseComponent implements OnInit, OnDestroy {
                         this.deviceAttributesMap[deviceName].attributeChanges = attributeChanges;
 
                     });
+            }
 
+            if (this.deviceAttributesMap[deviceName]?.device.bridge === 'ESPRESENSE') {
+                // subscribe to espresense state topic
+                const address = this.deviceAttributesMap[deviceName]?.device.address
+                const areaName = this.deviceAttributesMap[deviceName]?.device.area?.name.toLowerCase()
+                const topic = `/topic/espresense/devices/${address}/${areaName}`
+                console.log(`subscribing to topic: ${topic}`)
+                this.rxStompService.watch(topic)
+                    .pipe(takeUntilDestroyed(this.destroyRef))// automatically unsubscribe on destroy
+                    .subscribe((message: Message) => {
+                        console.log('topic: [%s], message: [%s]', message.headers['destination'], message.body)
+                        // 1. Parse the string body into a JSON object
+                        // 2. Assert it matches ZigbeeState interface
+                        const espresenseState = JSON.parse(message.body) as EspresenseState;
+                        this.deviceAttributesMap[deviceName].espresenseState = espresenseState;
+
+                        //         // 
+                        //         this.updatePowerMap();
+                    });
             }
         })
 
