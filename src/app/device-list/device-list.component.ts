@@ -27,6 +27,7 @@ export class DeviceListComponent implements OnInit {
         { field: 'description', header: 'Description' },
         { field: 'telemetry', header: 'Telemetry' },
         { field: 'enableDataSaver', header: 'Data saver' },
+        { field: 'powerControllable', header: 'Power Controllable' },
         { field: 'passive', header: 'Passive' },
         { field: 'isManaged', header: 'Managed' },
     ];

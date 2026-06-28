@@ -157,18 +157,17 @@
                                         <!-- DEVICE CONTROL -->
                                         <div [ngClass]="isRow ? '' : 'col-span-4 flex justify-end'">
 
-                                            <!-- <ng-container
-                                                *ngIf="deviceAttributeEntry.value.device.passive; then passiveDeviceTemplate; else activeDeviceTemplate"></ng-container> -->
-
                                             @if (deviceAttributeEntry.value.device.bridge === 'ESPRESENSE') {
                                             <ng-container *ngTemplateOutlet="espresenseTemplate"></ng-container>
-                                            } @else if (deviceAttributeEntry.value.device.passive) {
-                                            <ng-container *ngTemplateOutlet="passiveDeviceTemplate"></ng-container>
+                                            } @else if (deviceAttributeEntry.value.device.bridge === 'TASMOTA' ||
+                                            deviceAttributeEntry.value.device.powerControllable) {
+                                            <ng-container
+                                                *ngTemplateOutlet="powerControllableDeviceTemplate"></ng-container>
                                             } @else {
-                                            <ng-container *ngTemplateOutlet="activeDeviceTemplate"></ng-container>
+                                            <ng-container *ngTemplateOutlet="sensorDeviceTemplate"></ng-container>
                                             }
 
-                                            <ng-template #activeDeviceTemplate>
+                                            <ng-template #powerControllableDeviceTemplate>
                                                 <p-toggleswitch
                                                     *ngIf="deviceAttributeEntry.value.device.bridge === 'TASMOTA'"
                                                     [ngModel]="deviceAttributeEntry.value.powerState.power === 'on' ? true : false"
@@ -184,29 +183,14 @@
                                                 </p-toggleswitch>
                                             </ng-template>
 
-                                            <ng-template #passiveDeviceTemplate>
-                                                <!-- 1. Define the variable once at the top -->
+                                            <ng-template #sensorDeviceTemplate>
                                                 @let status =
                                                 extractOccupancyFromJsonString(deviceAttributeEntry.value.zigbeeState);
 
-                                                <!-- 2. Use it freely inside the switch -->
-                                                @switch (deviceAttributeEntry.value.device.deviceType) {
-                                                @case ('MOTION_SENSOR') {
                                                 <span [class.text-primary]="status !== 'Clear'"
                                                     [class.font-bold]="status !== 'Clear'">
                                                     {{ status }}
                                                 </span>
-                                                }
-                                                @case ('BODY_SENSOR') {
-                                                <span [class.text-primary]="status !== 'Clear'"
-                                                    [class.font-bold]="status !== 'Clear'">
-                                                    {{ status }}
-                                                </span>
-                                                }
-                                                @default {
-                                                <span>unhandled</span>
-                                                }
-                                                }
                                             </ng-template>
 
                                             <ng-template #espresenseTemplate>

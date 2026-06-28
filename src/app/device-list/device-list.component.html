@@ -39,12 +39,6 @@
                 <tr class="border-b border-gray-100 transition-colors hover:bg-blue-50/30">
                     <td *ngFor="let col of columns" class="px-4 py-2.5 text-sm text-gray-700">
                         <ng-container [ngSwitch]="col.field">
-                            <!-- <span *ngSwitchCase="'name'"
-                                class="font-semibold text-blue-600">{{device[col.field]}}</span> -->
-                            <!-- <span *ngSwitchCase="'passive'"
-                                [class]="device.passive ? 'text-orange-500' : 'text-gray-400'">
-                                {{device.passive ? 'Yes' : 'No'}}
-                            </span> -->
                             <span *ngSwitchDefault>{{device[col.field]}}</span>
                         </ng-container>
                     </td>

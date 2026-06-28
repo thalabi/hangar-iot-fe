@@ -12,6 +12,7 @@ export interface Device {
     enableDataSaver: boolean
     location: string
     bridge: string
+    powerControllable: boolean
     passive: boolean
     isManaged: boolean
     zone: Zone | null
