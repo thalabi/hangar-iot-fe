@@ -30,7 +30,7 @@ export const authCodeFlowConfig: AuthConfig = {
     // The api scope is a usecase specific one
 
     // offline_access is required to request a new access token before it's expiry
-    scope: "openid profile email",
+    scope: "openid profile email offline_access",
 
     requireHttps: environment.keycloak.requireHttps,
     // enable session_terminated events 
