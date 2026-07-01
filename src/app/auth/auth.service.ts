@@ -16,8 +16,8 @@ export class AuthService {
     abnormalLogoutMessage = 'Something went wrong. Session ended'
 
     // test begin
-    private oAuthEventArraySubject$ = new BehaviorSubject<string[]>([]);
-    public oAuthEventArray$ = this.oAuthEventArraySubject$.asObservable();
+    // private oAuthEventArraySubject$ = new BehaviorSubject<string[]>([]);
+    // public oAuthEventArray$ = this.oAuthEventArraySubject$.asObservable();
 
     // test end
 
@@ -60,16 +60,14 @@ export class AuthService {
             //console.log('this.isAuthenticatedSubject$.next(', this.oauthService.hasValidAccessToken(), ')')
             this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
-            if (oAuthEvent !== 'session_unchanged') {
-                console.log('oAuthEvent:', oAuthEvent)
-                //console.log('hasValidIdToken', this.oauthService.hasValidIdToken())
-                // test begin
-                oAuthEventArray.push(oAuthEvent + ' at ' + (new Date()).toLocaleTimeString())
-                console.log('oAuthEventArray', oAuthEventArray)
-                new Date()
-                this.oAuthEventArraySubject$.next(oAuthEventArray)
-                // test end
-            }
+            // test begin
+            // if (oAuthEvent !== 'session_unchanged') {
+            //     console.log('oAuthEvent:', oAuthEvent)
+            //     oAuthEventArray.push(oAuthEvent + ' at ' + (new Date()).toLocaleTimeString())
+            //     console.log('oAuthEventArray', oAuthEventArray)
+            //     this.oAuthEventArraySubject$.next(oAuthEventArray)
+            // }
+            // test end
             //this.oAuthEventMessage = new Date().toTimeString().slice(3, 8) + " " + oAuthEvent
             switch (oAuthEvent) {
                 case 'token_received': {
