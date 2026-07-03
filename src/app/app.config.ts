@@ -11,6 +11,7 @@ import { authAppInitializerFactory } from './auth/auth-app-initializer.factory';
 import { AuthService } from './auth/auth.service';
 import { environment } from '../environments/environment';
 import { httpErrorInterceptor } from './http-error-interceptor';
+import { authHttpInterceptor } from './auth/auth-http-interceptor';
 import { MessageService } from 'primeng/api';
 import { RxStompService } from '@stomp/ng2-stompjs';
 import { rxStompServiceFactory } from './rx-stomp.service.factory'
@@ -41,6 +42,7 @@ export const appConfig: ApplicationConfig = {
             // DI-based interceptors must be explicitly enabled for HttpErrorInterceptor below to work
             withInterceptorsFromDi(),
             withInterceptors([httpErrorInterceptor]),
+            //withInterceptors([httpErrorInterceptor, authHttpInterceptor]),
         ),
 
         // for auth module
